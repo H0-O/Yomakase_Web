@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>재료 입력</title>
-</head>
-<body>
-    <div th:fragment="fragment3">
+<div th:fragment="fragment3">
         <div class="content">
             <div class="ingredientInput">
                 <div class="image-upload">
-                    <img src="assets/img/upload_receipt.png" id="upload-text"><br>
+                    <img th:src="@{/img/upload_receipt.png}" id="upload-text"><br>
                     <label for="receipt-upload">
-                        <img src="assets/img/receipt_illustration.png" id="uploaded-image">
+                        <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image">
                     </label>
                     <input type="file" id="receipt-upload" accept="image/*" style="display: none;">
 
@@ -26,9 +19,7 @@
                 <button id="save-button">저장하기</button>
             </div>
         </div>
-
         <style>
-
             .content {
                 background-color: white;
                 padding: 20px;
@@ -104,7 +95,6 @@
                 margin-bottom: 30px;
             }
         </style>
-
         <script>
 
             // 추출하기 버튼 클릭 시 첨부된 img 파일을 서버로 보내 텍스트를 추출하기
@@ -196,9 +186,5 @@
                     reader.readAsDataURL(file); // 파일을 읽어 DataURL로 변환
                 }
             });
-
         </script>
-
     </div>
-</body>
-</html>
