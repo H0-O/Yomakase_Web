@@ -173,7 +173,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        .modal-window {
+        #modal .modal-window {
             z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
             background: ivory;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -187,7 +187,7 @@
             max-width: 800px; /* 모달 너비 설정 */
             max-height: 600px; /* 모달 높이 설정 */
             /*top: -100px;*/
-            /*left: 100px; !* 오른쪽으로 이동 *!*/
+            left: 100px; /* 오른쪽으로 이동 */
             overflow: auto; /* 스크롤 가능하도록 설정 */
         }
 
@@ -199,13 +199,41 @@
         #delModal .modal-window {
             width: 200px;
             height: 130px;
+            z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
+            background: ivory;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(13.5px);
+            -webkit-backdrop-filter: blur(13.5px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            margin: auto;
+            padding: 20px; /* 10px */
+            max-width: 800px; /* 모달 너비 설정 */
+            max-height: 600px; /* 모달 높이 설정 */
+            left: 100px; /* 오른쪽으로 이동 */
         }
 
         #dateModal .modal-window {
-            width: 300px;
+            width: 290px;
             height: 150px;
+            z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
+            background: ivory;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(13.5px);
+            -webkit-backdrop-filter: blur(13.5px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            margin: auto;
+            padding: 20px; /* 10px */
+            max-width: 800px; /* 모달 너비 설정 */
+            max-height: 600px; /* 모달 높이 설정 */
+            left: 100px; /* 오른쪽으로 이동 */
         }
 
+        /* ID가 delModal인 요소의 자식 요소 중에서 클래스가 close-area인 요소를 선택함 */
+        /* #delModal .close-area = ID가 delModal이면서 동시에 클래스가 close-area인 요소를 선택함 */
         #modal .close-area, #delModal .close-area, #dateModal .close-area {
             display: inline;
             float: right;
@@ -219,15 +247,17 @@
             font-weight: bold;
             font-size: 20px;
             text-align: center;
-            padding-top: 8px;
-            /*padding-left: 15px;*/
-            padding-bottom: 8px;
+            padding-left: 20px;
+            padding-bottom: 20px;
         }
 
         #delModal .btn {
-            margin: 10px;
-            padding: 10px;
             font-size: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
         }
 
         #dateModal .date-text {
@@ -236,11 +266,10 @@
             font-size: 20px;
             text-align: center;
             padding-left: 15px;
-            padding-bottom: 8px;
         }
 
         #date-container input[type="date"] {
-            margin-left: 50px;
+            margin-left: 40px;
         }
 
         #modal .title {
@@ -260,7 +289,6 @@
             color: black;
         }
     </style>
-    <hr class="m-0"/>
     <!-- 나의 냉장고 -->
     <section class="resume-section" id="myRefrigerator">
         <div class="resume-section-content" id="myRefrigeratorContent">
@@ -278,10 +306,13 @@
                 <div id="delModal" class="modal-overlay">
                     <div class="modal-window">
                         <div class="close-area">X</div>
-                        <div class="modal-text"></div>
-                        <!-- 모달에 내용 표시 -->
-                        <button class="btn" id="consumption">소비</button>
-                        <button class="btn" id="throw">버림</button>
+                        <div class="modal-text">
+                            <!-- 모달에 내용 표시 -->
+                        </div>
+                        <div class="btn-container">
+                            <button class="btn" id="consumption">소비</button>
+                            <button class="btn" id="throw">버림</button>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -344,11 +375,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const ingredients = [
-            {src: '/static/식재료1.png', alt: '식재료1', text: '가지', top: '90px', left: '40px'},
-            {src: '/static/식재료2.png', alt: '식재료2', text: '토마토', top: '100px', left: '120px'},
-            {src: '/static/식재료3.png', alt: '식재료3', text: '양배추', top: '93px', left: '200px'},
-            {src: '/static/식재료4.png', alt: '식재료4', text: '당근', top: '220px', left: '40px'},
-            {src: '/static/식재료5.png', alt: '식재료5', text: '오이', top: '220px', left: '120px'}
+            {src: '/img/ingre1.png', alt: '식재료1', text: '가지', top: '90px', left: '40px'},
+            {src: '/img/ingre2.png', alt: '식재료2', text: '토마토', top: '100px', left: '120px'},
+            {src: '/img/ingre3.png', alt: '식재료3', text: '양배추', top: '93px', left: '200px'},
+            {src: '/img/ingre4.png', alt: '식재료4', text: '당근', top: '220px', left: '40px'},
+            {src: '/img/ingre5.png', alt: '식재료5', text: '오이', top: '220px', left: '120px'}
         ];
 
         const container = document.getElementById('refrigerator-container');
