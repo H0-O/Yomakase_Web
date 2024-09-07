@@ -10,7 +10,7 @@ CREATE TABLE `member` (
 );
 
 select * from `member`;
-
+UPDATE `member` SET user_role ='ROLE_ADMIN' WHERE name ='Admin';
 
 CREATE TABLE `stock` (
                          `ingredient_name` varchar(700) NOT NULL,
