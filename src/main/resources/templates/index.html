@@ -79,6 +79,7 @@
 
         </div>
     </section>
+    <hr class="m-0" />
     <!-- 게시판 -->
     <section class="resume-section" id="board">
         <div class="resume-section-content">
@@ -88,13 +89,16 @@
 
         </div>
     </section>
+    <hr class="m-0" />
     <!-- 마이 페이지 -->
+    <div sec:authorize="isAuthenticated()">
     <section class="resume-section" id="myPages">
         <div class="resume-section-content">
             <h2 class="mb-5">마이 페이지</h2>
 
         </div>
     </section>
+    </div>
     <hr class="m-0" />
         <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6;">
             <div style="margin-bottom: 10px;">
