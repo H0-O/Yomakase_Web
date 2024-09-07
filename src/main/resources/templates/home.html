@@ -1,3 +1,4 @@
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:fragment="fragment1">
     <style>
         @keyframes smoothAppear {
@@ -9,69 +10,6 @@
                 opacity: 1;
                 transform: translateZ(0);
             }
-        }
-
-        /* 모달 창 스타일 */
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            width: 80%;
-            height: 100%;
-            max-width: 500px;
-            max-height: 650px;
-            text-align: center;
-            border-radius: 10px;
-            position: relative;
-        }
-
-        /* first-container와 second-container에 공통 적용 */
-        .first-container, .second-container {
-            position: absolute;
-            padding: 20px;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            max-width: 500px;
-            max-height: 600px;
-            transition: opacity 0.5s, transform 0.5s;
-        }
-
-        /* first-container의 기본 스타일 */
-        .first-container {
-            z-index: 2;
-            opacity: 1;
-            transform: translateX(0);
-            visibility: visible;
-            pointer-events: auto; /* 클릭 가능 */
-        }
-
-        /* first-container가 숨겨진 상태일 때 */
-        .first-container.hidden {
-            opacity: 0;
-            transform: translateX(-100%);
-            z-index: 1;
-            visibility: hidden;
-            pointer-events: none; /* 클릭 불가능 */
-        }
-
-        /* second-container의 기본 스타일 */
-        .second-container {
-            opacity: 0;
-            transform: translateX(100%);
-            z-index: 1;
-            visibility: hidden; /* 화면에서 숨기기 */
-            pointer-events: none; /* 클릭 불가능 */
-        }
-
-        /* second-container가 활성화된 상태일 때 */
-        .second-container.active {
-            opacity: 1;
-            transform: translateX(0);
-            z-index: 2;
-            visibility: visible;
-            pointer-events: auto; /* 클릭 가능 */
         }
 
         #box {
@@ -115,19 +53,6 @@
             text-align: center;
         }
 
-        /* 모달 배경 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
         /* 버튼 스타일 */
         .button-container {
             display: flex;
@@ -162,16 +87,31 @@
 
             <div class="button-container">
                 <!-- 회원가입 버튼: GET 요청으로 'signupForm' 컨트롤러 호출 -->
-                <form action="/member/signupForm" method="get">
-                    <button id="signupBtn" class="btn">회원가입</button>
-                </form>
+                <div sec:authorize="not isAuthenticated()">
+                    <form action="signupForm" method="get">
+                        <button id="signupBtn" class="btn">회원가입</button>
+                    </form>
 
-                <!-- 로그인 버튼: GET 요청으로 'loginForm' 컨트롤러 호출 -->
-                <form action="/member/loginForm" method="get">
-                    <button id="loginBtn" class="btn">로그인</button>
-                </form>
+                    <!-- 로그인 버튼: GET 요청으로 'loginForm' 컨트롤러 호출 -->
+                    <form action="loginForm" method="get">
+                        <button id="loginBtn" class="btn">로그인</button>
+                    </form>
+                </div>
+                <!-- 로그인 상태일 때: 로그아웃 버튼 표시 -->
+                <div sec:authorize="isAuthenticated()">
+                    <form action="logout" method="post">
+                        <button id="logoutBtn" class="btn">로그아웃</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // 회원가입 버튼 클릭 시 새 창에서 회원가입 폼 열기
+    document.getElementById('signupBtn').addEventListener('click', function() {
+        window.open("signupForm.html", "회원가입", "width=600,height=800,scrollbars=yes,resizable=yes");
+    });
+</script>
+<html>
