@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID중복확인</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div id="first">
+    <h1 style="text-align: center">[ ID 중복 확인 ]</h1>
+    검색할 ID <input type="text" name="searchId" id="searchId" required="required">
+    <input type="button" id="search" value="검색"> <!-- 버튼을 submit에서 button으로 변경 -->
+</div>
+
+<!-- 검색 결과를 출력할 영역 -->
+<div id="result"></div>
+
+<script>
+    $(document).ready(function () {
+        // 검색 버튼을 클릭했을 때
+        $('#search').click(function () {
+            let searchId = $('#searchId').val();
+
+            // 서버에 POST 요청으로 ID 중복 확인
+            $.ajax({
+                url: '/idCheck',  // ID 중복 확인을 처리하는 경로
+                type: 'POST',
+                data: {searchId: searchId},
+                success: function (data) {
+                    // 서버에서 반환된 결과를 출력
+                    $('#result').html(data);
+
+                    // 사용 가능한 ID일 경우 "ID 사용" 버튼 추가
+                    if (data.includes('사용가능한')) {
+                        $('#result').append('<p><button id="useId">ID 사용</button></p>');
+
+                        // "ID 사용" 버튼 클릭 시 부모 창에 ID 값을 전달하고 창을 닫음
+                        $('#useId').click(function () {
+                            $(opener.document).find('#email').val(searchId);
+                            window.close();
+                        });
+                    }
+                },
+                error: function () {
+                    alert('ID 중복 확인 중 오류가 발생했습니다.');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

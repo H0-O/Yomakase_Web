@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<form action="loginInfo" method="post">
+    <h2 style="text-align: center;">[ 로그인 ]</h2>
+    <div class="input-group">
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" required>
+    </div>
+    <div class="input-group">
+        <label for="password">PW</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">로그인</button>
+    <div th:if="${param.error}"><script>alert("ID 또는 비밀번호가 틀립니다.")</script></div>
+    <!-- 로그인 정보를 받는 부분은 security에서 알아서 만들어 줌 -->
+    <!-- DB에서 정보를 가져오는 코드는 내가 만들어야 함 -->
+</form>
+</body>
+</html>

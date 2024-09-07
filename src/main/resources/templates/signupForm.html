@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <style>
+    /* 모달 창 스타일 */
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 500px;
+      max-height: 650px;
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #81c405;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #555;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    /* 다중 선택 박스 스타일 */
+    select[multiple] {
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="modal-content">
+  <form action="signupForm" method="post">
+
+    <!-- 이메일 (ID) -->
+    <div class="form-group">
+      <label for="email">이메일(ID)</label>
+      <input type="email" id="email" name="email" required>
+      <input type="button" value="이메일 중복확인" id="checkId"> <!-- ID 중복 확인 버튼 -->
+    </div>
+
+    <!-- 닉네임 -->
+    <div class="form-group">
+      <label for="nickname">닉네임</label>
+      <input type="text" id="nickname" name="nickname" required autocomplete="username">
+    </div>
+
+    <!-- 비밀번호 -->
+    <div class="form-group">
+      <label for="password">비밀번호</label>
+      <input type="password" id="password" name="password" required autocomplete="current-password">
+    </div>
+
+    <!-- 비밀번호 확인 -->
+    <div class="form-group">
+      <label for="confirm_password">비밀번호 확인</label>
+      <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+    </div>
+
+    <!-- 생년월일 -->
+    <div class="form-group">
+      <label for="birthdate">생년월일</label>
+      <input type="date" id="birthdate" name="birthdate" required>
+    </div>
+
+    <!-- 성별 -->
+    <div class="form-group">
+      <label for="gender">성별</label>
+      <select id="gender" name="gender" required>
+        <option value="M">남성</option>
+        <option value="F">여성</option>
+      </select>
+    </div>
+
+    <!-- 키 (선택) -->
+    <div class="form-group">
+      <label for="height">키 (선택)</label>
+      <input type="text" id="height" name="height">
+    </div>
+
+    <!-- 몸무게 (선택) -->
+    <div class="form-group">
+      <label for="weight">몸무게 (선택)</label>
+      <input type="text" id="weight" name="weight">
+    </div>
+
+    <!-- 알레르기 정보 (선택, 다중 선택 가능) -->
+    <div class="form-group">
+      <label for="allergies">알레르기 정보 (선택)</label>
+      <select id="allergies" name="allergies[]" multiple>
+        <option value="egg">계란</option>
+        <option value="milk">우유</option>
+        <option value="buckwheat">메밀</option>
+        <option value="peanut">땅콩</option>
+        <option value="soy">대두</option>
+        <option value="wheat">밀</option>
+        <option value="mackerel">고등어</option>
+        <option value="crab">게</option>
+        <option value="shrimp">새우</option>
+        <option value="pork">돼지고기</option>
+        <option value="peach">복숭아</option>
+        <option value="tomato">토마토</option>
+        <option value="walnut">호두</option>
+        <option value="chicken">닭고기</option>
+        <option value="beef">소고기</option>
+        <option value="squid">오징어</option>
+        <option value="shellfish">조개류</option>
+        <option value="pine_nut">잣</option>
+      </select>
+    </div>
+
+    <!-- 제출 버튼 -->
+    <div>
+      <button type="submit" class="btn">회원가입</button>
+    </div>
+  </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // 가입 누를때
+    $('.modal-content').submit(save);
+
+    // ID중복확인 누를때
+    $('#checkId').click(idCheck); // ① 타입이 button일 경우
+  });
+
+  // 가입 누를때
+  function save() {
+    let id = $('#id').val();
+    let pw = $('#pw').val();
+    let repw = $('#confirm_password').val();
+    let name = $('#nickname').val();
+    let birthdate = $('#birthdate').val();
+
+    if(id.length > 8 || id.length < 3) {
+      alert("아이디는 이메일 형식으로 만들어주세요")
+      return false
+    }
+    if(pw.length <= 2) {
+      alert("비밀번호는 3자이상으로 만들어주세요")
+      return false
+    }
+    if(pw != repw) {
+      alert("일치하지 않는 비밀번호입니다")
+      return false
+    }
+    if(name = '') {
+      alert("닉네임을 입력하세요")
+      return false
+    }
+    if (birthdate = '') {
+      alert('생년월일을 선택해주세요')
+      return false
+    }
+    alert("회원가입이 완료되었습니다.")
+    return true
+  }
+
+  // ID중복확인 클릭시
+  function idCheck() {
+    // 이메일 중복 확인을 처리하는 경로를 올바르게 지정 (절대 경로 또는 상대 경로 확인)
+    window.open('/idCheck', 'idWin', 'left=500,top=200,width=400,height=300,location=no,titlebar=no');
+  }
+
+
+</script>
+</body>
+</html>

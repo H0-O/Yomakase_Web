@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 문서의 문자 인코딩을 UTF-8로 설정 -->
+    <meta charset="UTF-8">
+    <!-- 페이지 제목 설정 -->
+    <title>개인정보 수정</title>
+    <!-- Thymeleaf 문법을 사용하여 jQuery 라이브러리 포함 -->
+    <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
+    <!-- 외부 CSS 스타일시트 연결 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Thymeleaf 문법을 사용하여 로그인 정보 관련 JavaScript 파일 포함 -->
+    <script th:src="@{/js/loginInfoJS.js}"></script>
+</head>
+<body>
+<form id="infoUpdate" class="join-form" action="info" method="post">
+    <table>
+        <h1 style="text-align: center">[ 개인정보 수정 ]</h1>
+        <tr>
+            <th>ID</th>
+            <td>
+                <h4 th:text="${member.email}"></h4>
+            </td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td>
+                <input type="password" name="password" id="pw" placeholder="비밀번호 입력"><br>
+                <input type="password" id="repw" placeholder="비밀번호 확인"><br>
+            </td>
+        </tr>
+        <tr>
+            <th>닉네임</th>
+            <td>
+                <h4 th:text="${member.getNickname()}"></h4>
+            </td>
+        </tr>
+
+        <!-- 알레르기 정보 입력 필드 -->
+        <tr>
+            <th>알레르기 정보</th>
+            <td>
+                <label><input type="checkbox" name="eggs" th:checked="${member.eggs}" /> 계란</label><br>
+                <label><input type="checkbox" name="milk" th:checked="${member.milk}" /> 우유</label><br>
+                <label><input type="checkbox" name="buckwheat" th:checked="${member.buckwheat}" /> 메밀</label><br>
+                <label><input type="checkbox" name="peanut" th:checked="${member.peanut}" /> 땅콩</label><br>
+                <label><input type="checkbox" name="soybean" th:checked="${member.soybean}" /> 대두</label><br>
+                <label><input type="checkbox" name="wheat" th:checked="${member.wheat}" /> 밀</label><br>
+                <label><input type="checkbox" name="mackerel" th:checked="${member.mackerel}" /> 고등어</label><br>
+                <label><input type="checkbox" name="crab" th:checked="${member.crab}" /> 게</label><br>
+                <label><input type="checkbox" name="shrimp" th:checked="${member.shrimp}" /> 새우</label><br>
+                <label><input type="checkbox" name="pork" th:checked="${member.pork}" /> 돼지고기</label><br>
+                <label><input type="checkbox" name="peach" th:checked="${member.peach}" /> 복숭아</label><br>
+                <label><input type="checkbox" name="tomato" th:checked="${member.tomato}" /> 토마토</label><br>
+                <label><input type="checkbox" name="walnuts" th:checked="${member.walnuts}" /> 호두</label><br>
+                <label><input type="checkbox" name="chicken" th:checked="${member.chicken}" /> 닭고기</label><br>
+                <label><input type="checkbox" name="beef" th:checked="${member.beef}" /> 소고기</label><br>
+                <label><input type="checkbox" name="squid" th:checked="${member.squid}" /> 오징어</label><br>
+                <label><input type="checkbox" name="shellfish" th:checked="${member.shellfish}" /> 조개류</label><br>
+                <label><input type="checkbox" name="pineNut" th:checked="${member.pineNut}" /> 잣</label><br>
+            </td>
+        </tr>
+
+        <!-- 신체 정보 입력 필드 -->
+        <tr>
+            <th>키</th>
+            <td>
+                <input th:value="${member.height}" type="number" name="height" id="height" placeholder="키 입력 (cm)"><br>
+            </td>
+        </tr>
+        <tr>
+            <th>몸무게</th>
+            <td>
+                <input th:value="${member.weight}" type="number" name="weight" id="weight" placeholder="몸무게 입력 (kg)"><br>
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="수정">
+</form>
+</body>
+</html>

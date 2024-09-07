@@ -21,12 +21,13 @@ public class WebSecurityConfig {
     //로그인 없이 접근 가능 경로
     private static final String[] PUBLIC_URLS = {
             "/"                 // 메인화면
-            , "/joinForm"       // 로그인없이 접근할 수 있는 페이지들 : 회원가입폼
+            , "/signupForm"       // 로그인없이 접근할 수 있는 페이지들 : 회원가입폼
             , "/loginForm"      // 로그인폼
             , "/css/**"               // css
             , "/img/**"
             , "/jq/**"
             , "/js/**"
+            , "/idCheck"      // 로그인폼
     };
 
     // @Bean : 메서드 레벨에서 사용되며, 해당 메서드의 리턴 값을 스프링 IoC 컨테이너가 관리하는 빈으로 등록하는 역할
