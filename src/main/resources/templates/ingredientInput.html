@@ -1,24 +1,36 @@
 <div th:fragment="fragment3">
     <div class="content">
-        <div class="ingredientInput">
-            <div class="image-upload">
-                <img th:src="@{/img/upload_receipt.png}" id="upload-text"><br>
-                <label for="receipt-upload">
-                    <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image">
-                </label>
-                <input type="file" id="receipt-upload" accept="image/*" style="display: none;">
-
-                <button id="extract-button">추출하기</button>
-            </div>
-            <div id="ingredients-list">
-                <!-- OCR로 추출된 재료 이름 목록이 여기 표시됩니다 -->
-            </div>
-            <button id="add-input-button">입력란 추가</button>
-
-        </div>
-        <div id="saveBtContainer">
-            <button id="save-button">저장하기</button>
-        </div>
+        <table id="ingredient-table">
+            <tr>
+                <td>
+                    <img th:src="@{/img/upload_receipt.png}" id="upload-text"><br>
+                </td>
+                <td>
+                    <button id="add-input-button">입력란 추가</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="receipt-upload">
+                        <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image" style="cursor: pointer;">
+                    </label>
+                </td>
+                <td>
+                    <div id="ingredients-list">
+                        <!-- OCR로 추출된 재료 이름 목록이 여기 표시됩니다 -->
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="file" id="receipt-upload" accept="image/*" style="display: none;">
+                    <button id="extract-button">추출하기</button>
+                </td>
+                <td>
+                    <button id="save-button">저장하기</button>
+                </td>
+            </tr>
+        </table>
     </div>
     <!-- 로딩 모달 -->
     <div id="loading-modal">
@@ -28,23 +40,6 @@
         </div>
     </div>
     <style>
-        .content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 850px;
-        }
-
-        .image-upload {
-            margin-right: 50px;
-        }
-
-        .image-upload img {
-            cursor: pointer;
-            width: 300px;
-            height: auto;
-        }
 
         button {
             display: block;
@@ -61,9 +56,120 @@
         button:hover {
             background-color: #ffb524;
         }
+        #uploaded-image {
+            max-height: 375px; /* 최대 높이 설정 */
+            object-fit: contain; /* 이미지 비율을 유지하면서 지정된 크기 안에 맞춤 */
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 850px;
+            height: auto;
+        }
+
+        #ingredient-table {
+            width: 100%;
+            height: 700px;
+
+            border-collapse: collapse; /* 테두리 겹침 제거 */
+            margin-top: 20px;
+        }
+        #ingredient-table tbody {
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
+        #ingredient-table td {
+            padding: 15px;
+            vertical-align: top; /* 셀 안의 내용을 상단 정렬 */
+        }
+
+        #ingredient-table td:first-child {
+            width: 50%; /* 첫 번째 열의 너비 설정 */
+        }
+
+        #ingredient-table td:nth-child(2) {
+            width: 50%; /* 두 번째 열의 너비 설정 */
+        }
+
+        #ingredient-table button {
+            width: 100%; /* 버튼이 셀 안에서 꽉 차게 */
+            height: auto;
+            max-height: 300px; /* 재료 리스트가 너무 길어질 경우 최대 높이 설정 */
+            overflow-y: auto; /* 스크롤을 자동으로 처리 */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #ingredient-table button:hover {
+            background-color: #ffb524;
+        }
 
         #ingredients-list {
-            margin-top: 20px;
+            width: 100%;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 2px solid #81c405;
+            border-radius: 5px;
+        }
+
+        #ingredient-table img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+
+        #ingredient-table input[type="file"] {
+            margin-top: 10px;
+        }
+
+        #add-input-button {
+            margin: 10px auto;
+        }
+        #save-button {
+            margin: 10px auto;
+        }
+        #extract-button {
+            margin: 10px auto;
+        }
+
+        #ingredients-list {
+            width: 100%; /* 테이블 셀의 너비에 맞게 */
+            height: 375px; /* 고정 높이 설정 */
+            overflow-y: scroll; /* 스크롤 바 표시 */
+            padding: 10px;
+            box-sizing: border-box; /* 패딩을 포함하여 크기 조정 */
+            border: 4px solid #81c405;
+            border-radius: 5px; /* 부드러운 모서리 */
+        }
+
+
+        /* 스크롤 바 스타일 */
+        #ingredients-list::-webkit-scrollbar {
+            width: 15px; /* 스크롤 바의 너비 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-track {
+        / / background: #f0f0f0; /* 스크롤 바 트랙의 배경색 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-thumb {
+            background-color: #ffb524; /* 스크롤 바의 핸들 색상 */
+            border-radius: 10px; /* 핸들의 모서리를 둥글게 */
+            border: 3px solid #f0f0f0; /* 핸들 주위의 공간 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-thumb:hover {
+            background-color: #e89c0c; /* 마우스를 올렸을 때 스크롤 핸들의 색상 변경 */
         }
 
         .input-group {
@@ -80,35 +186,8 @@
             border-radius: 5px;
         }
 
-        .ingredientInput {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
 
-        #extract-button {
-            margin: auto;
-            margin-top: 20px;
-        }
 
-        #ingredients-list {
-            width: 300px;
-        }
-
-        #add-input-button {
-            margin: auto;
-            margin-bottom: 20px;
-        }
-
-        #saveBtContainer {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        #save-button {
-            margin-right: 50px;
-            margin-bottom: 30px;
-        }
 
         /* 로딩 모달 스타일 */
         #loading-modal {
@@ -132,17 +211,17 @@
             text-align: center;
             font-size: 2rem;
             font-weight: bold;
-            //color:white;
+        / / color: white;
         }
 
         .spinner {
             width: 17.6px;
             height: 17.6px;
             border-radius: 17.6px;
-            box-shadow: 44px 0px 0 0 rgba(255,181,36,0.2),
-            35.6px 26px 0 0 rgba(255,181,36,0.4),
-            13.64px 41.8px 0 0 rgba(255,181,36,0.6),
-            -13.64px 41.8px 0 0 rgba(255,181,36,0.8),
+            box-shadow: 44px 0px 0 0 rgba(255, 181, 36, 0.2),
+            35.6px 26px 0 0 rgba(255, 181, 36, 0.4),
+            13.64px 41.8px 0 0 rgba(255, 181, 36, 0.6),
+            -13.64px 41.8px 0 0 rgba(255, 181, 36, 0.8),
             -35.6px 26px 0 0 #ffb524;
             animation: spinner-b87k6z 1s infinite linear;
             margin: 80px auto; /* 스피너 위치 조정 */
