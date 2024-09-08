@@ -24,7 +24,7 @@
     <div id="loading-modal">
         <div class="modal-content">
             <p>영수증에서 식재료 추출 중...</p>
-            <div class="loader"></div>
+            <div class="spinner"></div>
         </div>
     </div>
     <style>
@@ -130,23 +130,26 @@
             padding: 20px;
             border-radius: 8px;
             text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            //color:white;
         }
 
-        .loader {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
+        .spinner {
+            width: 17.6px;
+            height: 17.6px;
+            border-radius: 17.6px;
+            box-shadow: 44px 0px 0 0 rgba(255,181,36,0.2),
+            35.6px 26px 0 0 rgba(255,181,36,0.4),
+            13.64px 41.8px 0 0 rgba(255,181,36,0.6),
+            -13.64px 41.8px 0 0 rgba(255,181,36,0.8),
+            -35.6px 26px 0 0 #ffb524;
+            animation: spinner-b87k6z 1s infinite linear;
+            margin: 80px auto; /* 스피너 위치 조정 */
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
+        @keyframes spinner-b87k6z {
+            to {
                 transform: rotate(360deg);
             }
         }
