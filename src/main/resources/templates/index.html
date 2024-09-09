@@ -52,6 +52,7 @@
             </div>
         </div>
     </section>
+    <div sec:authorize="isAuthenticated()">
     <hr class="m-0" />
     <!-- 나의 냉장고 -->
     <section class="resume-section" id="myRefrigerator">
@@ -91,7 +92,6 @@
     </section>
     <hr class="m-0" />
     <!-- 마이 페이지 -->
-    <div sec:authorize="isAuthenticated()">
     <section class="resume-section" id="myPages">
         <div class="resume-section-content">
             <h2 class="mb-5">마이 페이지</h2>
