@@ -5,20 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>회원가입</title>
   <style>
+    @keyframes smoothAppear {
+      from {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translateZ(0);
+      }
+    }
+
     /* 모달 창 스타일 */
     .modal-content {
       background-color: white;
       margin: 5% auto;
       padding: 20px;
       width: 80%;
+      height: 100%;
       max-width: 500px;
       max-height: 650px;
       text-align: center;
       border-radius: 10px;
+      position: relative;
+    }
+
+    /* 모달 배경 */
+    body {
+      display: none; /* 처음엔 보이지 않도록 설정 */
+      position: fixed;
+      z-index: 1000; /* z-index를 충분히 높게 설정 */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+    }
+
+    /* 버튼 스타일 */
+    .button-container {
+      display: flex;
+      flex-direction: row; /* 가로로 배치 */
+      justify-content: center; /* 가운데 정렬 */
+      gap: 10px; /* 버튼 간의 간격 */
     }
 
     .btn {
       padding: 10px 20px;
+      margin: 10px;
       background-color: #81c405;
       color: white;
       border: none;
@@ -30,24 +65,178 @@
       background-color: #555;
     }
 
+    /* 폼 스타일 */
     .form-group {
       margin-bottom: 15px;
+      text-align: left;
     }
 
-    label {
+    .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
     }
 
-    input, select {
+    .form-group input {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
     }
 
-    input[type="checkbox"] {
-      width: auto;
+    /* 알레르기 영역을 감싸는 부모 요소 */
+    .allergy-group {
+      max-height: 250px; /* 필요에 따라 높이를 조정하세요 */
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    /* 드롭다운 스타일 수정 */
+    .dropdown {
+      position: relative;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .dropdown-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #333;
+      transition: background-color 0.3s;
+    }
+
+    .dropdown-label:hover {
+      background-color: #ddd;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: relative; /* 수정된 부분: 드롭다운 메뉴가 부모 요소 안에서 위치하도록 */
+      width: 100%;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    //max-height: 200px;
+    //overflow-y: auto;
+      margin-top: 5px; /* 드롭다운 메뉴와 레이블 사이에 간격 추가 */
+      overflow: hidden; /* 내부 스크롤 제거 */
+    }
+
+    .dropdown-content.show {
+      display: block;
+    }
+
+    .dropdown-content label {
+      display: block;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .dropdown-content label:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-content label.selected {
+      background-color: #81c405;
+      color: white;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .custom-heading {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.67em 0;
+      color: inherit;
+      flex: 1;
+      text-align: center;
+    }
+
+    .header .back-btn {
+      font-size: 1.8rem;
+      color: #81c405;
+      border: none;
+      cursor: pointer;
+      background: none;
+      visibility: visible; /* 기본값 */
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* 닫기 버튼 */
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* 성별 토글 버튼 스타일 */
+    .gender-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gender-toggle {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      background-color: #f1f1f1;
+      position: relative;
+    }
+
+    .gender-toggle button {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      background-color: #fff;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .gender-toggle button.selected {
+      background-color: #81c405;
+      color: white;
+    }
+
+    .gender-toggle button:nth-of-type(1) {
+      border-right: 1px solid #ddd;
+    }
+
+    .gender-toggle button:hover {
+      background-color: #ddd;
     }
   </style>
 </head>
@@ -109,63 +298,73 @@
     </div>
 
     <!-- 알레르기 정보 (선택, 체크박스 형태) -->
-    <div class="form-group">
-      <label>알레르기 정보 (선택)</label><br>
-
-      <input type="checkbox" id="egg" name="allergies[]" value="egg">
-      <label for="egg">계란</label><br>
-
-      <input type="checkbox" id="milk" name="allergies[]" value="milk">
-      <label for="milk">우유</label><br>
-
-      <input type="checkbox" id="buckwheat" name="allergies[]" value="buckwheat">
-      <label for="buckwheat">메밀</label><br>
-
-      <input type="checkbox" id="peanut" name="allergies[]" value="peanut">
-      <label for="peanut">땅콩</label><br>
-
-      <input type="checkbox" id="soy" name="allergies[]" value="soy">
-      <label for="soy">대두</label><br>
-
-      <input type="checkbox" id="wheat" name="allergies[]" value="wheat">
-      <label for="wheat">밀</label><br>
-
-      <input type="checkbox" id="mackerel" name="allergies[]" value="mackerel">
-      <label for="mackerel">고등어</label><br>
-
-      <input type="checkbox" id="crab" name="allergies[]" value="crab">
-      <label for="crab">게</label><br>
-
-      <input type="checkbox" id="shrimp" name="allergies[]" value="shrimp">
-      <label for="shrimp">새우</label><br>
-
-      <input type="checkbox" id="pork" name="allergies[]" value="pork">
-      <label for="pork">돼지고기</label><br>
-
-      <input type="checkbox" id="peach" name="allergies[]" value="peach">
-      <label for="peach">복숭아</label><br>
-
-      <input type="checkbox" id="tomato" name="allergies[]" value="tomato">
-      <label for="tomato">토마토</label><br>
-
-      <input type="checkbox" id="walnut" name="allergies[]" value="walnut">
-      <label for="walnut">호두</label><br>
-
-      <input type="checkbox" id="chicken" name="allergies[]" value="chicken">
-      <label for="chicken">닭고기</label><br>
-
-      <input type="checkbox" id="beef" name="allergies[]" value="beef">
-      <label for="beef">소고기</label><br>
-
-      <input type="checkbox" id="squid" name="allergies[]" value="squid">
-      <label for="squid">오징어</label><br>
-
-      <input type="checkbox" id="shellfish" name="allergies[]" value="shellfish">
-      <label for="shellfish">조개류</label><br>
-
-      <input type="checkbox" id="pineNut" name="allergies[]" value="pineNut">
-      <label for="pineNut">잣</label><br>
-
+    <div class="allergy-group">
+      <div class="dropdown">
+        <div class="dropdown-label" id="meat-dropdown">
+          고기류
+          <span id="meat-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="meat-content">
+          <label><input type="hidden" name="allergy" value="알"> 알 (가금류만 해당한다)</label>
+          <label><input type="hidden" name="allergy" value="돼지고기"> 돼지고기</label>
+          <label><input type="hidden" name="allergy" value="닭고기"> 닭고기</label>
+          <label><input type="hidden" name="allergy" value="쇠고기"> 쇠고기</label>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-label" id="seafood-dropdown">
+          해산물
+          <span id="seafood-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="seafood-content">
+          <label><input type="hidden" name="allergy" value="고등어"> 고등어</label>
+          <label><input type="hidden" name="allergy" value="게"> 게</label>
+          <label><input type="hidden" name="allergy" value="새우"> 새우</label>
+          <label><input type="hidden" name="allergy" value="오징어"> 오징어</label>
+          <label><input type="hidden" name="allergy" value="조개류"> 조개류 (굴, 전복, 홍합을 포함한다)</label>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-label" id="fruit-dropdown">
+          과일류
+          <span id="fruit-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="fruit-content">
+          <label><input type="hidden" name="allergy" value="복숭아"> 복숭아</label>
+          <label><input type="hidden" name="allergy" value="토마토"> 토마토</label>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-label" id="nut-dropdown">
+          견과류
+          <span id="nut-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="nut-content">
+          <label><input type="hidden" name="allergy" value="땅콩"> 땅콩</label>
+          <label><input type="hidden" name="allergy" value="대두"> 대두</label>
+          <label><input type="hidden" name="allergy" value="호두"> 호두</label>
+          <label><input type="hidden" name="allergy" value="잣"> 잣</label>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-label" id="grain-dropdown">
+          곡물
+          <span id="grain-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="grain-content">
+          <label><input type="hidden" name="allergy" value="메밀"> 메밀</label>
+          <label><input type="hidden" name="allergy" value="밀"> 밀</label>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-label" id="dairy-dropdown">
+          유제품
+          <span id="dairy-chevron">&#9662;</span>
+        </div>
+        <div class="dropdown-content" id="dairy-content">
+          <label><input type="hidden" name="allergy" value="우유"> 우유</label>
+        </div>
+      </div>
     </div>
 
     <!-- 제출 버튼 -->
@@ -221,7 +420,6 @@
   function idCheck() {
     window.open('/idCheck', 'idWin', 'left=500,top=200,width=400,height=300,location=no,titlebar=no');
   }
-
 </script>
 
 </body>
