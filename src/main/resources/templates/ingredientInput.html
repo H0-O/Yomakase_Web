@@ -1,190 +1,340 @@
 <div th:fragment="fragment3">
-        <div class="content">
-            <div class="ingredientInput">
-                <div class="image-upload">
+    <div class="content">
+        <table id="ingredient-table">
+            <tr>
+                <td>
                     <img th:src="@{/img/upload_receipt.png}" id="upload-text"><br>
-                    <label for="receipt-upload">
-                        <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image">
-                    </label>
-                    <input type="file" id="receipt-upload" accept="image/*" style="display: none;">
-
-                    <button id="extract-button">추출하기</button>
-                </div>
-                <div id="ingredients-list">
-                    <!-- OCR로 추출된 재료 이름 목록이 여기 표시됩니다 -->
+                </td>
+                <td>
                     <button id="add-input-button">입력란 추가</button>
-                </div>
-            </div>
-            <div id="saveBtContainer">
-                <button id="save-button">저장하기</button>
-            </div>
-        </div>
-        <style>
-            .content {
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                width: 850px;
-            }
-
-            .image-upload {
-                margin-right: 50px;
-            }
-
-            .image-upload img {
-                cursor: pointer;
-                width: 300px;
-                height: auto;
-            }
-
-            button {
-                display: block;
-                margin-top: 10px;
-                padding: 10px;
-                background-color: #81c405;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 16px;
-            }
-
-            button:hover {
-                background-color: #7bb12a;
-            }
-
-            #ingredients-list {
-                margin-top: 20px;
-            }
-            .input-group {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-
-            input[type="text"] {
-                width: 80%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            }
-            .ingredientInput{
-                display: flex;
-                justify-content: center;
-                margin-bottom: 30px;
-            }
-            #extract-button{
-                margin: auto;
-                margin-top: 20px;
-            }
-            #ingredients-list{
-                width: 300px;
-            }
-            #add-input-button{
-                margin: auto;
-                margin-bottom: 20px;
-            }
-            #saveBtContainer{
-                display: flex;
-                justify-content: flex-end;
-            }
-            #save-button{
-                margin-right: 50px;
-                margin-bottom: 30px;
-            }
-        </style>
-        <script>
-
-            // 추출하기 버튼 클릭 시 첨부된 img 파일을 서버로 보내 텍스트를 추출하기
-            document.getElementById('extract-button').addEventListener('click', function() {
-                const fileInput = document.getElementById('receipt-upload');
-                // 영수증 파일을 첨부하지 않고 추출하기를 누를 시 영수증을 먼저 업로드하라는 알림창이 뜸
-                if (fileInput.files.length === 0) {
-                    alert('영수증을 먼저 업로드하세요!');
-                    return;
-                }
-                // 파일을 FormData 객체에 담아 서버로 전송
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-
-                fetch('/ocr', {
-                    method: 'POST',
-                    body: formData
-                })
-                    // response.json() : 서버에서 돌아온 응답을 JSON 형식으로 파싱하는 함수
-                    .then(response => response.json())
-                    .then(data => {
-                        const ingredientsList = document.getElementById('ingredients-list');
-
-                        data.ingredients.forEach(ingredient => {	// ingredients: JSON 데이터의 키(key)
-                            const inputGroup = document.createElement('div');
-                            inputGroup.classList.add('input-group');
-
-                            const input = document.createElement('input');
-                            input.type = 'text';
-                            input.value = ingredient;
-                            input.name = 'ingredients[]';
-
-                            inputGroup.appendChild(input);
-                            ingredientsList.appendChild(inputGroup);
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-
-            // 입력란 추가 버튼 클릭 시 사용자가 직접 재료명을 입력할 수 있는 input칸 생성
-            document.getElementById('add-input-button').addEventListener('click', function() {
-                const ingredientsList = document.getElementById('ingredients-list');
-
-                const inputGroup = document.createElement('div');
-                inputGroup.classList.add('input-group');
-
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'ingredients[]';
-                input.placeholder = '재료명을 입력하세요';
-
-                inputGroup.appendChild(input);
-                ingredientsList.appendChild(inputGroup);
-            });
-
-            // 저장하기 버튼을 누르면 입력된 재료들(name이 ingredients[]인 input에 입력된 재료들) 서버로 보냄
-            document.getElementById('save-button').addEventListener('click', function() {
-                const inputs = document.querySelectorAll('input[name="ingredients[]"]');
-                const ingredients = [];
-                inputs.forEach(input => ingredients.push(input.value));
-
-                fetch('/save', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ingredients: ingredients })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('저장되었습니다!');
-                            location.reload(); // 페이지 새로고침
-                        } else {
-                            alert('저장에 실패했습니다.');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-
-            // 영수증 사진 파일 업로드 시 영수증 일러스트가 업로드된 영수증 사진으로 변경
-            document.getElementById('receipt-upload').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // 업로드한 이미지 파일을 미리보기로 보여줌
-                        document.getElementById('uploaded-image').src = e.target.result;
-                    };
-                    reader.readAsDataURL(file); // 파일을 읽어 DataURL로 변환
-                }
-            });
-        </script>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="receipt-upload">
+                        <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image" style="cursor: pointer;">
+                    </label>
+                </td>
+                <td>
+                    <div id="ingredients-list">
+                        <!-- OCR로 추출된 재료 이름 목록이 여기 표시됩니다 -->
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="file" id="receipt-upload" accept="image/*" style="display: none;">
+                    <button id="extract-button">추출하기</button>
+                </td>
+                <td>
+                    <button id="save-button">저장하기</button>
+                </td>
+            </tr>
+        </table>
     </div>
+    <!-- 로딩 모달 -->
+    <div id="loading-modal">
+        <div class="modal-content">
+            <p>영수증에서 식재료 추출 중...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <style>
+
+        button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ffb524;
+        }
+        #uploaded-image {
+            max-height: 375px; /* 최대 높이 설정 */
+            object-fit: contain; /* 이미지 비율을 유지하면서 지정된 크기 안에 맞춤 */
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 850px;
+            height: auto;
+        }
+
+        #ingredient-table {
+            width: 100%;
+            height: 700px;
+
+            border-collapse: collapse; /* 테두리 겹침 제거 */
+            margin-top: 20px;
+        }
+        #ingredient-table tbody {
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
+        #ingredient-table td {
+            padding: 15px;
+            vertical-align: top; /* 셀 안의 내용을 상단 정렬 */
+        }
+
+        #ingredient-table td:first-child {
+            width: 50%; /* 첫 번째 열의 너비 설정 */
+        }
+
+        #ingredient-table td:nth-child(2) {
+            width: 50%; /* 두 번째 열의 너비 설정 */
+        }
+
+        #ingredient-table button {
+            width: 100%; /* 버튼이 셀 안에서 꽉 차게 */
+            height: auto;
+            max-height: 300px; /* 재료 리스트가 너무 길어질 경우 최대 높이 설정 */
+            overflow-y: auto; /* 스크롤을 자동으로 처리 */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #ingredient-table button:hover {
+            background-color: #ffb524;
+        }
+
+        #ingredients-list {
+            width: 100%;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 2px solid #81c405;
+            border-radius: 5px;
+        }
+
+        #ingredient-table img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+
+        #ingredient-table input[type="file"] {
+            margin-top: 10px;
+        }
+
+        #add-input-button {
+            margin: 10px auto;
+        }
+        #save-button {
+            margin: 10px auto;
+        }
+        #extract-button {
+            margin: 10px auto;
+        }
+
+        #ingredients-list {
+            width: 100%; /* 테이블 셀의 너비에 맞게 */
+            height: 375px; /* 고정 높이 설정 */
+            overflow-y: scroll; /* 스크롤 바 표시 */
+            padding: 10px;
+            box-sizing: border-box; /* 패딩을 포함하여 크기 조정 */
+            border: 4px solid #81c405;
+            border-radius: 5px; /* 부드러운 모서리 */
+        }
+
+
+        /* 스크롤 바 스타일 */
+        #ingredients-list::-webkit-scrollbar {
+            width: 15px; /* 스크롤 바의 너비 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-track {
+        / / background: #f0f0f0; /* 스크롤 바 트랙의 배경색 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-thumb {
+            background-color: #ffb524; /* 스크롤 바의 핸들 색상 */
+            border-radius: 10px; /* 핸들의 모서리를 둥글게 */
+            border: 3px solid #f0f0f0; /* 핸들 주위의 공간 */
+        }
+
+        #ingredients-list::-webkit-scrollbar-thumb:hover {
+            background-color: #e89c0c; /* 마우스를 올렸을 때 스크롤 핸들의 색상 변경 */
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+
+
+
+        /* 로딩 모달 스타일 */
+        #loading-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* 기본적으로 숨김 */
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+        / / color: white;
+        }
+
+        .spinner {
+            width: 17.6px;
+            height: 17.6px;
+            border-radius: 17.6px;
+            box-shadow: 44px 0px 0 0 rgba(255, 181, 36, 0.2),
+            35.6px 26px 0 0 rgba(255, 181, 36, 0.4),
+            13.64px 41.8px 0 0 rgba(255, 181, 36, 0.6),
+            -13.64px 41.8px 0 0 rgba(255, 181, 36, 0.8),
+            -35.6px 26px 0 0 #ffb524;
+            animation: spinner-b87k6z 1s infinite linear;
+            margin: 80px auto; /* 스피너 위치 조정 */
+        }
+
+        @keyframes spinner-b87k6z {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <script>
+        // 추출하기 버튼 클릭 시 첨부된 img 파일을 서버로 보내 텍스트를 추출하기
+        document.getElementById('extract-button').addEventListener('click', function () {
+            const fileInput = document.getElementById('receipt-upload');
+            // 영수증 파일을 첨부하지 않고 추출하기를 누를 시 영수증을 먼저 업로드하라는 알림창이 뜸
+            if (fileInput.files.length === 0) {
+                alert('영수증을 먼저 업로드하세요!');
+                return;
+            }
+            // 로딩 모달 표시
+            document.getElementById('loading-modal').style.display = 'flex';
+
+            // 파일을 FormData 객체에 담아 서버로 전송
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('http://localhost:8000/ocr', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    const ingredientsList = document.getElementById('ingredients-list');
+
+                    // 기존에 존재하는 input들을 모두 제거 (새로운 재료 목록으로 교체)
+                    ingredientsList.innerHTML = '';
+
+                    // JSON 데이터 배열을 사용하여 각각의 재료에 대한 input 생성
+                    data.ingredients.forEach(ingredient => {
+                        const inputGroup = document.createElement('div');
+                        inputGroup.classList.add('input-group');
+
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = ingredient; // 재료 이름을 value에 넣음
+                        input.name = 'ingredients[]'; // 배열 형식으로 보낼 수 있게 설정
+
+                        inputGroup.appendChild(input);
+                        ingredientsList.appendChild(inputGroup);
+                    });
+                })
+                .catch(error => console.error('Error:', error))
+                .finally(() => {
+                    // 로딩 모달 숨기기
+                    document.getElementById('loading-modal').style.display = 'none';
+                });
+        });
+
+        // 입력란 추가 버튼 클릭 시 사용자가 직접 재료명을 입력할 수 있는 input칸 생성
+        document.getElementById('add-input-button').addEventListener('click', function () {
+            const ingredientsList = document.getElementById('ingredients-list');
+
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('input-group');
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'ingredients[]';
+            input.placeholder = '재료명을 입력하세요';
+
+            inputGroup.appendChild(input);
+            ingredientsList.appendChild(inputGroup);
+        });
+
+        // 저장하기 버튼을 누르면 입력된 재료들(name이 ingredients[]인 input에 입력된 재료들) 서버로 보냄
+        document.getElementById('save-button').addEventListener('click', function () {
+            const inputs = document.querySelectorAll('input[name="ingredients[]"]');
+            const ingredients = [];
+            inputs.forEach(input => ingredients.push(input.value));
+
+            fetch('/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ingredients: ingredients})
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('저장되었습니다!');
+                        location.reload(); // 페이지 새로고침
+                    } else {
+                        alert('저장에 실패했습니다.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // 영수증 사진 파일 업로드 시 영수증 일러스트가 업로드된 영수증 사진으로 변경
+        document.getElementById('receipt-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // 업로드한 이미지 파일을 미리보기로 보여줌
+                    document.getElementById('uploaded-image').src = e.target.result;
+                };
+                reader.readAsDataURL(file); // 파일을 읽어 DataURL로 변환
+            }
+        });
+    </script>
+
+</div>
