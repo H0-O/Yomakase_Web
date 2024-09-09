@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -21,7 +22,7 @@ public class StockController {
     private final StockService stockService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveStock(@RequestBody List<String> ingredients) {
+    public ResponseEntity<String> saveStock(@RequestBody List<Map<String, String>> ingredients) {
         try {
             stockService.saveStock(ingredients);
             return new ResponseEntity<>("저장되었습니다!", HttpStatus.OK);

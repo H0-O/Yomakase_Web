@@ -55,7 +55,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 20px;
         }
 
         button:hover {
@@ -355,16 +355,30 @@
 
         // 저장하기 버튼을 누르면 입력된 재료들(name이 ingredients[]인 input에 입력된 재료들) 서버로 보냄
         document.getElementById('save-button').addEventListener('click', function () {
-            const inputs = document.querySelectorAll('input[name="ingredients[]"]');
-            const ingredients = [];
-            inputs.forEach(input => ingredients.push(input.value));
+            // ingredients와 expiration 값을 각각 추출
+            const ingredientInputs = document.querySelectorAll('input[name="ingredients[]"]');
+            const expirationInputs = document.querySelectorAll('input[name="expiration[]"]');
 
+            const data = [];
+
+            // 각각의 재료 이름과 소비기한을 data 배열에 추가
+            ingredientInputs.forEach((ingredientInput, index) => {
+                const expirationValue = expirationInputs[index].value;  // 해당 인덱스의 소비기한을 가져옴
+
+                data.push({
+                    ingredientName: ingredientInput.value,
+                    expirationDate: expirationValue
+                });
+            });
+            console.log("Sending data:", data); // 서버로 전송하기 전 데이터 확인용 로그
+
+            // 서버로 데이터 전송
             fetch('/stock/save', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ingredients: ingredients})
+                body: JSON.stringify(data) // JSON 형식으로 변환하여 보냄
             })
                 .then(response => {
                     if (response.ok) {
@@ -375,8 +389,8 @@
                     }
                 })
                 .catch(error => console.error('Error:', error));
-
         });
+
 
         // 영수증 사진 파일 업로드 시 영수증 일러스트가 업로드된 영수증 사진으로 변경
         document.getElementById('receipt-upload').addEventListener('change', function (event) {
