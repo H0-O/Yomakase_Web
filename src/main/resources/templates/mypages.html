@@ -1,146 +1,149 @@
 <div th:fragment="fragment5">
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
     <section class="resume-section" id="myPages">
         <div class="resume-section-content">
-            <!-- 네비게이션 바 -->
-            <div class="mypages-navbarContainer">
-                <div id="mypagesNavbar" class="mypages-navbar">
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'myrecipe')">나의 레시피</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService')">구독 서비스</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'profileUpdate')">회원정보수정</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'support')">이용문의</a>
+            <div sec:authentication="name">
+                <!-- 네비게이션 바 -->
+                <div class="mypages-navbarContainer">
+                    <div id="mypagesNavbar" class="mypages-navbar">
+                        <a href="#" class="mypages-tablink" onclick="openTab(event, 'myrecipe')">나의 레시피</a>
+                        <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService')">구독 서비스</a>
+                        <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
+                        <a href="#" class="mypages-tablink" onclick="openTab(event, 'profileUpdate')">회원정보수정</a>
+                        <a href="#" class="mypages-tablink" onclick="openTab(event, 'support')">이용문의</a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- 콘텐츠 영역 -->
-            <div id="myrecipe" class="mypages-content">
-                <!-- 여기 나의 레시피 관련 콘텐츠 -->
-            </div>
+                <!-- 콘텐츠 영역 -->
+                <div id="myrecipe" class="mypages-content">
+                    <!-- 여기 나의 레시피 관련 콘텐츠 -->
+                </div>
 
-            <div id="subsService" class="mypages-content">
-                <!-- 구독 서비스 섹션 -->
-                <div sec:authorize="hasRole('ROLE_USER')">
-                    <div id="mypages-subscribeSection">
-                        <h3>구독 서비스</h3>
-                        <div class="mypages-subscription-info">
-                            <p>구독 시 제공할 서비스</p>
-                            <ul>
-                                <li>광고 제거 기능</li>
-                                <li>식단 점수 달력 제공</li>
-                            </ul>
-                            <p><strong>※ 구독 시 유의사항</strong></p>
-                            <p>월 490원으로 제공되는 구독 서비스입니다. 결제는 매월 자동으로 이루어지며, 언제든지 구독을 취소할 수 있습니다.</p>
-                            <p>구독 서비스는 「전자상거래 등에서의 소비자 보호에 관한 법률」에 따라 보호받습니다.</p>
-                            <div>
-                                <input type="checkbox" id="mypages-agreeTerms" name="mypages-agreeTerms" />
-                                <label for="mypages-agreeTerms">결제에 동의함</label>
+                <div id="subsService" class="mypages-content">
+                    <!-- 구독 서비스 섹션 -->
+                    <div sec:authorize="hasRole('ROLE_USER')">
+                        <div id="mypages-subscribeSection">
+                            <h3>구독 서비스</h3>
+                            <div class="mypages-subscription-info">
+                                <p>구독 시 제공할 서비스</p>
+                                <ul>
+                                    <li>광고 제거 기능</li>
+                                    <li>식단 점수 달력 제공</li>
+                                </ul>
+                                <p><strong>※ 구독 시 유의사항</strong></p>
+                                <p>월 490원으로 제공되는 구독 서비스입니다. 결제는 매월 자동으로 이루어지며, 언제든지 구독을 취소할 수 있습니다.</p>
+                                <p>구독 서비스는 「전자상거래 등에서의 소비자 보호에 관한 법률」에 따라 보호받습니다.</p>
+                                <div>
+                                    <input type="checkbox" id="mypages-agreeTerms" name="mypages-agreeTerms" />
+                                    <label for="mypages-agreeTerms">결제에 동의함</label>
+                                </div>
+                            </div>
+                            <button id="mypages-subscribeButton" onclick="subscribe()" disabled>결제</button>
+                        </div>
+                    </div>
+                    <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+                        <div id="mypages-unsubscribeSection" style="display: none">
+                            <h3>구독 서비스</h3>
+
+                            <div class="mypages-subscription-info">
+                                <p>구독으로 제공되고 있는 서비스</p>
+                                <ul>
+                                    <li>광고 제거 기능</li>
+                                    <li>식단 점수 달력 제공</li>
+                                </ul>
+                            </div>
+                            <div class="mypages-cancel-info">
+                                <p>정말로 구독을 취소하시겠습니까?</p>
+                                <button id="mypages-cancelNoButton" onclick="cancelNo()">아니오</button>
+                                <button id="mypages-cancelYesButton" onclick="unsubscribe()">예</button>
                             </div>
                         </div>
-                        <button id="mypages-subscribeButton" onclick="subscribe()" disabled>결제</button>
                     </div>
                 </div>
-                <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
-                    <div id="mypages-unsubscribeSection" style="display: none">
-                        <h3>구독 서비스</h3>
 
-                        <div class="mypages-subscription-info">
-                            <p>구독으로 제공되고 있는 서비스</p>
-                            <ul>
-                                <li>광고 제거 기능</li>
-                                <li>식단 점수 달력 제공</li>
-                            </ul>
+
+                <div id="record" class="mypages-content">
+                    <h3>소비 기록</h3>
+                    <p>여기에 소비 기록 내용이 표시됩니다.</p>
+                </div>
+
+
+                <div id="profileUpdate" class="mypages-content">
+                    <h3>회원정보수정</h3>
+                    <form id="mypages-profileForm">
+                        <div class="mypages-form-group">
+                            <label for="mypages-username">이름:</label>
+                            <input type="text" id="mypages-username" name="username" value="홍길동" />
                         </div>
-                        <div class="mypages-cancel-info">
-                            <p>정말로 구독을 취소하시겠습니까?</p>
-                            <button id="mypages-cancelNoButton" onclick="cancelNo()">아니오</button>
-                            <button id="mypages-cancelYesButton" onclick="unsubscribe()">예</button>
+                        <div class="mypages-form-group">
+                            <label for="mypages-email">이메일:</label>
+                            <input type="email" id="mypages-email" name="email" value="example@example.com" />
                         </div>
+                        <div class="mypages-form-group">
+                            <label for="mypages-password">비밀번호:</label>
+                            <input type="password" id="mypages-password" name="password" />
+                        </div>
+                        <div class="mypages-form-group">
+                            <label for="mypages-confirmPassword">비밀번호 확인:</label>
+                            <input type="password" id="mypages-confirmPassword" name="confirmPassword" />
+                        </div>
+                        <button type="submit" class="mypages-subscribeButton">정보 수정</button>
+                        <button type="button" class="mypages-cancelButton" onclick="openModal('modal-deleteAccount')">회원 탈퇴</button>
+                    </form>
+                </div>
+
+                <div id="support" class="mypages-content">
+                    <h3>1:1 이용문의</h3>
+                    <form id="mypages-supportForm">
+                        <div class="mypages-form-group">
+                            <label for="mypages-supportSubject">제목:</label>
+                            <input type="text" id="mypages-supportSubject" name="supportSubject" />
+                        </div>
+                        <div class="mypages-form-group">
+                            <label for="mypages-supportMessage">문의 내용:</label>
+                            <textarea id="mypages-supportMessage" name="supportMessage"></textarea>
+                        </div>
+                        <button type="submit" class="mypages-subscribeButton">문의 보내기</button>
+                    </form>
+                </div>
+
+                <!-- 모달 창 -->
+                <div id="modal1" class="mypages-modal">
+                    <div class="mypages-modal-content">
+                        <span class="mypages-close" onclick="closeModal('modal1')">&times;</span>
+                        <h2>레시피 1</h2>
+                        <p>레시피 1의 상세 내용이 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+
+                <div id="modal2" class="mypages-modal">
+                    <div class="mypages-modal-content">
+                        <span class="mypages-close" onclick="closeModal('modal2')">&times;</span>
+                        <h2>레시피 2</h2>
+                        <p>레시피 2의 상세 내용이 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+
+                <div id="modal3" class="mypages-modal">
+                    <div class="mypages-modal-content">
+                        <span class="mypages-close" onclick="closeModal('modal3')">&times;</span>
+                        <h2>레시피 3</h2>
+                        <p>레시피 3의 상세 내용이 여기에 표시됩니다.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="record" class="mypages-content">
-                <h3>소비 기록</h3>
-                <p>여기에 소비 기록 내용이 표시됩니다.</p>
-            </div>
-
-            <div id="profileUpdate" class="mypages-content">
-                <h3>회원정보수정</h3>
-                <form id="mypages-profileForm">
-                    <div class="mypages-form-group">
-                        <label for="mypages-username">이름:</label>
-                        <input type="text" id="mypages-username" name="username" value="홍길동" />
-                    </div>
-                    <div class="mypages-form-group">
-                        <label for="mypages-email">이메일:</label>
-                        <input type="email" id="mypages-email" name="email" value="example@example.com" />
-                    </div>
-                    <div class="mypages-form-group">
-                        <label for="mypages-password">비밀번호:</label>
-                        <input type="password" id="mypages-password" name="password" />
-                    </div>
-                    <div class="mypages-form-group">
-                        <label for="mypages-confirmPassword">비밀번호 확인:</label>
-                        <input type="password" id="mypages-confirmPassword" name="confirmPassword" />
-                    </div>
-                    <button type="submit" class="mypages-subscribeButton">정보 수정</button>
-                    <button type="button" class="mypages-cancelButton" onclick="openModal('modal-deleteAccount')">회원 탈퇴</button>
-                </form>
-            </div>
-
-            <div id="support" class="mypages-content">
-                <h3>1:1 이용문의</h3>
-                <form id="mypages-supportForm">
-                    <div class="mypages-form-group">
-                        <label for="mypages-supportSubject">제목:</label>
-                        <input type="text" id="mypages-supportSubject" name="supportSubject" />
-                    </div>
-                    <div class="mypages-form-group">
-                        <label for="mypages-supportMessage">문의 내용:</label>
-                        <textarea id="mypages-supportMessage" name="supportMessage"></textarea>
-                    </div>
-                    <button type="submit" class="mypages-subscribeButton">문의 보내기</button>
-                </form>
-            </div>
-
-            <!-- 모달 창 -->
-            <div id="modal1" class="mypages-modal">
+            <!-- 회원 탈퇴 모달 -->
+            <div id="modal-deleteAccount" class="mypages-modal">
                 <div class="mypages-modal-content">
-                    <span class="mypages-close" onclick="closeModal('modal1')">&times;</span>
-                    <h2>레시피 1</h2>
-                    <p>레시피 1의 상세 내용이 여기에 표시됩니다.</p>
-                </div>
-            </div>
-
-            <div id="modal2" class="mypages-modal">
-                <div class="mypages-modal-content">
-                    <span class="mypages-close" onclick="closeModal('modal2')">&times;</span>
-                    <h2>레시피 2</h2>
-                    <p>레시피 2의 상세 내용이 여기에 표시됩니다.</p>
-                </div>
-            </div>
-
-            <div id="modal3" class="mypages-modal">
-                <div class="mypages-modal-content">
-                    <span class="mypages-close" onclick="closeModal('modal3')">&times;</span>
-                    <h2>레시피 3</h2>
-                    <p>레시피 3의 상세 내용이 여기에 표시됩니다.</p>
+                    <span class="mypages-close" onclick="closeModal('modal-deleteAccount')">&times;</span>
+                    <h2>회원 탈퇴</h2>
+                    <p>정말로 회원 탈퇴를 하시겠습니까? 탈퇴 시 모든 정보가 삭제됩니다.</p>
+                    <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
+                    <button class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
                 </div>
             </div>
         </div>
-
-        <!-- 회원 탈퇴 모달 -->
-        <div id="modal-deleteAccount" class="mypages-modal">
-            <div class="mypages-modal-content">
-                <span class="mypages-close" onclick="closeModal('modal-deleteAccount')">&times;</span>
-                <h2>회원 탈퇴</h2>
-                <p>정말로 회원 탈퇴를 하시겠습니까? 탈퇴 시 모든 정보가 삭제됩니다.</p>
-                <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
-                <button class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
-            </div>
-        </div>
-
         <!-- 인라인 CSS -->
         <style>
             .mypages-navbarContainer {
