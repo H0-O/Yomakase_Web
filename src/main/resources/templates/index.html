@@ -72,17 +72,14 @@
     <!-- 달력 -->
     <section class="resume-section" id="calendar">
         <div class="resume-section-content">
-<!--            <div th:insert="~{calendar :: fragment2}">-->
-<!--            </div>-->
+            <div th:insert="~{calendar :: calendar}">
+            </div>
         </div>
     </section>
     <hr class="m-0" />
     <!-- 게시판 -->
     <section class="resume-section" id="board">
         <div class="resume-section-content">
-            <h2 class="mb-5">게시판</h2>
-            <div th:insert="~{mypages :: mypages}">
-            </div>
 
 
         </div>
@@ -91,7 +88,8 @@
     <!-- 마이 페이지 -->
     <section class="resume-section" id="myPages">
         <div class="resume-section-content">
-
+            <div th:insert="~{mypages :: mypages}">
+            </div>
         </div>
     </section>
 <!--    </div>-->
