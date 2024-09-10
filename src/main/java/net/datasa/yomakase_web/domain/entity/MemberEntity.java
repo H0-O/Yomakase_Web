@@ -53,4 +53,13 @@ public class MemberEntity {
     // 회원과 신체 정보의 1:1 관계 설정
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
     private UserBodyInfoEntity bodyInfo;
+
+    @Override
+    public String toString() {
+        return "MemberEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                // allergy 필드를 직접적으로 참조하지 않도록 수정
+                '}';
+    }
 }

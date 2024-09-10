@@ -60,4 +60,7 @@ public class StockService {
         }
     }
 
+    public List<String> getAllIngredientNames() {
+        return stockRepository.findAllIngredientNames();
+    }
 }
