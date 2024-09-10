@@ -43,9 +43,13 @@ public class WebSecurityConfig {
                         .requestMatchers(PUBLIC_URLS).permitAll()   //모두 접근 허용
                         // 원래는 괄호안에 배열이 들어가야 함 // PUBLIC_URLS : 배열 이름
                         .anyRequest().authenticated()               //그 외의 모든 요청은 인증 필요
-                )
-                //HTTP Basic 인증을 사용하도록 설정
-                .httpBasic(Customizer.withDefaults())
+                );
+                // HTTP Basic 인증을 사용하지 않도록 설정
+                http
+                .httpBasic(AbstractHttpConfigurer::disable)
+//                //HTTP Basic 인증을 사용하도록 설정
+//                .httpBasic(Customizer.withDefaults())
+
                 //폼 로그인 설정
                 .formLogin(formLogin -> formLogin
                         .loginPage("/loginForm")       // 로그인폼 페이지 경로

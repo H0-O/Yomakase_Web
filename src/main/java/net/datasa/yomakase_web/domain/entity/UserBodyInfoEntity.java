@@ -17,14 +17,11 @@ public class UserBodyInfoEntity {
     @Id
     private int memberNum;
 
-    @MapsId  // member_num을 외래 키이자 기본 키로 설정
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_num", referencedColumnName = "member_num")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "member_num")
     private MemberEntity member;
 
-    @Column(name = "weight")
     private Integer weight;
-
-    @Column(name = "height")
     private Integer height;
 }

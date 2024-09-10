@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,6 +167,7 @@
       background-color: #81c405;
       color: white;
     }
+
     .gender-toggle button {
       padding: 10px 20px;
       margin: 5px;
@@ -186,21 +186,49 @@
     .gender-toggle button:hover {
       background-color: #ddd;
     }
-
   </style>
 </head>
+<script src="/jq/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#id-check-btn').click(function() {
+      var email = $('#email').val();
+
+      if (!email) {
+        alert("이메일을 입력하세요.");
+        return;
+      }
+
+      $.ajax({
+        type: 'POST',
+        url: '/idCheck',
+        data: { searchId: email },
+        success: function(result) {
+          $('#id-check-result').text(result);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error:', error);
+          $('#id-check-result').text("오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      });
+    });
+  });
+
+</script>
 <body>
 <div id="box">
   <div class="modal-content">
-    <!-- 첫 번째 화면 -->
-    <div class="first-container">
-      <div class="header">
-        <div class="custom-heading">회원가입</div>
-      </div>
-      <form id="signup-form" action="signupForm" method="post">
+    <!-- 통합된 폼 -->
+    <form id="signup-form" action="signupForm" method="post">
+      <div class="first-container">
+        <div class="header">
+          <div class="custom-heading"><h3>회원가입</h3></div>
+        </div>
         <div class="form-group">
           <label for="email">이메일</label>
           <input type="email" id="email" name="email" required>
+          <button type="button" id="id-check-btn" class="btn">ID 중복 확인</button>
+          <div id="id-check-result" style="margin-top: 10px; color: red;"></div> <!-- 결과를 표시하는 영역 -->
         </div>
         <div class="form-group">
           <label for="nickname">닉네임</label>
@@ -208,7 +236,7 @@
         </div>
         <div class="form-group">
           <label for="password">비밀번호</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" autocomplete="new-password" required>
         </div>
         <div class="form-group">
           <label for="confirm_password">비밀번호 확인</label>
@@ -218,31 +246,27 @@
           <label for="birthdate">생년월일</label>
           <input type="date" id="birthdate" name="birthdate" required>
         </div>
-        <div class="form-group">
-            <label for="gender">성별</label>
-            <div class="gender-toggle">
-              <button type="button" id="male-btn" class="selected">남성</button>
-              <button type="button" id="female-btn">여성</button>
-            </div>
-            <input type="hidden" id="gender" name="gender" value="M">
-          </div>
+        <label for="gender">성별</label>
+        <div class="gender-toggle">
+          <button type="button" id="male-btn" class="selected">남성</button>
+          <button type="button" id="female-btn">여성</button>
+        </div>
+        <input type="hidden" id="gender" name="gender" value="M">
         <button type="button" id="next-btn" class="btn">다음</button>
-      </form>
-    </div>
-
-    <!-- 두 번째 화면 -->
-    <div class="second-container">
-      <div class="header">
-        <div class="custom-heading">회원가입 - 추가 정보</div>
       </div>
-      <form id="additional-info-form" action="signupForm" method="post">
+
+      <!-- 두 번째 화면 -->
+      <div class="second-container">
+        <div class="header">
+          <div class="custom-heading"><h3>회원가입 - 추가 정보</h3></div>
+        </div>
         <div class="form-group">
           <label for="height">키</label>
-          <input type="text" id="height" name="height" required>
+          <input type="text" id="height" name="height">
         </div>
         <div class="form-group">
           <label for="weight">몸무게</label>
-          <input type="text" id="weight" name="weight" required>
+          <input type="text" id="weight" name="weight">
         </div>
         <div class="form-group">
           <label>알레르기 정보</label>
@@ -253,9 +277,9 @@
                 <span>&#9662;</span>
               </div>
               <div class="dropdown-content" id="meat-content">
-                <label>돼지고기</label>
-                <label>닭고기</label>
-                <label>쇠고기</label>
+                <label data-allergy="pork">돼지고기</label>
+                <label data-allergy="chicken">닭고기</label>
+                <label data-allergy="beef">쇠고기</label>
               </div>
             </div>
             <div class="dropdown">
@@ -264,9 +288,9 @@
                 <span>&#9662;</span>
               </div>
               <div class="dropdown-content" id="seafood-content">
-                <label>고등어</label>
-                <label>새우</label>
-                <label>오징어</label>
+                <label data-allergy="mackerel">고등어</label>
+                <label data-allergy="shrimp">새우</label>
+                <label data-allergy="squid">오징어</label>
               </div>
             </div>
             <div class="dropdown">
@@ -275,69 +299,91 @@
                 <span>&#9662;</span>
               </div>
               <div class="dropdown-content" id="nut-content">
-                <label>땅콩</label>
-                <label>호두</label>
-                <label>잣</label>
+                <label data-allergy="peanut">땅콩</label>
+                <label data-allergy="walnut">호두</label>
+                <label data-allergy="pineNut">잣</label>
               </div>
             </div>
           </div>
         </div>
+        <input type="hidden" id="eggs" name="eggs" value="false">
+        <input type="hidden" id="milk" name="milk" value="false">
+        <input type="hidden" id="buckwheat" name="buckwheat" value="false">
+        <input type="hidden" id="peanut" name="peanut" value="false">
+        <input type="hidden" id="soybean" name="soybean" value="false">
+        <input type="hidden" id="wheat" name="wheat" value="false">
+        <input type="hidden" id="mackerel" name="mackerel" value="false">
+        <input type="hidden" id="crab" name="crab" value="false">
+        <input type="hidden" id="shrimp" name="shrimp" value="false">
+        <input type="hidden" id="pork" name="pork" value="false">
+        <input type="hidden" id="peach" name="peach" value="false">
+        <input type="hidden" id="tomato" name="tomato" value="false">
+        <input type="hidden" id="walnuts" name="walnuts" value="false">
+        <input type="hidden" id="chicken" name="chicken" value="false">
+        <input type="hidden" id="beef" name="beef" value="false">
+        <input type="hidden" id="squid" name="squid" value="false">
+        <input type="hidden" id="shellfish" name="shellfish" value="false">
+        <input type="hidden" id="pineNut" name="pineNut" value="false">
         <button type="button" id="back-btn" class="btn">이전</button>
         <button type="submit" class="btn">제출</button>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </div>
 
 <script>
   // 다음 버튼 클릭 시 첫 화면을 숨기고 두 번째 화면을 보여줌
   document.getElementById('next-btn').addEventListener('click', function() {
-    document.querySelector('.first-container').classList.add('hidden');
-    document.querySelector('.second-container').classList.add('active');
-  });
-
-  // 드롭다운 토글
-  document.getElementById('meat-dropdown').addEventListener('click', function() {
-    document.getElementById('meat-content').classList.toggle('show');
-  });
-
-  document.getElementById('seafood-dropdown').addEventListener('click', function() {
-    document.getElementById('seafood-content').classList.toggle('show');
-  });
-
-  document.getElementById('nut-dropdown').addEventListener('click', function() {
-    document.getElementById('nut-content').classList.toggle('show');
-  });
-
-  // 다음 버튼 클릭 시 첫 화면을 숨기고 두 번째 화면을 보여줌
-  document.getElementById('next-btn').addEventListener('click', function() {
+    console.log("Next button clicked: Moving to the second form");
     document.querySelector('.first-container').classList.add('hidden');
     document.querySelector('.second-container').classList.add('active');
   });
 
   // 이전 버튼 클릭 시 두 번째 화면을 숨기고 첫 번째 화면을 보여줌
   document.getElementById('back-btn').addEventListener('click', function() {
+    console.log("Back button clicked: Returning to the first form");
     document.querySelector('.second-container').classList.remove('active');
     document.querySelector('.first-container').classList.remove('hidden');
   });
+
+  // 성별 버튼 클릭 이벤트
   document.getElementById('male-btn').addEventListener('click', function() {
-    // 남성 버튼을 선택하면 'selected' 클래스를 남성 버튼에 추가하고 여성 버튼에서는 제거
+    console.log("Male selected");
     document.getElementById('male-btn').classList.add('selected');
     document.getElementById('female-btn').classList.remove('selected');
-
-    // hidden 필드에 성별 값을 'M'으로 설정
     document.getElementById('gender').value = 'M';
   });
 
   document.getElementById('female-btn').addEventListener('click', function() {
-    // 여성 버튼을 선택하면 'selected' 클래스를 여성 버튼에 추가하고 남성 버튼에서는 제거
+    console.log("Female selected");
     document.getElementById('female-btn').classList.add('selected');
     document.getElementById('male-btn').classList.remove('selected');
-
-    // hidden 필드에 성별 값을 'F'로 설정
     document.getElementById('gender').value = 'F';
   });
 
+  // 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
+  document.querySelectorAll('.dropdown-content label').forEach(label => {
+    label.addEventListener('click', function() {
+      const allergy = this.getAttribute('data-allergy');
+      const parentDropdown = this.closest('.dropdown');
+      const input = parentDropdown.querySelector('input[type="hidden"]');
+
+      let allergies = input.value ? input.value.split(',') : [];
+
+      if (allergies.includes(allergy)) {
+        allergies = allergies.filter(a => a !== allergy);
+        this.classList.remove('selected');
+        console.log(allergy + " deselected");
+      } else {
+        allergies.push(allergy);
+        this.classList.add('selected');
+        console.log(allergy + " selected");
+      }
+
+      input.value = allergies.join(',');
+      console.log("Current allergies: " + input.value);
+    });
+  });
 </script>
 </body>
 </html>

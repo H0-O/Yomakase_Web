@@ -1,5 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+.input-group {
+margin-bottom: 15px;
+text-align: left;
+}
+
+.input-group label {
+display: block;
+margin-bottom: 5px;
+font-weight: bold;
+color: #333;
+}
+
+.input-group input {
+width: 50%;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 5px;
+font-size: 1rem;
+box-sizing: border-box;
+}
+
+button {
+padding: 10px 20px;
+margin: 10px 0;
+background-color: #81c405;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+width: 50%;
+}
+
+button:hover {
+background-color: #555;
+}
+
+h2 {
+font-size: 1.5rem;
+margin-bottom: 20px;
+color: #333;
+}
+</style>
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
@@ -7,14 +50,14 @@
 </head>
 <body>
 <form action="loginInfo" method="post">
-    <h2 style="text-align: center;">[ 로그인 ]</h2>
+    <h2>[ 로그인 ]</h2>
     <div class="input-group">
         <label for="id">ID</label>
-        <input type="text" id="id" name="id" required>
+        <input type="text" id="id" name="id" autocomplete="username" required>
     </div>
     <div class="input-group">
         <label for="password">PW</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
     </div>
     <button type="submit">로그인</button>
     <div th:if="${param.error}"><script>alert("ID 또는 비밀번호가 틀립니다.")</script></div>

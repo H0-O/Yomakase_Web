@@ -29,10 +29,10 @@ public class MemberDTO {
     private LocalDate birthdate;
 
 //    @JsonProperty("height")
-    private int height;  // 키
+    private Integer height;  // 키
 
 //    @JsonProperty("weight")
-    private int weight;  // 몸무게
+    private Integer weight;  // 몸무게
 
 //    @JsonProperty("enabled")
     private boolean enabled;
