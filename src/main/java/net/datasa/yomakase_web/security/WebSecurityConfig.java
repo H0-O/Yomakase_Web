@@ -56,7 +56,7 @@ public class WebSecurityConfig {
                         // 로그인폼을 만들 때, name을 아래와 맞춰야 함.
                         .usernameParameter("id")       // 폼의 ID 파라미터 이름
                         .passwordParameter("password") // 폼의 비밀번호 파라미터 이름
-                        .loginProcessingUrl("/home")  // 로그인폼 제출하여 처리할 경로
+                        .loginProcessingUrl("/loginInfo")  // 로그인폼 제출하여 처리할 경로
                         .defaultSuccessUrl("/", true)        // 로그인 성공 시 이동할 경로
                         .permitAll()                   // 로그인 페이지는 모두 접근 허용
                 )
