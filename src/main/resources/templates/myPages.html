@@ -17,9 +17,14 @@
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'profileUpdate')">회원정보수정</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'support')">이용문의</a>
+                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'withdrawal')">회원탈퇴</a>
                 </div>
             </div>
 
+            <!-- 나의 레시피 -->
+            <div id="myrecipe" class="mypages-content">
+                <div th:replace="myPages/myrecipe :: myrecipeFragment"></div>
+            </div>
             <!-- 구독 서비스 섹션 -->
             <div id="subsService" class="mypages-content">
                 <!-- 비구독자일 경우 구독 정보를 보여주는 섹션 -->
@@ -63,14 +68,21 @@
                     </div>
                 </div>
             </div>
+            <!-- 소비 기록 -->
+            <div id="record" class="mypages-content">
+                <div th:replace="myPages/record :: recordFragment"></div>
+            </div>
+            <!-- 회원정보수정 -->
+            <div id="profileUpdate" class="mypages-content">
+                <div th:replace="myPages/profileUpdate :: profileUpdateFragment"></div>
+            </div>
+            <!-- 이용문의 -->
+            <div id="support" class="mypages-content">
+                <div th:replace="myPages/support :: supportFragment"></div>
+            </div>
 
-            <!-- 나머지 탭은 fragment로 분리해서 다른 HTML 파일로 관리 -->
-<!--            <div th:replace="fragments/myrecipe :: myrecipeFragment"></div>-->
-<!--            <div th:replace="fragments/record :: recordFragment"></div>-->
-<!--            <div th:replace="fragments/profileUpdate :: profileUpdateFragment"></div>-->
-<!--            <div th:replace="fragments/support :: supportFragment"></div>-->
-
-            <!-- 회원 탈퇴 모달 창은 이 HTML에서 바로 처리 -->
+            <!-- 회원 탈퇴 -->
+            <div id="withdrawal" class="mypages-content">
             <div id="modal-deleteAccount" class="mypages-modal">
                 <div class="mypages-modal-content">
                     <span class="mypages-close" onclick="closeModal('modal-deleteAccount')">&times;</span>
@@ -79,6 +91,7 @@
                     <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
                     <button class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
                 </div>
+            </div>
             </div>
         </section>
     </div>
