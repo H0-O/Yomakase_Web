@@ -1,40 +1,63 @@
 package net.datasa.yomakase_web.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.dto.StockDTO;
+import net.datasa.yomakase_web.domain.entity.MemberEntity;
 import net.datasa.yomakase_web.domain.entity.StockEntity;
+import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.StockRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StockService {
 
     private final StockRepository stockRepository;
+    private final MemberRepository memberRepository;
+
 
     @Transactional
-    public void saveStock(List<String> ingredients) {
-        int memberNum = getCurrentMemberNum(); // 실제 사용자 번호를 가져오는 로직 필요
+    public void saveStock(List<Map<String, String>> ingredients) {
+        // 현재 로그인된 사용자의 ID를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 사용자 ID (이메일)
+        // 이메일로 MemberEntity를 조회합니다.
+        MemberEntity member = memberRepository.findById(username)
+                .orElseThrow(() -> new RuntimeException("User not found")); // 사용자 없을 때 예외 처리
 
-        for (String ingredient : ingredients) {
+        Integer memberNum = member.getMemberNum(); // MemberEntity에서 member_num 값을 가져옵니다.
+
+        for (Map<String, String> ingredient : ingredients) {
+            String ingredientName = ingredient.get("ingredientName");
+            String expirationDate = ingredient.get("expirationDate");
+            log.info("Saving ingredient: {}, Expiration Date: {}", ingredientName, expirationDate); // 각 재료 로그 출력
+
+            // 현재 날짜를 가져옵니다.
+            LocalDate currentDate = LocalDate.now();
+
+            // expirationDate를 일(day) 단위로 추가합니다.
+            LocalDate useByDate = currentDate.plus(Integer.parseInt(expirationDate), ChronoUnit.DAYS);
+
+            // StockEntity 객체를 생성합니다.
             StockEntity stockEntity = StockEntity.builder()
-                    .ingredientName(ingredient)
+                    .ingredientName(ingredientName)
+                    .isHaving(true)
                     .memberNum(memberNum)
-                    .isHaving(true) // 기본값 설정
-                    .useByDate(LocalDate.now().plusDays(7)) // 임시 유통기한 설정 (7일 후)
+                    .useByDate(useByDate) // 현재 날짜에 expirationDate를 더한 날짜를 사용
                     .build();
 
             stockRepository.save(stockEntity);
         }
     }
 
-    // 현재 사용자(memberNum) 로직을 구현하거나 현재 사용자 정보를 받아오는 방법을 사용
-    private int getCurrentMemberNum() {
-        // 로그인된 회원 정보를 가져오는 로직을 추가해야 함.
-        return 1; // 예시로 1번 회원으로 설정
-    }
 }
