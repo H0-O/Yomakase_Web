@@ -29,11 +29,7 @@ public class WebSecurityConfig {
             , "/js/**"
             , "/idCheck"
             , "/home"
-            , "/calendar"
             , "/index"
-            , "/mypages"
-            , "/ingredientInput"
-            , "/refrigerator"
     };
 
     // @Bean : 메서드 레벨에서 사용되며, 해당 메서드의 리턴 값을 스프링 IoC 컨테이너가 관리하는 빈으로 등록하는 역할

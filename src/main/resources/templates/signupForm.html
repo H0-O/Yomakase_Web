@@ -1,21 +1,10 @@
+
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입</title>
+  <title>Signup Form</title>
   <style>
-    @keyframes smoothAppear {
-      from {
-        opacity: 0;
-        transform: translate3d(0, -100%, 0);
-      }
-      to {
-        opacity: 1;
-        transform: translateZ(0);
-      }
-    }
-
     /* 모달 창 스타일 */
     .modal-content {
       background-color: white;
@@ -30,27 +19,56 @@
       position: relative;
     }
 
-    /* 모달 배경 */
-    body {
-      display: none; /* 처음엔 보이지 않도록 설정 */
-      position: fixed;
-      z-index: 1000; /* z-index를 충분히 높게 설정 */
-      left: 0;
+    /* first-container와 second-container에 공통 적용 */
+    .first-container, .second-container {
+      position: absolute;
+      padding: 20px;
       top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+      max-width: 500px;
+      max-height: 600px;
+      transition: opacity 0.5s, transform 0.5s;
+    }
+
+    /* first-container의 기본 스타일 */
+    .first-container {
+      z-index: 2;
+      opacity: 1;
+      transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* 숨겨진 상태일 때 */
+    .first-container.hidden {
+      opacity: 0;
+      transform: translateX(-100%);
+      z-index: 1;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* second-container의 기본 스타일 */
+    .second-container {
+      opacity: 0;
+      transform: translateX(100%);
+      z-index: 1;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* 활성화된 상태일 때 */
+    .second-container.active {
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 2;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     /* 버튼 스타일 */
-    .button-container {
-      display: flex;
-      flex-direction: row; /* 가로로 배치 */
-      justify-content: center; /* 가운데 정렬 */
-      gap: 10px; /* 버튼 간의 간격 */
-    }
-
     .btn {
       padding: 10px 20px;
       margin: 10px;
@@ -65,7 +83,6 @@
       background-color: #555;
     }
 
-    /* 폼 스타일 */
     .form-group {
       margin-bottom: 15px;
       text-align: left;
@@ -87,9 +104,8 @@
       box-sizing: border-box;
     }
 
-    /* 알레르기 영역을 감싸는 부모 요소 */
     .allergy-group {
-      max-height: 250px; /* 필요에 따라 높이를 조정하세요 */
+      max-height: 250px;
       overflow-y: auto;
       margin-bottom: 15px;
       padding: 10px;
@@ -97,7 +113,6 @@
       border-radius: 5px;
     }
 
-    /* 드롭다운 스타일 수정 */
     .dropdown {
       position: relative;
       text-align: left;
@@ -124,17 +139,14 @@
 
     .dropdown-content {
       display: none;
-      position: relative; /* 수정된 부분: 드롭다운 메뉴가 부모 요소 안에서 위치하도록 */
+      position: relative;
       width: 100%;
       background-color: white;
       border: 1px solid #ddd;
       border-radius: 5px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 1;
-    //max-height: 200px;
-    //overflow-y: auto;
-      margin-top: 5px; /* 드롭다운 메뉴와 레이블 사이에 간격 추가 */
-      overflow: hidden; /* 내부 스크롤 제거 */
+      margin-top: 5px;
+      overflow: hidden;
     }
 
     .dropdown-content.show {
@@ -156,74 +168,14 @@
       background-color: #81c405;
       color: white;
     }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .custom-heading {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 0.67em 0;
-      color: inherit;
-      flex: 1;
-      text-align: center;
-    }
-
-    .header .back-btn {
-      font-size: 1.8rem;
-      color: #81c405;
-      border: none;
-      cursor: pointer;
-      background: none;
-      visibility: visible; /* 기본값 */
-    }
-
-    .close {
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    /* 닫기 버튼 */
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    /* 성별 토글 버튼 스타일 */
-    .gender-group {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .gender-toggle {
-      display: flex;
-      border: 1px solid #ddd;
-      border-radius: 15px;
-      overflow: hidden;
-      cursor: pointer;
-      background-color: #f1f1f1;
-      position: relative;
-    }
-
     .gender-toggle button {
-      flex: 1;
-      border: none;
-      padding: 10px;
-      background-color: #fff;
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #f1f1f1;
       color: #333;
-      font-weight: bold;
+      border: 1px solid #ddd;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
     }
 
     .gender-toggle button.selected {
@@ -231,196 +183,161 @@
       color: white;
     }
 
-    .gender-toggle button:nth-of-type(1) {
-      border-right: 1px solid #ddd;
-    }
-
     .gender-toggle button:hover {
       background-color: #ddd;
     }
+
   </style>
 </head>
 <body>
-
-<div class="modal-content">
-  <form action="signupForm" method="post">
-
-    <!-- 이메일 (ID) -->
-    <div class="form-group">
-      <label for="email">이메일(ID)</label>
-      <input type="email" id="email" name="email" readonly required>
-      <input type="button" value="이메일 중복확인" id="checkId"> <!-- ID 중복 확인 버튼 -->
-    </div>
-
-    <!-- 닉네임 -->
-    <div class="form-group">
-      <label for="nickname">닉네임</label>
-      <input type="text" id="nickname" name="nickname" required autocomplete="username">
-    </div>
-
-    <!-- 비밀번호 -->
-    <div class="form-group">
-      <label for="password">비밀번호</label>
-      <input type="password" id="password" name="password" required autocomplete="current-password">
-    </div>
-
-    <!-- 비밀번호 확인 -->
-    <div class="form-group">
-      <label for="confirm_password">비밀번호 확인</label>
-      <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
-    </div>
-
-    <!-- 생년월일 -->
-    <div class="form-group">
-      <label for="birthdate">생년월일</label>
-      <input type="date" id="birthdate" name="birthdate" required>
-    </div>
-
-    <!-- 성별 -->
-    <div class="form-group">
-      <label for="gender">성별</label>
-      <select id="gender" name="gender" required>
-        <option value="M">남성</option>
-        <option value="F">여성</option>
-      </select>
-    </div>
-
-    <!-- 키 (선택) -->
-    <div class="form-group">
-      <label for="height">키 (선택)</label>
-      <input type="text" id="height" name="height">
-    </div>
-
-    <!-- 몸무게 (선택) -->
-    <div class="form-group">
-      <label for="weight">몸무게 (선택)</label>
-      <input type="text" id="weight" name="weight">
-    </div>
-
-    <!-- 알레르기 정보 (선택, 체크박스 형태) -->
-    <div class="allergy-group">
-      <div class="dropdown">
-        <div class="dropdown-label" id="meat-dropdown">
-          고기류
-          <span id="meat-chevron">&#9662;</span>
-        </div>
-        <div class="dropdown-content" id="meat-content">
-          <label><input type="hidden" name="allergy" value="알"> 알 (가금류만 해당한다)</label>
-          <label><input type="hidden" name="allergy" value="돼지고기"> 돼지고기</label>
-          <label><input type="hidden" name="allergy" value="닭고기"> 닭고기</label>
-          <label><input type="hidden" name="allergy" value="쇠고기"> 쇠고기</label>
-        </div>
+<div id="box">
+  <div class="modal-content">
+    <!-- 첫 번째 화면 -->
+    <div class="first-container">
+      <div class="header">
+        <div class="custom-heading">회원가입</div>
       </div>
-      <div class="dropdown">
-        <div class="dropdown-label" id="seafood-dropdown">
-          해산물
-          <span id="seafood-chevron">&#9662;</span>
+      <form id="signup-form" action="signupForm" method="post">
+        <div class="form-group">
+          <label for="email">이메일</label>
+          <input type="email" id="email" name="email" required>
         </div>
-        <div class="dropdown-content" id="seafood-content">
-          <label><input type="hidden" name="allergy" value="고등어"> 고등어</label>
-          <label><input type="hidden" name="allergy" value="게"> 게</label>
-          <label><input type="hidden" name="allergy" value="새우"> 새우</label>
-          <label><input type="hidden" name="allergy" value="오징어"> 오징어</label>
-          <label><input type="hidden" name="allergy" value="조개류"> 조개류 (굴, 전복, 홍합을 포함한다)</label>
+        <div class="form-group">
+          <label for="nickname">닉네임</label>
+          <input type="text" id="nickname" name="nickname" required>
         </div>
-      </div>
-      <div class="dropdown">
-        <div class="dropdown-label" id="fruit-dropdown">
-          과일류
-          <span id="fruit-chevron">&#9662;</span>
+        <div class="form-group">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" name="password" required>
         </div>
-        <div class="dropdown-content" id="fruit-content">
-          <label><input type="hidden" name="allergy" value="복숭아"> 복숭아</label>
-          <label><input type="hidden" name="allergy" value="토마토"> 토마토</label>
+        <div class="form-group">
+          <label for="confirm_password">비밀번호 확인</label>
+          <input type="password" id="confirm_password" name="confirm_password" required>
         </div>
-      </div>
-      <div class="dropdown">
-        <div class="dropdown-label" id="nut-dropdown">
-          견과류
-          <span id="nut-chevron">&#9662;</span>
+        <div class="form-group">
+          <label for="birthdate">생년월일</label>
+          <input type="date" id="birthdate" name="birthdate" required>
         </div>
-        <div class="dropdown-content" id="nut-content">
-          <label><input type="hidden" name="allergy" value="땅콩"> 땅콩</label>
-          <label><input type="hidden" name="allergy" value="대두"> 대두</label>
-          <label><input type="hidden" name="allergy" value="호두"> 호두</label>
-          <label><input type="hidden" name="allergy" value="잣"> 잣</label>
-        </div>
-      </div>
-      <div class="dropdown">
-        <div class="dropdown-label" id="grain-dropdown">
-          곡물
-          <span id="grain-chevron">&#9662;</span>
-        </div>
-        <div class="dropdown-content" id="grain-content">
-          <label><input type="hidden" name="allergy" value="메밀"> 메밀</label>
-          <label><input type="hidden" name="allergy" value="밀"> 밀</label>
-        </div>
-      </div>
-      <div class="dropdown">
-        <div class="dropdown-label" id="dairy-dropdown">
-          유제품
-          <span id="dairy-chevron">&#9662;</span>
-        </div>
-        <div class="dropdown-content" id="dairy-content">
-          <label><input type="hidden" name="allergy" value="우유"> 우유</label>
-        </div>
-      </div>
+        <div class="form-group">
+            <label for="gender">성별</label>
+            <div class="gender-toggle">
+              <button type="button" id="male-btn" class="selected">남성</button>
+              <button type="button" id="female-btn">여성</button>
+            </div>
+            <input type="hidden" id="gender" name="gender" value="M">
+          </div>
+        <button type="button" id="next-btn" class="btn">다음</button>
+      </form>
     </div>
 
-    <!-- 제출 버튼 -->
-    <div>
-      <button type="submit" class="btn">회원가입</button>
+    <!-- 두 번째 화면 -->
+    <div class="second-container">
+      <div class="header">
+        <div class="custom-heading">회원가입 - 추가 정보</div>
+      </div>
+      <form id="additional-info-form" action="signupForm" method="post">
+        <div class="form-group">
+          <label for="height">키</label>
+          <input type="text" id="height" name="height" required>
+        </div>
+        <div class="form-group">
+          <label for="weight">몸무게</label>
+          <input type="text" id="weight" name="weight" required>
+        </div>
+        <div class="form-group">
+          <label>알레르기 정보</label>
+          <div class="allergy-group">
+            <div class="dropdown">
+              <div class="dropdown-label" id="meat-dropdown">
+                고기류
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="meat-content">
+                <label>돼지고기</label>
+                <label>닭고기</label>
+                <label>쇠고기</label>
+              </div>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-label" id="seafood-dropdown">
+                해산물
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="seafood-content">
+                <label>고등어</label>
+                <label>새우</label>
+                <label>오징어</label>
+              </div>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-label" id="nut-dropdown">
+                견과류
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="nut-content">
+                <label>땅콩</label>
+                <label>호두</label>
+                <label>잣</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="back-btn" class="btn">이전</button>
+        <button type="submit" class="btn">제출</button>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function () {
-    // 가입 누를때
-    $('.modal-content').submit(save);
-
-    // ID중복확인 누를때
-    $('#checkId').click(idCheck); // ① 타입이 button일 경우
+  // 다음 버튼 클릭 시 첫 화면을 숨기고 두 번째 화면을 보여줌
+  document.getElementById('next-btn').addEventListener('click', function() {
+    document.querySelector('.first-container').classList.add('hidden');
+    document.querySelector('.second-container').classList.add('active');
   });
 
-  // 가입 누를때
-  function save() {
-    let id = $('#id').val();
-    let pw = $('#pw').val();
-    let repw = $('#confirm_password').val();
-    let name = $('#nickname').val();
-    let birthdate = $('#birthdate').val();
+  // 드롭다운 토글
+  document.getElementById('meat-dropdown').addEventListener('click', function() {
+    document.getElementById('meat-content').classList.toggle('show');
+  });
 
-    if(id.length > 8 || id.length < 3) {
-      alert("아이디는 이메일 형식으로 만들어주세요")
-      return false;
-    }
-    if(pw.length <= 2) {
-      alert("비밀번호는 3자 이상으로 만들어주세요")
-      return false;
-    }
-    if(pw != repw) {
-      alert("일치하지 않는 비밀번호입니다")
-      return false;
-    }
-    if(name === '') {
-      alert("닉네임을 입력하세요")
-      return false;
-    }
-    if (birthdate === '') {
-      alert('생년월일을 선택해주세요')
-      return false;
-    }
-    alert("회원가입이 완료되었습니다.");
-    return true;
-  }
+  document.getElementById('seafood-dropdown').addEventListener('click', function() {
+    document.getElementById('seafood-content').classList.toggle('show');
+  });
 
-  // ID중복확인 클릭시
-  function idCheck() {
-    window.open('/idCheck', 'idWin', 'left=500,top=200,width=400,height=300,location=no,titlebar=no');
-  }
+  document.getElementById('nut-dropdown').addEventListener('click', function() {
+    document.getElementById('nut-content').classList.toggle('show');
+  });
+
+  // 다음 버튼 클릭 시 첫 화면을 숨기고 두 번째 화면을 보여줌
+  document.getElementById('next-btn').addEventListener('click', function() {
+    document.querySelector('.first-container').classList.add('hidden');
+    document.querySelector('.second-container').classList.add('active');
+  });
+
+  // 이전 버튼 클릭 시 두 번째 화면을 숨기고 첫 번째 화면을 보여줌
+  document.getElementById('back-btn').addEventListener('click', function() {
+    document.querySelector('.second-container').classList.remove('active');
+    document.querySelector('.first-container').classList.remove('hidden');
+  });
+  document.getElementById('male-btn').addEventListener('click', function() {
+    // 남성 버튼을 선택하면 'selected' 클래스를 남성 버튼에 추가하고 여성 버튼에서는 제거
+    document.getElementById('male-btn').classList.add('selected');
+    document.getElementById('female-btn').classList.remove('selected');
+
+    // hidden 필드에 성별 값을 'M'으로 설정
+    document.getElementById('gender').value = 'M';
+  });
+
+  document.getElementById('female-btn').addEventListener('click', function() {
+    // 여성 버튼을 선택하면 'selected' 클래스를 여성 버튼에 추가하고 남성 버튼에서는 제거
+    document.getElementById('female-btn').classList.add('selected');
+    document.getElementById('male-btn').classList.remove('selected');
+
+    // hidden 필드에 성별 값을 'F'로 설정
+    document.getElementById('gender').value = 'F';
+  });
+
 </script>
-
 </body>
 </html>

@@ -24,7 +24,7 @@ public class MemberController {
 
     // 회원가입 폼을 보여주는 메소드
     @GetMapping("signupForm")
-    public String joinForm() {
+    public String signupForm() {
         return "signupForm";
     }
 
