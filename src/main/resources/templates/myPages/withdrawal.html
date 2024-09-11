@@ -1,0 +1,10 @@
+<div th:fragment="withdrawalFragment">
+        <div class="mypages-modal-content">
+            <span class="mypages-close" onclick="closeModal('modal-deleteAccount')">&times;</span>
+            <h2>회원 탈퇴</h2>
+            <p>정말로 회원 탈퇴를 하시겠습니까? 탈퇴 시 모든 정보가 삭제됩니다.</p>
+            <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
+            <button class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
+        </div>
+    </div>
+</div>
