@@ -162,73 +162,12 @@
       </div>
     </div>
   </div>
+
+  <script src="/jq/jquery-3.7.1.min.js"></script>
+  <script src="/js/calendar.js"></script>
+  <script src="/js/diet-cal-modal_js.js"></script>
+
 </div>  <!--fragment 용-->
 
-</style>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const dietModal = document.getElementById('diet-modal');
-    const nutrientModal = document.getElementById('nutrient-modal');
-    const calendarTable = document.getElementById('calendar');
 
-    // Show diet modal when a date is clicked
-    calendarTable.addEventListener('click', function(e) {
-      if (e.target.tagName === 'TD') {
-        dietModal.style.display = 'flex';
-      }
-    });
-
-    // Close diet modal
-    document.querySelector('#diet-modal .close-btn').addEventListener('click', function() {
-      dietModal.style.display = 'none';
-    });
-
-    // Show nutrient modal
-    document.querySelector('button.nutrient').addEventListener('click', function() {
-      nutrientModal.style.display = 'flex';
-    });
-
-    // Close nutrient modal
-    document.querySelector('#nutrient-modal .close-btn').addEventListener('click', function() {
-      nutrientModal.style.display = 'none';
-    });
-
-    // Date navigation (previous and next buttons)
-    document.querySelector('.pre-button').addEventListener('click', function() {
-      // Handle previous month logic
-    });
-
-    document.querySelector('.next-button').addEventListener('click', function() {
-      // Handle next month logic
-    });
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    const dietModal = document.getElementById('diet-modal');
-    const nutrientModal = document.getElementById('nutrient-modal');
-    const calendarTable = document.getElementById('calendar');
-
-    // Show diet modal when a date is clicked
-    calendarTable.addEventListener('click', function(e) {
-      if (e.target.tagName === 'TD' && e.target.innerHTML.trim() !== '') {
-        dietModal.style.display = 'flex';
-      }
-    });
-
-    // Close diet modal
-    document.querySelector('#diet-modal .close-btn').addEventListener('click', function() {
-      dietModal.style.display = 'none';
-    });
-
-    // Show nutrient modal
-    document.querySelector('button.nutrient').addEventListener('click', function() {
-      nutrientModal.style.display = 'flex';
-    });
-
-    // Close nutrient modal
-    document.querySelector('#nutrient-modal .close-btn').addEventListener('click', function() {
-      nutrientModal.style.display = 'none';
-    });
-  });
-
-</script>
 
