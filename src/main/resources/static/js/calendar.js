@@ -1,4 +1,4 @@
-(function($) {  //제이쿼리와 충돌을 피하기 위해 제이쿼리를 $로 전달받는 즉시 실행함수
+jQuery(function($) {  //제이쿼리와 충돌을 피하기 위해 제이쿼리를 $로 전달받는 즉시 실행함수
 
     "use strict";   //엄격모드 활성화
 
@@ -8,7 +8,8 @@
             month = today.getMonth(),
             monthTag =["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
             day = today.getDate(),
-            days = document.getElementsByTagName('td'),
+            calendarTable = document.getElementById('calendar'),
+            days = calendarTable.getElementsByTagName('td'),
             selectedDay,    //선택된 요일
             setDate,        //선택된 날짜
             daysLen = days.length; //<td>요소의 총 개수. 한달의 일수
@@ -17,10 +18,9 @@
         let headDate = document.getElementById('head-date');
 
         //모달 변수 설정
-        let modal = document.getElementById("modal");
-
-        let modalNutrient = document.getElementById("modal-nutrient");
-
+       /* let modal = document.getElementById("diet-modal");
+        let nutrientModal = document.getElementById("nutrient-modal");
+*/
         // options should like '2014-01-01'
         //Calendar 객체 생성자 함수 정의
         function Calendar(selector, options) {
@@ -146,27 +146,10 @@
 
             var headDay = document.getElementsByClassName('head-day');
 
-            // 더블 클릭 이벤트 리스너 등록
-            //Calendar.prototype.dateDoubleClick(o);
-            // function handleDoubleClick() {
-            //     alert('모달창 부분');
-            //     o.removeEventListener('dblclick', handleDoubleClick); // 이벤트 리스너 제거
-            // }
-
-            // 클릭된 요소에 대해 더블 클릭 이벤트 리스너 등록
-            //o.addEventListener('dblclick', handleDoubleClick, { once: true });
 
         };  //clickDay 함수 end
 
-        // // 위 clickDay함수에넣으니까 클릭 이벤트가 중북되면서 alert가 두번씩 뜸
-        // Calendar.prototype.dateDoubleClick = function(o){
-        //
-        //     //날짜 클릭 이벤트 리스너 (이미 선택된 날짜를 한번더 눌려서 더블클릭처럼 씀)
-        //     o.addEventListener('click', function(){
-        //         alert('새로운 이벤트 확인');
-        //
-        //     })
-        // }
+
 
         Calendar.prototype.preMonth = function() {
             if(month < 1){
@@ -245,5 +228,5 @@
 
     }, false);  //addEventListener의 함수 end
 
-})(jQuery);
+});
 

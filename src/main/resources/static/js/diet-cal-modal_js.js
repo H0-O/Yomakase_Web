@@ -1,33 +1,29 @@
 //식단 달력 모달 자바스크립트 파일
-const modal = document.getElementById("modal");
+const dietModal = document.getElementById("diet-modal");
 
 function modalOn() {
-    modal.style.display = "flex"
+    dietModal.style.display = "flex"
 }
 
 function isModalOn() {
-    return modal.style.display === "flex"
+    return dietModal.style.display === "flex"
 }
 
 function modalOff() {
-    modal.style.display = "none"
+    dietModal.style.display = "none"
 }
 
-// 특정 버튼을 누르면 모달창이 켜지게 하기
-//let btnModal = document.getElementById('btn-modal');
-
-
 // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-const closeBtn = modal.querySelector(".close-area")
-closeBtn.addEventListener("click", e => {
+const calCloseBtn = dietModal.querySelector(".close-btn")
+calCloseBtn.addEventListener("click", e => {
     calBackgroundChange();
     modalOff()
 
 })
 // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-modal.addEventListener("click", e => {
+dietModal.addEventListener("click", e => {
     const evTarget = e.target
-    if (evTarget.classList.contains("modal-overlay")) {
+    if (evTarget.classList.contains("diet-modal-overlay")) {
         calBackgroundChange();
         modalOff()
 
@@ -60,31 +56,28 @@ function calBackgroundChange() {
 }
 
 //영양소 부분의 모달
-let modalNutrient = document.getElementById("modal-nutrient");
+let nutrientModal = document.getElementById("nutrient-modal");
 function modalNutrientOn() {
-    modalNutrient.style.display = "flex"
+    nutrientModal.style.display = "flex"
 }
 
 function isModalNutrientOn() {
-    return modalNutrient.style.display === "flex"
+    return nutrientModal.style.display === "flex"
 }
 
 function modalNutrientOff() {
-    modalNutrient.style.display = "none"
+    nutrientModal.style.display = "none"
 }
-
-// 특정 버튼을 누르면 모달창이 켜지게 하기
-//let btnModal = document.getElementById('btn-modal');
 
 
 // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-const closeNutrientBtn = modalNutrient.querySelector(".close-area")
+const closeNutrientBtn = nutrientModal.querySelector(".close-btn")
 closeNutrientBtn.addEventListener("click", e => {
     modalNutrientOff()
 
 })
 // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-modalNutrient.addEventListener("click", e => {
+nutrientModal.addEventListener("click", e => {
     const evTarget = e.target
     if (evTarget.classList.contains("modal-overlay")) {
         modalNutrientOff()
