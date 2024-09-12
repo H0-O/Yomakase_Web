@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-
-// AuthenticatedUserDetailsService 클래스는 UserDetailsService 인터페이스를 구현하여
-// 사용자 이름으로 사용자 정보를 로드하는 역할
 public class AuthenticatedUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
@@ -23,23 +20,21 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 전달받은 사용자 아이디(username)로 DB에서 사용자 정보 조회
-        // 아이디가 없으면 예외
-        MemberEntity entity = memberRepository.findById(username)
+        // 아이디가 없으면 예외 발생
+        MemberEntity entity = memberRepository.findById(username)  // findByEmail로 수정
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 없습니다."));
 
-        log.debug("조회정보:{}", entity);
+        log.debug("조회된 사용자 정보: {}", entity);
 
-        // 아이디가 있으면 조회된 정보로 UserDetails 객체를 생성해서 리턴
+        // 조회된 사용자 정보를 기반으로 AuthenticatedUser 객체를 생성
         AuthenticatedUser userDetails = AuthenticatedUser.builder()
-                // 여기서는 일단, 임의 값을 넣음. 실제론 DB에서 가져옴
-                .id(username)
-                .password(entity.getPw())
-                .roleName(entity.getUserRole())
-                .enabled(entity.getEnabled())
+                .id(entity.getId())  // 실제 DB에서 가져온 아이디로 설정
+                .password(entity.getPw())  // 비밀번호 설정
+                .roleName(entity.getUserRole())  // 역할(권한) 설정
+                .enabled(entity.getEnabled())  // 계정 활성화 여부 설정
                 .build();
 
-        log.debug("인증정보 : {}", userDetails);
+        log.debug("생성된 인증 정보 : {}", userDetails);
         return userDetails;
-        // Security가 이 정보를 받아서 password가 맞는지 확인해 줌
     }
 }
