@@ -46,6 +46,19 @@ document.addEventListener('DOMContentLoaded', function(){
             days[daysLen].addEventListener('dblclick', function(){ that.doubleClickDay(this)});
             days[daysLen].addEventListener('mouseover', function(){ that.nutrientScore(this)});
         }
+       /* for (let i = 0; i < days.length; i++) {
+            days[i].addEventListener('click', function() { that.clickDay(this) });
+            days[i].addEventListener('dblclick', function() { that.doubleClickDay(this) });
+            days[i].addEventListener('mouseover', function() { that.nutrientScore(this) });
+        }
+*/
+        // 모든 input 요소에 대해 이벤트 전파 방지
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
 
         Calendar.prototype.doubleClickDay = function(td){
             modalOn();  // 모달 처리 함수는 따로 정의해야 함
@@ -55,10 +68,24 @@ document.addEventListener('DOMContentLoaded', function(){
             modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
         }
 
+        // input 요소 클릭 시 이벤트 전파를 방지
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
+        // dietBtn(식단 저장하는 버튼) 요소에 대해 이벤트 전파 방지
+        let dietBtn = document.getElementById('dietBtn');
+            dietBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+
+
     }; //draw 함수 end
 
     /**
-     * @param e 사용자가 클릭해서 선택한 날짜
+     * @param e 사용자가 클릭해서 선택한 날짜(일)
      */
     Calendar.prototype.drawHeader = function(e) {
         var headDay = document.getElementsByClassName('head-day'),
@@ -67,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function(){
         e ? headDay[0].innerHTML = e + "일"  : headDay[0].innerHTML = day;
         headMonth[0].innerHTML = monthTag[month];
         headDate.innerHTML =  year + '년 ' + monthTag[month];
+/*  그지같은것
+        clickedDay = headMonth.innerHTML + headDay.innerHTML;
+        document.getElementsByClassName('clickedDay').innerHTML = clickedDay;*/
     }; //drawHeader 함수 end
 
     Calendar.prototype.drawDays = function() {
@@ -104,13 +134,13 @@ document.addEventListener('DOMContentLoaded', function(){
     };  //drawDays 함수 end
 
     Calendar.prototype.clickDay = function(o) {
-        var selected = document.getElementsByClassName("selected"),
+      /*  var selected = document.getElementsByClassName("selected"),
             len = selected.length;
         if(len !== 0){
             selected[0].className = "";
         }
-        o.className = "selected";
-        selectedDay = new Date(year, month, o.innerHTML);
+        o.className = "selected";*/
+        selectedDay = new Date(year, month, o.innerHTML);      //new Date(연, 월 ,일);
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
     };  //clickDay 함수 end

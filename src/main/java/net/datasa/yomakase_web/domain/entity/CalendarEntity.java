@@ -23,11 +23,11 @@ public class CalendarEntity {
     private LocalDate inputDate;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_num", nullable = false)
     private int memberNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("memberNum")
     @JoinColumn(name = "member_num", insertable = false, updatable = false)
     private MemberEntity member;
 

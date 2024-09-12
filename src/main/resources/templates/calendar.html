@@ -122,29 +122,23 @@
       </div>
       <div class="close-btn"><img src="/img/x_circle_icon.png" style="height: 35px"></div>
       <div class="cal-content">
-        <form>
           <table id="diet-modal-table">
             <tr>
-              <td colspan="2"><span class="head-month"></span><span class="head-day"></span></td>
-            </tr>
-            <tr>
               <th>아침</th>
-              <td><input type="text" name="bName"></td>
+              <td><input type="text" id="bName" placeholder="아침 식사 메뉴를 알려주세요"></td>
             </tr>
             <tr>
               <th>점심</th>
-              <td><input type="text" name="lName"></td>
+              <td><input type="text" id="lName" placeholder="점심 식사 메뉴를 알려주세요"></td>
             </tr>
             <tr>
               <th>저녁</th>
-              <td><input type="text" name="dName"></td>
+              <td><input type="text" id="dName" placeholder="저녁 식사 메뉴를 알려주세요"></td>
             </tr>
             <tr>
-              <td colspan="2"><input type="submit" value="식단 저장"></td>
+              <td colspan="2"><button id="dietBtn">식단 저장</button></td>
             </tr>
           </table>
-
-        </form>
       </div>
     </div>
   </div>
@@ -161,7 +155,6 @@
         <div>
           <h4>식단 점수 : </h4>
         </div>
-        <p><a href="javascript:test1()">서버로 Ajax 요청보내기</a></p>
       </div>
     </div>
   </div>
@@ -172,30 +165,44 @@
 
   <!--식단 저장 기능-->
   <script>
-    function test1(){
-    alert('test1() 함수 실행됨');
+    window.onload = function(){
+      let dietBtn = document.getElementById('dietBtn');
+      dietBtn.addEventListener('click', dietInput);
+    }
 
-    //에이젝스라는 함수 하나로 다 할 수 있다(가져와서 꾸미는 게 구찮)
-    //서버로 비동기적인 요청
-    $.ajax({	//자바스크립트 함수에서 출발해서 함수로 돌아옴 url, type, success. 무조건 필요한 속성이름 세가지.
-      //내가 원하는 것을 객체로 보낸 거다
-      //좌변은 정해진 것들. 우변은 바뀔 수 있음
-      //요청 경로(http://localhost:8888/ajaxtest1) 콘트롤러에 있는 바로 그 경로
-      url : 'ajaxtest1',	//상대경로		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분
-      type : 'get',		//getmapping
-      success : function(){	//문제 없을 때(정상적으로 리턴) 석세스안의 메서드 실행
-        alert('success');
-      },
-      error : function(){		//예외가 발생하면 여기로
-        alert('error');		//아예 요청을 받지 않을 때 (ex.404 오류)
-      }
+    function dietInput(){
+        let bName = document.getElementById('bName').value;
+        let lName = document.getElementById('lName').value;
+        let dName = document.getElementById('dName').value;
 
-    });
-    alert("test1() 함수의 뒷부분");
-    //에이젝스로 가져온 정보를 여기(에이젝스부분 아래)에서 써먹으려고 하면
-    //여기가 먼저 실행돼버리니까 당연히 못씀
+        console.log(bName, lName, dName);
 
-  }
+
+        if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
+          alert("식단을 입력해 주세요.");
+          document.getElementById('bName').focus();
+          return;
+        }
+        let dietArr = [bName, lName, dName];
+          //서버로 비동기적인 요청
+          $.ajax({
+            url : '/cal/diet',		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분
+            type : 'post',
+            data : {dietArr : dietArr},
+            success : function(){
+              alert('식단이 저장되었습니다.');
+              document.getElementById('bName').value = "";
+              document.getElementById('lName').value = "";
+              document.getElementById('dName').value = "";
+            },
+            error : function(){		//예외가 발생하면 여기로
+              alert('error');		//아예 요청을 받지 않을 때 (ex.404 오류)
+            }
+
+          });
+
+
+    }
   </script>
 </div>  <!--fragment 용-->
 
