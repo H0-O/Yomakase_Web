@@ -34,9 +34,11 @@ public class MemberEntity {
     private LocalDate birthDate;  // 생년월일
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude  // Lombok의 toString()에서 제외
     private AllergyEntity allergy;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude  // Lombok의 toString()에서 제외
     private UserBodyInfoEntity bodyInfo;
 
     @Column(nullable = false, length = 30)
@@ -44,4 +46,8 @@ public class MemberEntity {
 
     @Column(nullable = false)
     private Boolean enabled = true;
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
 }

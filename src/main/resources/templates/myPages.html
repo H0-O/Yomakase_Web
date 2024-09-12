@@ -1,17 +1,59 @@
 <div th:fragment="myPages" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
-    <link href="/css/myPagesCSS.css" rel="stylesheet" />
+    <style>
+        /* My Pages CSS begin */
+        .resumeSection {
+            flex-direction: column;
+        }
+        .mypagesNavbarContainer {
+            display: flex;
+            justify-content: center; /* 네비게이션 바를 중앙에 배치 */
+            margin: 0 auto;
+        }
+
+        .mypagesNavbar {
+            background-color: #81c405;
+            display: flex;
+            justify-content: center; /* 네비게이션 바의 내부 아이템도 중앙에 배치 */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .mypagesNavbar a {
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .mypagesNavbar a:hover {
+            background-color: #6aa003;
+        }
+
+        .mypagesContent {
+            padding: 20px;
+            display: none;
+            margin-top: 20px; /* 네비게이션 바 아래에 위치 */
+        }
+
+        #defaultContent {
+            display: block;
+        }
+        /* My Pages CSS End */
+
+    </style>
     <script>
         function openTab(event, tabName) {
             event.preventDefault(); // 페이지 새로 고침 방지
-            $(".mypages-content").hide(); // 모든 콘텐츠를 숨김
+            $(".mypagesContent").hide(); // 모든 콘텐츠를 숨김
             $("#" + tabName).show(); // 클릭한 탭의 콘텐츠만 보이도록 설정
         }
     </script>
     <div class="resume-section-content">
         <!-- 네비게이션 바 -->
-        <section class="resume-section" id="myPages">
-            <div class="mypages-navbarContainer">
-                <div id="mypagesNavbar" class="mypages-navbar">
+        <section class="resumeSection" id="myPages">
+            <div class="mypagesNavbarContainer">
+                <div id="mypagesNavbar" class="mypagesNavbar">
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'myrecipe')">나의 레시피</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService')">구독 서비스</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
@@ -22,76 +64,40 @@
             </div>
 
             <!-- 나의 레시피 -->
-            <div id="myrecipe" class="mypages-content">
+            <div id="myrecipe" class="mypagesContent">
                 <div th:replace="myPages/myrecipe :: myrecipeFragment"></div>
             </div>
-            <!-- 구독 서비스 섹션 -->
-            <div id="subsService" class="mypages-content">
-                <!-- 비구독자일 경우 구독 정보를 보여주는 섹션 -->
-                <div sec:authorize="hasRole('ROLE_USER')">
-                    <div id="mypages-subscribeSection">
-                        <h3>구독 서비스</h3>
-                        <div class="mypages-subscription-info">
-                            <p>구독 시 제공할 서비스</p>
-                            <ul>
-                                <li>광고 제거 기능</li>
-                                <li>식단 점수 달력 제공</li>
-                            </ul>
-                            <p><strong>※ 구독 시 유의사항</strong></p>
-                            <p>월 490원으로 제공되는 구독 서비스입니다. 결제는 매월 자동으로 이루어지며, 언제든지 구독을 취소할 수 있습니다.</p>
-                            <p>구독 서비스는 「전자상거래 등에서의 소비자 보호에 관한 법률」에 따라 보호받습니다.</p>
-                            <div>
-                                <input type="checkbox" id="mypages-agreeTerms" name="mypages-agreeTerms" />
-                                <label for="mypages-agreeTerms">결제에 동의함</label>
-                            </div>
-                        </div>
-                        <button id="mypages-subscribeButton" onclick="subscribe()" disabled>결제</button>
-                    </div>
-                </div>
 
+            <!-- 구독 서비스 섹션 -->
+            <div id="subsService" class="mypagesContent">
+                <!-- 비구독자일 경우 구독 정보를 보여주는 섹션 -->
+                <div sec:authorize="hasRole('ROLE_USER') and not hasRole('ROLE_SUBSCRIBER')">
+                    <div th:replace="myPages/subsService :: subsFragment"></div>
+                </div>
                 <!-- 구독자인 경우 구독 취소 정보를 보여주는 섹션 -->
                 <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
-                    <div id="mypages-unsubscribeSection">
-                        <h3>구독 서비스</h3>
-                        <div class="mypages-subscription-info">
-                            <p>구독으로 제공되고 있는 서비스</p>
-                            <ul>
-                                <li>광고 제거 기능</li>
-                                <li>식단 점수 달력 제공</li>
-                            </ul>
-                        </div>
-                        <div class="mypages-cancel-info">
-                            <p>정말로 구독을 취소하시겠습니까?</p>
-                            <button id="mypages-cancelNoButton" onclick="cancelNo()">아니오</button>
-                            <button id="mypages-cancelYesButton" onclick="unsubscribe()">예</button>
-                        </div>
-                    </div>
+                    <div th:replace="myPages/subsCancelService :: subsCancelFragment"></div>
                 </div>
             </div>
+
             <!-- 소비 기록 -->
-            <div id="record" class="mypages-content">
+            <div id="record" class="mypagesContent">
                 <div th:replace="myPages/record :: recordFragment"></div>
             </div>
+
             <!-- 회원정보수정 -->
-            <div id="profileUpdate" class="mypages-content">
+            <div id="profileUpdate" class="mypagesContent">
                 <div th:replace="myPages/profileUpdate :: profileUpdateFragment"></div>
             </div>
+
             <!-- 이용문의 -->
-            <div id="support" class="mypages-content">
+            <div id="support" class="mypagesContent">
                 <div th:replace="myPages/support :: supportFragment"></div>
             </div>
 
             <!-- 회원 탈퇴 -->
-            <div id="withdrawal" class="mypages-content">
-            <div id="modal-deleteAccount" class="mypages-modal">
-                <div class="mypages-modal-content">
-                    <span class="mypages-close" onclick="closeModal('modal-deleteAccount')">&times;</span>
-                    <h2>회원 탈퇴</h2>
-                    <p>정말로 회원 탈퇴를 하시겠습니까? 탈퇴 시 모든 정보가 삭제됩니다.</p>
-                    <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
-                    <button class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
-                </div>
-            </div>
+            <div id="withdrawal" class="mypagesContent">
+                <div th:replace="myPages/withdrawal :: withdrawalFragment"></div>
             </div>
         </section>
     </div>

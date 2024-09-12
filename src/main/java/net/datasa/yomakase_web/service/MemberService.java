@@ -9,6 +9,7 @@ import net.datasa.yomakase_web.domain.entity.UserBodyInfoEntity;
 import net.datasa.yomakase_web.repository.AllergyRepository;
 import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.UserBodyInfoRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,5 +74,35 @@ public class MemberService {
     // ID 중복 확인
     public boolean find(String searchId) {
         return !memberRepository.existsById(searchId);  // 존재하지 않으면 true 반환
+    }
+
+    // ID 구독상태로 변경
+    public void subscribeUser(String userEmail) throws Exception {
+        MemberEntity member = memberRepository.findById(userEmail)
+                .orElseThrow(() -> new Exception("사용자를 찾을 수 없습니다."));
+
+        member.setUserRole("ROLE_SUBSCRIBER"); // 구독 상태로 변경
+        memberRepository.save(member);
+    }
+
+    // ID 미구독 상태로 변경
+    public void unsubscribeUser(String userEmail) throws Exception {
+        // 이메일을 기반으로 사용자를 찾아 구독 취소 처리
+        MemberEntity member = memberRepository.findById(userEmail)
+                .orElseThrow(() -> new Exception("사용자를 찾을 수 없습니다."));
+
+        member.setUserRole("ROLE_USER"); // 역할을 ROLE_USER로 변경
+        memberRepository.save(member); // 변경된 사용자 정보 저장
+    }
+    /**
+     * メールアドレスでユーザーを探すメソッド
+     * @param email メールアドレス
+     * @return MemberEntity ユーザーエンティティ
+     * @throws UsernameNotFoundException ユーザーが見つからない場合に例外をスロー
+     */
+    public MemberEntity findByEmail(String email) {
+        // メールアドレスでDBからユーザーを探す。見つからない場合は例外をスロー
+        return memberRepository.findById(email)
+                .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません: " + email));
     }
 }
