@@ -17,4 +17,5 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
 
     // 이메일을 기준으로 회원이 존재하는지 확인하는 메서드
     boolean existsById(String email);
+
 }

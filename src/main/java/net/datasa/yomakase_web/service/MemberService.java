@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -104,5 +106,18 @@ public class MemberService {
         // メールアドレスでDBからユーザーを探す。見つからない場合は例外をスロー
         return memberRepository.findById(email)
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません: " + email));
+    }
+
+    // 회원 삭제 서비스
+    public void deleteMemberById(String username) {
+        // 주어진 사용자 ID로 회원 정보 삭제
+        Optional<MemberEntity> member = memberRepository.findById(username);
+        if (member.isPresent()) {
+            memberRepository.delete(member.get());
+            log.debug("회원 정보 삭제 완료: {}", username);
+        } else {
+            log.error("회원 정보를 찾을 수 없음: {}", username);
+            throw new RuntimeException("회원 정보를 찾을 수 없습니다.");
+        }
     }
 }
