@@ -56,7 +56,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-
         }
 
         .table-container {
@@ -105,14 +104,22 @@
 
         .d-day {
             font-weight: bold;
+            color: #000;
         }
 
         .d-day-warning {
+            font-weight: bold;
             color: red; /* 디데이가 하루 남은 경우 빨간색으로 표시 */
         }
 
         .d-day-last {
+            font-weight: bold;
             color: blue; /* 디데이면 파란색으로 표시 */
+        }
+
+        .d-day-over {
+            font-weight: bold;
+            color: #ffb524; /* 넘기면 파란색으로 표시 */
         }
 
         .btn {
@@ -173,7 +180,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        #modal .modal-window {
+        .modal-window {
             z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
             background: ivory;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -187,11 +194,11 @@
             max-width: 800px; /* 모달 너비 설정 */
             max-height: 600px; /* 모달 높이 설정 */
             /*top: -100px;*/
-            left: 100px; /* 오른쪽으로 이동 */
+            /*left: 100px; !* 오른쪽으로 이동 *!*/
             overflow: auto; /* 스크롤 가능하도록 설정 */
         }
 
-        #modal .modal-window {
+        #RecipeModal .modal-window {
             width: 800px;
             height: 600px;
         }
@@ -199,42 +206,16 @@
         #delModal .modal-window {
             width: 200px;
             height: 130px;
-            z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
-            background: ivory;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(13.5px);
-            -webkit-backdrop-filter: blur(13.5px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            position: relative;
-            margin: auto;
-            padding: 20px; /* 10px */
-            max-width: 800px; /* 모달 너비 설정 */
-            max-height: 600px; /* 모달 높이 설정 */
-            left: 100px; /* 오른쪽으로 이동 */
         }
 
         #dateModal .modal-window {
-            width: 290px;
+            width: 300px;
             height: 150px;
-            z-index: 1001; /* 오버레이 위에 위치하도록 설정 */
-            background: ivory;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(13.5px);
-            -webkit-backdrop-filter: blur(13.5px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            position: relative;
-            margin: auto;
-            padding: 20px; /* 10px */
-            max-width: 800px; /* 모달 너비 설정 */
-            max-height: 600px; /* 모달 높이 설정 */
-            left: 100px; /* 오른쪽으로 이동 */
         }
 
         /* ID가 delModal인 요소의 자식 요소 중에서 클래스가 close-area인 요소를 선택함 */
         /* #delModal .close-area = ID가 delModal이면서 동시에 클래스가 close-area인 요소를 선택함 */
-        #modal .close-area, #delModal .close-area, #dateModal .close-area {
+        #RecipeModal .close-area, #delModal .close-area, #dateModal .close-area {
             display: inline;
             float: right;
             padding-right: 10px;
@@ -247,17 +228,15 @@
             font-weight: bold;
             font-size: 20px;
             text-align: center;
-            padding-left: 20px;
-            padding-bottom: 20px;
+            padding-top: 8px;
+            /*padding-left: 15px;*/
+            padding-bottom: 8px;
         }
 
         #delModal .btn {
+            margin: 10px;
+            padding: 10px;
             font-size: 20px;
-        }
-
-        .btn-container {
-            display: flex;
-            gap: 10px;
         }
 
         #dateModal .date-text {
@@ -266,52 +245,42 @@
             font-size: 20px;
             text-align: center;
             padding-left: 15px;
+            padding-bottom: 8px;
         }
 
         #date-container input[type="date"] {
-            margin-left: 40px;
+            margin-left: 50px;
         }
 
-        #modal .title {
+        #RecipeModal .title {
             padding-left: 10px;
             display: inline;
             color: black;
-
         }
 
-        #modal .title h2 {
+        #RecipeModal .title h2 {
             display: inline;
         }
 
-        #modal .content {
+        #RecipeModal .content {
             margin-top: 20px;
             padding: 0px 10px;
             color: black;
         }
     </style>
+    <hr class="m-0" />
     <!-- 나의 냉장고 -->
     <section class="resume-section" id="myRefrigerator">
         <div class="resume-section-content" id="myRefrigeratorContent">
+            <h2 class="mb-5">나의 냉장고</h2>
+            <div>[[${boardList}]]</div>
             <div class="refrigerator-wrapper">
                 <div class="refrigerator-photo">
                     <!-- 추천 메뉴 모달창 버튼 -->
-                    <button id="btn-modal" class="btn">요리법 추천</button>
+                    <button id="RecipeModalBtn" class="btn">요리법 추천</button>
                     <br>
                     <div class="refrigerator-container" id="refrigerator-container">
                         <!-- 냉장고, 식재료 이미지 추가 -->
-                    </div>
-                </div>
-                <!-- 식재료 삭제 모달 페이지 -->
-                <div id="delModal" class="modal-overlay">
-                    <div class="modal-window">
-                        <div class="close-area">X</div>
-                        <div class="modal-text">
-                            <!-- 모달에 내용 표시 -->
-                        </div>
-                        <div class="btn-container">
-                            <button class="btn" id="consumption">소비</button>
-                            <button class="btn" id="throw">버림</button>
-                        </div>
                     </div>
                 </div>
                 <br>
@@ -323,10 +292,21 @@
                                 <th>소비기한</th>
                             </tr>
                             </thead>
-                            <tbody id="tableBody">
-                            <!-- 소비기한, 수정버튼 테이블 추가 -->
+                            <tbody id="list">
+                            <!-- 식재료 테이블 -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <!-- 식재료 삭제 모달 페이지 -->
+                <div id="delModal" class="modal-overlay">
+                    <div class="modal-window">
+                        <div class="close-area">X</div>
+                        <div class="modal-text">
+                            <!-- 모달에 식재료 이름 표시 -->
+                        </div>
+                        <button class="btn" id="consume-btn">소비</button>
+                        <button class="btn" id="discard-btn">버림</button>
                     </div>
                 </div>
                 <!-- 날짜 수정 모달 페이지 -->
@@ -335,13 +315,14 @@
                         <div class="close-area">X</div>
                         <p class="date-text">소비기한 수정</p>
                         <div id="date-container">
-                            <input type="date" id="datePicker">
+                            <input type="hidden" id="ingredientName"> <input
+                                type="hidden" id="memberNum"> <input type="date" id="date">
                             <button id="submitDate" class="btn">확인</button>
                         </div>
                     </div>
                 </div>
                 <!-- 레시피 모달 페이지 -->
-                <div id="modal" class="modal-overlay">
+                <div id="RecipeModal" class="modal-overlay">
                     <div class="modal-window">
                         <div class="title">
                             <h2>추천메뉴</h2>
@@ -362,188 +343,118 @@
                                     src="https://www.youtube.com/embed/sx0Z-NU74a4?si=S6eXIKsvxv5wzlDz"
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin"
-                                    allowfullscreen></iframe>
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
     <script>
-        const ingredients = [
-            {src: '/img/ingre1.png', alt: '식재료1', text: '가지', top: '90px', left: '40px'},
-            {src: '/img/ingre2.png', alt: '식재료2', text: '토마토', top: '100px', left: '120px'},
-            {src: '/img/ingre3.png', alt: '식재료3', text: '양배추', top: '93px', left: '200px'},
-            {src: '/img/ingre4.png', alt: '식재료4', text: '당근', top: '220px', left: '40px'},
-            {src: '/img/ingre5.png', alt: '식재료5', text: '오이', top: '220px', left: '120px'}
-        ];
-
-        const container = document.getElementById('refrigerator-container');
-
-        ingredients.forEach(ingredient => {
-            const ingredientDiv = document.createElement('div');
-            ingredientDiv.className = 'ingredient';
-            ingredientDiv.style.top = ingredient.top;
-            ingredientDiv.style.left = ingredient.left;
-
-            const img = document.createElement('img');
-            img.src = ingredient.src;
-            img.alt = ingredient.alt;
-            img.className = 'del-modal';
-
-            const text = document.createElement('div');
-            text.className = 'ingredient-text';
-            text.textContent = ingredient.text;
-
-            ingredientDiv.appendChild(img);
-            ingredientDiv.appendChild(text);
-            container.appendChild(ingredientDiv);
-
-            // 삭제 버튼 클릭 이벤트 추가
-            ingredientDiv.addEventListener('click', () => showIngredientModal(ingredient.text));
-        });
-
-        const materials = [
-            {name: '파프리카', expiryDate: '2024-11-01'},
-            {name: '오이', expiryDate: '2024-09-06'},
-            {name: '당근', expiryDate: '2024-09-07'},
-            {name: '오이', expiryDate: '2024-09-15'},
-            {name: '양배추', expiryDate: '2024-10-01'},
-            {name: '토마토', expiryDate: '2024-10-10'},
-            {name: '양파', expiryDate: '2024-10-20'},
-            {name: '사과', expiryDate: '2024-09-10'},
-            {name: '감자', expiryDate: '2024-09-20'},
-            {name: '브로콜리', expiryDate: '2024-09-15'},
-            {name: '마늘', expiryDate: '2024-10-05'},
-            {name: '버섯', expiryDate: '2024-09-08'}
-        ];
-
-        function calculateDday(expiryDate) {
+        function calculateDday(dateString) {
+            // 현재 날짜
             const today = new Date();
-            const expiry = new Date(expiryDate);
-            const diffTime = expiry - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 밀리초를 일로 변환
 
-            // 남은 일수가 0이면 D-Day로 표시
-            if (diffDays === 0) {
-                return 'D-Day';
-            } else if (diffDays > 0) {
-                return `D-${diffDays}`;
+            // useByDate를 Date 객체로 변환
+            const useByDate = new Date(dateString);
+
+            // 남은 일수 계산
+            const timeDiff = useByDate - today;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            // 디데이 형식으로 반환
+            if (daysLeft > 0) {
+                return `D-${daysLeft}`;
+            } else if (daysLeft === 0) {
+                return "D-Day";
             } else {
-                return `D+${Math.abs(diffDays)}`;
+                return `D+${Math.abs(daysLeft)}`;
             }
         }
 
-        // 소비기한을 기준으로 정렬 (오름차순)
-        materials.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-
-        const tableBody = document.getElementById('tableBody');
-
-        materials.forEach(material => {
-            const row = document.createElement('tr');
-
-            const nameCell = document.createElement('td');
-            nameCell.textContent = material.name;
-
-            const expiryCell = document.createElement('td');
-            expiryCell.className = 'd-day';
-            expiryCell.setAttribute('data-expiry-date', material.expiryDate);
-            expiryCell.textContent = calculateDday(material.expiryDate);
-
-            const button = document.createElement('button');
-            button.className = 'btn';
-            button.textContent = '수정';
-            button.id = 'correction';
-
-            const buttonCell = document.createElement('td');
-            buttonCell.appendChild(button);
-
-            row.appendChild(nameCell);
-            row.appendChild(expiryCell);
-            row.appendChild(buttonCell);
-
-            tableBody.appendChild(row);
-        });
-
-        document.querySelectorAll('.d-day').forEach(element => {
-            const expiryDate = element.getAttribute('data-expiry-date');
-            const ddayText = calculateDday(expiryDate);
-            element.textContent = ddayText;
-
-            // 디데이가 하루 남은 경우 빨간색으로 표시
-            if (ddayText === "D-1") {
-                element.classList.add('d-day-warning');
+        function getDdayClass(daysLeft) {
+            if (daysLeft === 0) {
+                return "d-day-last";
+            } else if (daysLeft > 0 && daysLeft <= 1) {
+                return "d-day-warning";
+            } else if (daysLeft < 0){
+                return "d-day-over";
+            } else {
+                return "d-day";
             }
-            // 디데이인 경우 파란색으로 표시
-            if (ddayText === "D-Day") {
-                element.classList.add('d-day-last');
-            }
-        });
-
-        // 삭제 모달
-        const delModal = document.getElementById('delModal');
-        const modalText = delModal.querySelector('.modal-text');
-
-        function delModalOn() {
-            delModal.style.display = 'flex';
         }
 
-        function isDelModalOn() {
-            return delModal.style.display === 'flex';
-        }
-
-        function delModalOff() {
-            delModal.style.display = 'none';
-        }
-
-        function showIngredientModal(text) {
-            modalText.textContent = text;
-            delModalOn();
-        }
-
-        // 반복문이라 모든 일치하는 클래스를 가져와야함. All
-        document.addEventListener("DOMContentLoaded", () => {
-            const delModalBtns = document.querySelectorAll('.del-modal'); // 모든 일치하는 버튼 선택
-            if (delModalBtns.length > 0) {
-                delModalBtns.forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        delModalOn();
+        $(document).ready(function() {
+            $.ajax({
+                url : "/rest/stockData",
+                type : "post",
+                dataType : "json",
+                success : function(list) {
+                    console.log(list); // 데이터 형식 확인
+                    // 소비기한을 기준으로 오름차순 정렬
+                    list.sort(function(a, b) {
+                        return new Date(a.useByDate) - new Date(b.useByDate);
                     });
-                });
-            } else {
-                console.error('Buttons with class "delModalBtn" not found.');
-            }
+                    let txt = `
+					<table>
+					`;
+                    $(list).each(function(index, object) {
+                        const today = new Date();
+                        const useByDate = new Date(object.useByDate);
+                        const timeDiff = useByDate - today;
+                        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                        const dDayText = calculateDday(object.useByDate);
+                        const dDayClass = getDdayClass(daysLeft);
+                        txt += `
+					<tr>
+						<td>${object.ingredientName}</td>
+						<td class="${dDayClass}">${dDayText}</td>
+						<td><button class="btn">수정</button></td>
+					</tr>
+					`;
+                    });
+                    txt += `</table>`;
+                    $("#list").html(txt);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX 요청 실패:", status, error); // 에러 메시지 확인
+                    alert("출력 실패");
+                }
+            });
+        }); // stock 출력문 끝
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('rest/stockImg')
+                .then(response => response.json())
+                .then(stockItems => {
+                    const container = document.getElementById('refrigerator-container');
+                    const imagePath = 'static/img/'; // 이미지가 위치한 폴더 경로
+
+                    stockItems.forEach(item => {
+                        // 랜덤 이미지 선택
+                        const imageFiles = ['tomato.jpg', 'onion.jpg', 'pepper.jpg']; // 예시 이미지 파일명
+                        const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+
+                        // 이미지 요소 생성
+                        const img = document.createElement('img');
+                        img.src = `${imagePath}${randomImage}`;
+                        img.alt = item.name;
+
+                        // 컨테이너에 이미지 추가
+                        container.appendChild(img);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
         });
 
-        // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-        const closeDel = delModal.querySelector(".close-area");
-        closeDel.addEventListener("click", e => {
-            delModalOff()
-        })
-        // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-        delModal.addEventListener("click", e => {
-            const evTarget = e.target
-            if (evTarget.classList.contains("modal-overlay")) {
-                delModalOff()
-            }
-        })
-        // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-        window.addEventListener("keyup", e => {
-            if (isDelModalOn() && e.key === "Escape") {
-                delModalOff()
-            }
-        })
-
-        // 수정 모달
+        // 날짜 수정 모달
         document.addEventListener("DOMContentLoaded", () => {
             const dateModal = document.getElementById("dateModal");
-            const datePicker = document.getElementById("datePicker");
+            const dateInput = document.getElementById("date"); // ID를 'date'로 변경
             const submitDate = document.getElementById("submitDate");
             const closeDate = dateModal.querySelector(".close-area");
-            const tableBody = document.getElementById("tableBody");
+            const list = document.getElementById("list");
 
             // 모달을 보이게 함
             function dateModalOn() {
@@ -561,7 +472,7 @@
             }
 
             // 특정 버튼을 누르면 모달창이 켜지게 하기
-            tableBody.addEventListener("click", (event) => {
+            list.addEventListener("click", (event) => {
                 if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn')) {
                     dateModalOn();
                 }
@@ -588,7 +499,7 @@
 
             // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
             submitDate.addEventListener("click", () => {
-                const selectedDate = datePicker.value;
+                const selectedDate = dateInput.value;
                 if (selectedDate) {
                     console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
                     dateModal.style.display = 'none'; // 모달 닫기
@@ -596,45 +507,48 @@
                     alert('날짜를 선택해주세요.');
                 }
             });
-        });
+        }); // 수정 모달창 끝
 
-        const modal = document.getElementById("modal")
+        // 레시피 추천 모달
+        const RecipeModal = document.getElementById("RecipeModal");
 
-        function modalOn() {
-            modal.style.display = "flex" // 모달을 보이게 함
+        function RecipeModalOn() {
+            RecipeModal.style.display = "flex"; // 모달을 보이게 함
         }
 
-        function isModalOn() {
-            return modal.style.display === "flex" // 모달이 열려 있는지 확인
+        function isRecipeModalOn() {
+            return RecipeModal.style.display === "flex"; // 모달이 열려 있는지 확인
         }
 
-        function modalOff() {
-            modal.style.display = "none" // 모달을 숨김
+        function RecipeModalOff() {
+            RecipeModal.style.display = "none"; // 모달을 숨김
         }
 
         // 특정 버튼을 누르면 모달창이 켜지게 하기
-        const btnModal = document.getElementById("btn-modal")
+        const RecipeModalBtn = document.getElementById("RecipeModalBtn");
 
-        btnModal.addEventListener("click", e => {
-            modalOn()
-        })
+        RecipeModalBtn.addEventListener("click", () => {
+            RecipeModalOn();
+        });
+
         // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-        const closeBtn = modal.querySelector(".close-area")
-        closeBtn.addEventListener("click", e => {
-            modalOff()
-        })
+        const closeBtn = RecipeModal.querySelector(".close-area");
+        closeBtn.addEventListener("click", () => {
+            RecipeModalOff();
+        });
+
         // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-        modal.addEventListener("click", e => {
-            const evTarget = e.target
-            if (evTarget.classList.contains("modal-overlay")) {
-                modalOff()
+        RecipeModal.addEventListener("click", (e) => {
+            if (e.target === RecipeModal) {
+                RecipeModalOff();
             }
-        })
+        });
+
         // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-        window.addEventListener("keyup", e => {
-            if (isModalOn() && e.key === "Escape") {
-                modalOff()
+        window.addEventListener("keyup", (e) => {
+            if (isRecipeModalOn() && e.key === "Escape") {
+                RecipeModalOff();
             }
-        })
+        }); // 레시피 모달창 끝
     </script>
 </div>

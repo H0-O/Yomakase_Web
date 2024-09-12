@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +61,36 @@ public class StockService {
         }
     }
 
+    /**
+     * 재고 데이터를 나의 냉장고에 출력
+     */
+    public List<StockDTO> getAllStocks() {
+        // DB에서 모든 재고 데이터를 가져옵니다.
+        List<StockEntity> stocks = stockRepository.findAll();
+
+        // 가져온 StockEntity 데이터를 StockDTO 형태로 변환합니다.
+        return stocks.stream()
+                .map(stock -> StockDTO.builder().ingredientName(stock.getIngredientName())
+                        .memberNum(stock.getMemberNum()).isHaving(stock.isHaving()).useByDate(stock.getUseByDate())
+                        .updateDate(stock.getUpdateDate()).build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 삭제 기능이 있는 재고 이미지를 나의 냉장고에 출력
+     * @return
+     */
+    public List<Map<String, String>> getAllStockItems() {
+        List<StockEntity> stocks = stockRepository.findAll();
+
+        // List<Map> 형태로 변환
+        return stocks.stream()
+                .map(stock -> Map.of("name", stock.getIngredientName()))
+                .collect(Collectors.toList());
+    }
+
     public List<String> getAllIngredientNames() {
         return stockRepository.findAllIngredientNames();
     }
+
 }
