@@ -103,11 +103,11 @@ CREATE TABLE `cal` (
                        `l_kcal` int DEFAULT 0,
                        `d_name` varchar(100) NULL,
                        `d_kcal` int DEFAULT 0,
-                       `over` mediumtext NULL,
-                       `lack` mediumtext NULL,
-                       `recom` mediumtext NULL,
+                       `too_much` mediumtext NULL, -- 과하게 먹은 것.
+                       `lack` mediumtext NULL, -- 적게 먹은 것.
+                       `recom` mediumtext NULL, -- 권장 식재료 이름만
                        `total_kcal` int DEFAULT 0,
-                       `score` int DEFAULT 0,
+                       `score` int DEFAULT 0, -- 점수 → 마우스 오버시, 혹은 날짜 밑에 표시
                        PRIMARY KEY (`input_date`, `member_num`),
                        FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE
 );
