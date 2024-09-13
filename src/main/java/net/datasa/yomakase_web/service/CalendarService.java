@@ -22,10 +22,7 @@ import java.util.List;
 public class CalendarService {
     private final CalendarRepository calendarRepository;
 
-    /**
-     * 식단 저장 메소드
-     * @param calendarDTO   사용자 선택 날짜, 아침 메뉴, 점심 메뉴, 저녁 메뉴
-     */
+
     public void dietSave(CalendarDTO calDTO) {
          //MemberEntity memberEntity = new MemberEntity();
         //memberEntity.setId(user.getUsername());
