@@ -6,6 +6,7 @@ import net.datasa.yomakase_web.domain.dto.CalendarDTO;
 import net.datasa.yomakase_web.domain.entity.CalendarEntity;
 import net.datasa.yomakase_web.security.AuthenticatedUser;
 import net.datasa.yomakase_web.service.CalendarService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +27,13 @@ public class CalendarController {
     /**
      * 식단 저장 메소드
      * @param arr
+     * @param user 사용자 인증 정보
      */
     @PostMapping("diet")
-    public void dietInputMethod(@RequestParam("dietArr") String[] arr) {
+    public void dietInputMethod(@RequestParam("dietArr") String[] arr, @AuthenticationPrincipal AuthenticatedUser user) {
 //        throw new RuntimeException("오류");
         //calendarDTO.setMemberNum(user);
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         LocalDate date = LocalDate.parse(arr[3], formatter);
 
@@ -39,12 +42,10 @@ public class CalendarController {
         calDTO.setLName(arr[1]);
         calDTO.setDName(arr[2]);
         calDTO.setInputDate(date);
-        for (String s : arr) {
-            log.debug("배열요소 : {}", s);
-            //AuthenticatedUser user = new AuthenticatedUser();
-        } //success로 설정한 그 함수로 리턴되어 간다. 리턴값이 있든 없든!
-            log.debug("배열:{},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.dietSave(calDTO);
+
+        log.debug("배열:{},{},{},{}", arr[0], arr[1], arr[2], date);
+        calendarService.dietSave(calDTO, user);
+
     }
 
 }
