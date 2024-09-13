@@ -3,14 +3,13 @@ package net.datasa.yomakase_web.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.datasa.yomakase_web.domain.dto.MemberDTO;
 import net.datasa.yomakase_web.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -48,4 +47,19 @@ public class MemberRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 실패");
         }
     }
+
+    // 회원 정보 수정 요청을 처리하는 메서드
+    @PostMapping("/update")
+    public String updateProfile(@ModelAttribute MemberDTO member) {
+        log.debug("수정할 회원 정보: " + member.toString());  // 수정할 회원 정보 로그 출력
+
+        // 서비스에서 회원 정보 업데이트 로직 실행
+        memberService.updateUser(member);
+
+        log.debug("회원 정보가 성공적으로 업데이트되었습니다.");  // 업데이트 완료 로그 출력
+
+        // 수정 완료 후 다시 프로필 화면으로 리다이렉트
+        return "redirect:/";
+    }
+
 }
