@@ -12,32 +12,56 @@
             width: 350px; /* 냉장고 이미지 너비 */
             height: 650px; /* 냉장고 이미지 높이 */
             overflow: hidden; /* 자식 요소가 컨테이너를 넘어가지 않도록 설정 */
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* 각 열의 아이템 사이에 간격을 주어 균일하게 배치 */
+            align-content: space-between; /* 각 행 사이의 간격을 균일하게 조정 */
         }
 
         .ingredient {
-            position: absolute; /* 식재료 이미지를 냉장고 이미지 위에 겹쳐서 배치 */
-            display: inline-block;
+            /*position: absolute; !* 식재료 이미지를 냉장고 이미지 위에 겹쳐서 배치 *!*/
+            /*display: inline-block;*/
+            text-align: center; /* 텍스트를 중앙에 위치시킴 */
             cursor: pointer; /* 클릭 가능한 영역을 표시 */
+
+            /*width: 100px; !* 아이템 너비 *!*/
+            /*height: 100px; !* 아이템 높이 *!*/
+            margin: 10px; /* 아이템 간격 */
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 106px; /* 각 아이템의 너비 설정 */
+            height: 106px; /* 각 아이템의 높이 설정 */
+            box-sizing: border-box;
+            position: relative; /* 이미지 위에 텍스트를 배치하기 위한 상대적 위치 */
+            transform: translateY(92px); /* 그리드를 아래로 이동 */
         }
 
         .ingredient img {
             width: 100px; /* 식재료 이미지의 너비 조정 */
-            height: auto;
+            height: auto; /* 이미지 비율 유지 */
+            display: block; /* 이미지 블록으로 설정 */
         }
 
         .ingredient-text {
-            position: absolute;
+            text-align: center;
             bottom: 0; /* 텍스트를 이미지 아래쪽에 위치시킴 */
-            left: 50%; /* 텍스트를 이미지 중앙에 위치시킴 */
-            transform: translateX(-50%); /* 텍스트를 중앙으로 정렬하기 위한 트랜스폼 */
+            left: 100px; /* 텍스트를 이미지 중앙에 위치시킴 */
             background-color: rgba(0, 0, 0, 0.7); /* 반투명 배경색 */
             color: white; /* 글자 색상 */
-            letter-spacing: 1px;
+            letter-spacing: 1px; /* 글자 간격 */
             padding: 5px;
             border-radius: 3px;
             opacity: 0; /* 기본적으로 텍스트는 보이지 않음 */
             transition: opacity 0.3s ease; /* 부드러운 전환 효과 */
             white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+            display: inline-block; /* 텍스트 길이에 맞춰 너비 조정 */
+            box-sizing: content-box; /* 패딩과 테두리가 너비에 포함되지 않도록 설정 */
+            max-width: 100%; /* 텍스트가 이미지 너비를 넘지 않도록 설정 */
+            word-wrap: break-word; /* 긴 단어가 줄 바꿈 되도록 설정 */
         }
 
         .ingredient:hover .ingredient-text {
@@ -136,6 +160,8 @@
             font-weight: bold;
             letter-spacing: 1px;
             transition: transform 80ms ease-in;
+
+            display: inline-block;
         }
 
         .btn:active {
@@ -195,17 +221,24 @@
             max-height: 600px; /* 모달 높이 설정 */
             /*top: -100px;*/
             /*left: 100px; !* 오른쪽으로 이동 *!*/
-            overflow: auto; /* 스크롤 가능하도록 설정 */
         }
 
         #RecipeModal .modal-window {
             width: 800px;
             height: 600px;
+            overflow: auto; /* 스크롤 가능하도록 설정 */
         }
 
         #delModal .modal-window {
-            width: 200px;
-            height: 130px;
+            /*width: 200px;*/
+            /*height: 130px;*/
+            width: 260px;
+            height: 140px;
+            text-align: center;
+            /*display: flex; !* Flexbox 사용 *!*/
+            justify-content: center; /* 가로 중앙 정렬 */
+            flex-direction: row; /* 가로 방향으로 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
         }
 
         #dateModal .modal-window {
@@ -244,12 +277,12 @@
             font-weight: bold;
             font-size: 20px;
             text-align: center;
-            padding-left: 15px;
-            padding-bottom: 8px;
+            padding-left: 12px;
+            padding-bottom: 5px;
         }
 
         #date-container input[type="date"] {
-            margin-left: 50px;
+            margin-left: 40px;
         }
 
         #RecipeModal .title {
@@ -273,7 +306,6 @@
     <section class="resume-section" id="myRefrigerator">
         <div class="resume-section-content" id="myRefrigeratorContent">
             <h2 class="mb-5">나의 냉장고</h2>
-            <div>[[${boardList}]]</div>
             <div class="refrigerator-wrapper">
                 <div class="refrigerator-photo">
                     <!-- 추천 메뉴 모달창 버튼 -->
@@ -305,8 +337,10 @@
                         <div class="modal-text">
                             <!-- 모달에 식재료 이름 표시 -->
                         </div>
-                        <button class="btn" id="consume-btn">소비</button>
-                        <button class="btn" id="discard-btn">버림</button>
+                        <div class="button-container">
+                            <button class="btn" id="consume-btn">소비</button>
+                            <button class="btn" id="discard-btn">버림</button>
+                        </div>
                     </div>
                 </div>
                 <!-- 날짜 수정 모달 페이지 -->
@@ -425,27 +459,92 @@
         }); // stock 출력문 끝
 
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('rest/stockImg')
+            fetch('/rest/stockImg')  // 컨트롤러 경로에 맞추어 요청
                 .then(response => response.json())
                 .then(stockItems => {
                     const container = document.getElementById('refrigerator-container');
-                    const imagePath = 'static/img/'; // 이미지가 위치한 폴더 경로
 
-                    stockItems.forEach(item => {
-                        // 랜덤 이미지 선택
-                        const imageFiles = ['tomato.jpg', 'onion.jpg', 'pepper.jpg']; // 예시 이미지 파일명
-                        const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+                    // 컨테이너의 크기
+                    const containerWidth = container.offsetWidth;
+                    const containerHeight = container.offsetHeight;
 
-                        // 이미지 요소 생성
+                    // 그리드의 행과 열 수
+                    const rows = 3;
+                    const cols = 3;
+
+                    // 각 아이템의 크기 (가로 및 세로)
+                    const itemWidth = containerWidth / cols;
+                    const itemHeight = containerHeight / rows;
+
+                    // 간격 조정 값 (픽셀 단위)
+                    const colGap = -15;  // 간격을 줄이기 위한 값 (조정 가능)
+                    const rowGap = -85;
+
+                    stockItems.forEach((item, index) => {
+                        const ingredientDiv = document.createElement('div');
+                        ingredientDiv.className = 'ingredient';
+
+                        // JSON 데이터의 필드에 맞게 수정
                         const img = document.createElement('img');
-                        img.src = `${imagePath}${randomImage}`;
-                        img.alt = item.name;
+                        img.src = `/img/${item.image}`; // 서버에서 반환된 이미지 파일명과 경로 사용
+                        img.alt = item.name; // 서버에서 반환된 재료 이름
+                        img.className = 'del-modal'; // 클릭 이벤트를 위한 클래스
 
-                        // 컨테이너에 이미지 추가
-                        container.appendChild(img);
+                        img.addEventListener('click', () => {
+                            delModalOn(); // 클릭 시 모달 열기
+                        });
+
+                        const text = document.createElement('div');
+                        text.className = 'ingredient-text';
+                        text.textContent = item.name;  // 재료 이름 텍스트로 사용
+
+                        ingredientDiv.appendChild(img);
+                        ingredientDiv.appendChild(text);
+
+                        // 위치를 설정 (3x3 그리드에 맞게 배치)
+                        const rowIndex = Math.floor(index / cols);
+                        const colIndex = index % cols;
+
+                        // 간격을 고려하여 위치 조정
+                        ingredientDiv.style.position = 'absolute'; // absolute 위치 설정 필요
+                        ingredientDiv.style.top = `${rowIndex * (itemHeight + rowGap)}px`; // y축 위치
+                        ingredientDiv.style.left = `${colIndex * (itemWidth + colGap)}px`; // x축 위치
+
+                        container.appendChild(ingredientDiv);
                     });
                 })
                 .catch(error => console.error('Error:', error));
+        }); // 재료 사진 출력문 끝
+
+        // 재료 삭제 모달
+        const delModal = document.getElementById('delModal');
+
+        function delModalOn() {
+            delModal.style.display = 'flex';
+        }
+
+        function delModalOff() {
+            delModal.style.display = 'none';
+        }
+
+        // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
+        const closeDel = delModal.querySelector(".close-area");
+        closeDel.addEventListener("click", () => {
+            delModalOff();
+        });
+
+        // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
+        delModal.addEventListener("click", (e) => {
+            if (e.target.classList.contains("modal-overlay")) {
+                delModalOff();
+            }
+        });
+
+        // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
+        window.addEventListener("keyup", (e) => {
+            if (delModal.style.display === 'flex' && e.key === "Escape") {
+                delModalOff();
+            }
         });
 
         // 날짜 수정 모달

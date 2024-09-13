@@ -7,6 +7,8 @@ import net.datasa.yomakase_web.domain.entity.MemberEntity;
 import net.datasa.yomakase_web.domain.entity.StockEntity;
 import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.StockRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +28,7 @@ public class StockService {
 
     private final StockRepository stockRepository;
     private final MemberRepository memberRepository;
-
+    private final Random random = new Random();
 
     @Transactional
     public void saveStock(List<Map<String, String>> ingredients) {
@@ -62,7 +65,7 @@ public class StockService {
     }
 
     /**
-     * 재고 데이터를 나의 냉장고에 출력
+     * 재고 데이터를 테이블에 출력
      */
     public List<StockDTO> getAllStocks() {
         // DB에서 모든 재고 데이터를 가져옵니다.
@@ -76,18 +79,48 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 삭제 기능이 있는 재고 이미지를 나의 냉장고에 출력
-     * @return
-     */
-    public List<Map<String, String>> getAllStockItems() {
-        List<StockEntity> stocks = stockRepository.findAll();
+    // 이미지 파일명 리스트
+    private final List<String> imageFileNames = List.of(
+            "food-container1.png",
+            "food-container2.png",
+            "food-container3.png"
+    );
 
-        // List<Map> 형태로 변환
+    /**
+     * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정한다.
+     *
+     * @return 재고 아이템의 리스트를 포함한 맵 리스트
+     */
+    public List<Map<String, String>> getTop9StockItems() {
+        Pageable pageable = PageRequest.of(0, 9); // 첫 페이지, 9개 항목
+        List<StockEntity> stocks = stockRepository.findTop9ByOrderByUseByDateAsc(pageable);
+
+        // 이미지의 기본 경로
+        String imagePathBase = "img/";  // 실제로 저장된 이미지 경로를 설정
+
+        // List<StockEntity>를 List<Map>으로 변환하며 랜덤 이미지 경로를 설정
         return stocks.stream()
-                .map(stock -> Map.of("name", stock.getIngredientName()))
+                .map(stock -> {
+                    // 랜덤으로 이미지 파일명 선택
+                    String imageFileName = getRandomImageFileName();
+                    return Map.of(
+                            "name", stock.getIngredientName(),
+                            "image", imageFileName // 이미지 파일명 반환
+                    );
+                })
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 이미지 파일명 리스트에서 랜덤으로 하나를 선택한다.
+     *
+     * @return 랜덤 이미지 파일명
+     */
+    private String getRandomImageFileName() {
+        int index = random.nextInt(imageFileNames.size());
+        return imageFileNames.get(index); // 예를 들어 '3.png'와 같은 파일명
+    }
+
 
     public List<String> getAllIngredientNames() {
         return stockRepository.findAllIngredientNames();

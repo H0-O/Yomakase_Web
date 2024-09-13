@@ -43,12 +43,18 @@ public class StockRestController {
 		return stockService.getAllStocks();
 	}
 
+	/**
+	 * 소비 기한이 임박한 순서로 상위 9개의 재고 아이템을 가져온다.
+	 * @return 재고 아이템과 이미지 경로를 포함한 리스트
+	 */
 	@GetMapping("/stockImg")
-	public ResponseEntity<List<Map<String, String>>> getAllStock() {
+	public ResponseEntity<List<Map<String, String>>> getTop9Stock() {
 		try {
-			List<Map<String, String>> stockItems = stockService.getAllStockItems();
+			List<Map<String, String>> stockItems = stockService.getTop9StockItems();
 			return new ResponseEntity<>(stockItems, HttpStatus.OK);
 		} catch (Exception e) {
+			// 예외 로깅
+			e.printStackTrace();  // 실제 환경에서는 로깅 프레임워크를 사용하세요
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
