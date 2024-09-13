@@ -27,7 +27,6 @@ public class CalendarEntity {
     private int memberNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("memberNum")
     @JoinColumn(name = "member_num", insertable = false, updatable = false)
     private MemberEntity member;
 
@@ -49,8 +48,8 @@ public class CalendarEntity {
     @Column(name = "d_kcal", nullable = true)
     private int dKcal;
 
-    @Column(name = "over", nullable = true)
-    private String over;
+    @Column(name = "too_much", nullable = true)
+    private String tooMuch;
 
     @Column(name = "lack", nullable = true)
     private String lack;
