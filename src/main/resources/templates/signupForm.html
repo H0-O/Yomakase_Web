@@ -361,27 +361,32 @@
     document.getElementById('gender').value = 'F';
   });
 
+  // 드롭다운 라벨을 클릭하면 해당 컨텐츠를 표시하거나 숨기는 이벤트 처리
+  document.querySelectorAll('.dropdown-label').forEach(label => {
+    label.addEventListener('click', function() {
+      const content = this.nextElementSibling; // 해당 드롭다운의 컨텐츠 찾기
+      content.classList.toggle('show'); // 드롭다운 표시/숨김 토글
+      console.log("Dropdown clicked: Toggling visibility for ", content);
+    });
+  });
+
   // 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
   document.querySelectorAll('.dropdown-content label').forEach(label => {
     label.addEventListener('click', function() {
       const allergy = this.getAttribute('data-allergy');
-      const parentDropdown = this.closest('.dropdown');
-      const input = parentDropdown.querySelector('input[type="hidden"]');
+      const input = document.getElementById(allergy);
 
-      let allergies = input.value ? input.value.split(',') : [];
-
-      if (allergies.includes(allergy)) {
-        allergies = allergies.filter(a => a !== allergy);
+      if (input.value === 'true') {
+        input.value = 'false';
         this.classList.remove('selected');
         console.log(allergy + " deselected");
       } else {
-        allergies.push(allergy);
+        input.value = 'true';
         this.classList.add('selected');
         console.log(allergy + " selected");
       }
 
-      input.value = allergies.join(',');
-      console.log("Current allergies: " + input.value);
+      console.log("Current allergy values: " + input.value);
     });
   });
 </script>
