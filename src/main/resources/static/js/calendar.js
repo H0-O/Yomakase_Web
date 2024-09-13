@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var today = new Date(),
         year = today.getFullYear(),
         month = today.getMonth(),
-        monthTag =["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+        monthTag =[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         day = today.getDate(),
         calendarTable = document.getElementById('calendar'),
         days = calendarTable.getElementsByTagName('td'),
@@ -46,6 +46,12 @@ document.addEventListener('DOMContentLoaded', function(){
             days[daysLen].addEventListener('dblclick', function(){ that.doubleClickDay(this)});
             days[daysLen].addEventListener('mouseover', function(){ that.nutrientScore(this)});
         }
+       /* for (let i = 0; i < days.length; i++) {
+            days[i].addEventListener('click', function() { that.clickDay(this) });
+            days[i].addEventListener('dblclick', function() { that.doubleClickDay(this) });
+            days[i].addEventListener('mouseover', function() { that.nutrientScore(this) });
+        }
+*/
 
         Calendar.prototype.doubleClickDay = function(td){
             modalOn();  // 모달 처리 함수는 따로 정의해야 함
@@ -55,18 +61,42 @@ document.addEventListener('DOMContentLoaded', function(){
             modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
         }
 
+
+        // input 요소 클릭 시 이벤트 전파를 방지
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
+        // dietBtn(식단 저장하는 버튼) 요소에 대해 이벤트 전파 방지
+        let dietBtn = document.getElementById('dietBtn');
+            dietBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+
+
     }; //draw 함수 end
 
     /**
-     * @param e 사용자가 클릭해서 선택한 날짜
+     * @param e 사용자가 클릭해서 선택한 날짜(일)
      */
     Calendar.prototype.drawHeader = function(e) {
         var headDay = document.getElementsByClassName('head-day'),
             headMonth = document.getElementsByClassName('head-month');
 
         e ? headDay[0].innerHTML = e + "일"  : headDay[0].innerHTML = day;
-        headMonth[0].innerHTML = monthTag[month];
-        headDate.innerHTML =  year + '년 ' + monthTag[month];
+        headMonth[0].innerHTML = `${monthTag[month]}월`;
+        headDate.innerHTML =  year + '년 ' + monthTag[month] + '월';
+
+        let clickedDietDay = document.getElementById('clickedDietDay');
+
+        let formattedDate = `${year}-${monthTag[month]}-${e}`;
+        console.log(formattedDate);
+        clickedDietDay.value = formattedDate;
+        clickedDietDay.innerHTML = clickedDietDay.value;
+        //console.log(clickedDietDay.value);
+        //document.getElementsByClassName('clickedDay').innerHTML = clickedDay;
     }; //drawHeader 함수 end
 
     Calendar.prototype.drawDays = function() {
@@ -104,13 +134,13 @@ document.addEventListener('DOMContentLoaded', function(){
     };  //drawDays 함수 end
 
     Calendar.prototype.clickDay = function(o) {
-        var selected = document.getElementsByClassName("selected"),
+      /*  var selected = document.getElementsByClassName("selected"),
             len = selected.length;
         if(len !== 0){
             selected[0].className = "";
         }
-        o.className = "selected";
-        selectedDay = new Date(year, month, o.innerHTML);
+        o.className = "selected";*/
+        selectedDay = new Date(year, month, o.innerHTML);      //new Date(연, 월 ,일);
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
     };  //clickDay 함수 end
