@@ -11,6 +11,10 @@ import net.datasa.yomakase_web.repository.CalendarRepository;
 import net.datasa.yomakase_web.security.AuthenticatedUser;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,23 +26,29 @@ public class CalendarService {
      * 식단 저장 메소드
      * @param calendarDTO   사용자 선택 날짜, 아침 메뉴, 점심 메뉴, 저녁 메뉴
      */
-    public void dietSave(String[] arr) {
-        /* MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setId(user.getUsername());*/
+    public void dietSave(CalendarDTO calDTO) {
+         //MemberEntity memberEntity = new MemberEntity();
+        //memberEntity.setId(user.getUsername());
 
-/*        CalendarEntity calEntity = CalendarEntity.builder()
+        /*CalendarEntity calEntity = CalendarEntity.builder()
                 //.member.setMemberId(user.getUsername()) 와 멤버 아이디가 있으니까 아이디가지고 num찾아내는 메소드 만들어서 그걸 꺼내써야되네
                 //.member.setId(user.getUsername())
                // .inputDate(calendarDTO.getInputDate())
-                .bName(arr[0])
-                .lName(arr[1])
-                .dName(arr[2])
-                .build();*/
 
+                .bName(calDTO.getBName())
+                .lName(calDTO.getLName())
+                .dName(calDTO.getDName())
+                .build();*/
         CalendarEntity calEntity = new CalendarEntity();
-        calEntity.setBName(arr[0]);
+        calEntity.setInputDate(LocalDate.now());
+        calEntity.setMemberNum(2);
+        calEntity.setBName(calDTO.getBName());
+        calEntity.setLName(calDTO.getLName());
+        calEntity.setDName(calDTO.getDName());
+       /* calEntity.setBName(arr[0]);
         calEntity.setLName(arr[1]);
         calEntity.setDName(arr[2]);
+        */
         calendarRepository.save(calEntity);
     }
     

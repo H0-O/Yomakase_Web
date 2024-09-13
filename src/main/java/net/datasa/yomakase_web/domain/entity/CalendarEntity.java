@@ -23,7 +23,6 @@ public class CalendarEntity {
     private LocalDate inputDate;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_num", nullable = false)
     private int memberNum;
 
@@ -49,8 +48,8 @@ public class CalendarEntity {
     @Column(name = "d_kcal", nullable = true)
     private int dKcal;
 
-    @Column(name = "over", nullable = true)
-    private String over;
+    @Column(name = "too_much", nullable = true)
+    private String tooMuch;
 
     @Column(name = "lack", nullable = true)
     private String lack;
