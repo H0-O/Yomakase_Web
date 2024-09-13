@@ -61,6 +61,7 @@
         </div>
     </section>
     <hr class="m-0" />
+
     <!-- 재료 입력 -->
     <section class="resume-section" id="ingredientInput">
         <div class="resume-section-content">
@@ -77,13 +78,16 @@
         </div>
     </section>
     <hr class="m-0" />
+
     <!-- 게시판 -->
     <section class="resume-section" id="board">
         <div class="resume-section-content">
-
+            <div th:insert="~{boardListView :: boardListView}">
+            </div>
         </div>
     </section>
     <hr class="m-0" />
+
     <!-- 마이 페이지 -->
     <section class="resume-section" id="myPages">
         <div class="resume-section-content">
