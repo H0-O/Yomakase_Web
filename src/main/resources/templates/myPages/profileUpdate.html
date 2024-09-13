@@ -1,2 +1,252 @@
 <div th:fragment="profileUpdateFragment">
+    <!-- 통합된 폼 -->
+    <div id="signup-form">
+        <!-- 첫 번째 화면 -->
+        <div class="first-container">
+            <div class="form-group">
+                <label for="email">이메일(수정불가)</label>
+                <!-- 사용자의 이메일을 표시하는 필드 (수정 불가) -->
+                <input type="text" id="email" name="email" th:value="${member.email}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="nickname">닉네임(수정불가)</label>
+                <!-- 사용자의 닉네임을 표시하는 필드 (수정 불가) -->
+                <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <!-- 사용자 비밀번호 입력 필드 -->
+                <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인</label>
+                <!-- 비밀번호 확인 입력 필드 -->
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="birthdate">생년월일</label>
+                <!-- 사용자의 생년월일을 표시하고 수정할 수 있는 필드 -->
+                <input type="date" id="birthdate" name="birthdate" th:value="${member.birthdate}">
+            </div>
+            <label for="gender">성별</label>
+            <div class="gender-toggle">
+                <!-- 성별 버튼: 남성 선택 시 'selected' 클래스가 추가 -->
+                <button type="button" id="male-btn" class="selected" th:classappend="${member.gender == 'M'} ? 'selected' : ''">남성</button>
+                <!-- 성별 버튼: 여성 선택 시 'selected' 클래스가 추가 -->
+                <button type="button" id="female-btn" th:classappend="${member.gender == 'F'} ? 'selected' : ''">여성</button>
+            </div>
+            <!-- 성별 정보를 hidden 필드에 저장하여 제출할 때 사용 -->
+            <input type="hidden" id="gender" name="gender" th:value="${member.gender}">
+            <!-- 다음 버튼을 클릭하면 두 번째 화면으로 넘어감 -->
+            <button type="button" id="next-btn" class="btn">다음</button>
+        </div>
+
+        <!-- 두 번째 화면 -->
+        <div class="second-container" style="display:none;">
+            <div class="form-group">
+                <label for="height">키</label>
+                <!-- 사용자의 키 정보를 입력하는 필드 -->
+                <input type="number" id="height" name="height" th:value="${member.height}">
+            </div>
+            <div class="form-group">
+                <label for="weight">몸무게</label>
+                <!-- 사용자의 몸무게 정보를 입력하는 필드 -->
+                <input type="number" id="weight" name="weight" th:value="${member.weight}">
+            </div>
+            <div class="form-group">
+                <label>알레르기 정보</label>
+                <div class="allergy-group">
+                    <!-- 알레르기 정보 드롭다운: 고기류 -->
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="meat-dropdown">
+                            고기류
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="meat-content">
+                            <!-- 알레르기 정보: 돼지고기 -->
+                            <label data-allergy="pork">돼지고기</label>
+                            <!-- 알레르기 정보: 닭고기 -->
+                            <label data-allergy="chicken">닭고기</label>
+                            <!-- 알레르기 정보: 쇠고기 -->
+                            <label data-allergy="beef">쇠고기</label>
+                        </div>
+                    </div>
+                    <!-- 알레르기 정보 드롭다운: 해산물 -->
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="seafood-dropdown">
+                            해산물
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="seafood-content">
+                            <!-- 알레르기 정보: 고등어 -->
+                            <label data-allergy="mackerel">고등어</label>
+                            <!-- 알레르기 정보: 새우 -->
+                            <label data-allergy="shrimp">새우</label>
+                            <!-- 알레르기 정보: 오징어 -->
+                            <label data-allergy="squid">오징어</label>
+                        </div>
+                    </div>
+                    <!-- 알레르기 정보 드롭다운: 견과류 -->
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="nut-dropdown">
+                            견과류
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="nut-content">
+                            <!-- 알레르기 정보: 땅콩 -->
+                            <label data-allergy="peanut">땅콩</label>
+                            <!-- 알레르기 정보: 호두 -->
+                            <label data-allergy="walnut">호두</label>
+                            <!-- 알레르기 정보: 잣 -->
+                            <label data-allergy="pineNut">잣</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 각 알레르기 항목의 값을 hidden 필드로 관리 -->
+            <input type="hidden" id="eggs" name="eggs" th:value="${member.isEggs()}">
+            <input type="hidden" id="milk" name="milk" th:value="${member.isMilk()}">
+            <input type="hidden" id="buckwheat" name="buckwheat" th:value="${member.isBuckwheat()}">
+            <input type="hidden" id="peanut" name="peanut" th:value="${member.isPeanut()}">
+            <input type="hidden" id="soybean" name="soybean" th:value="${member.isSoybean()}">
+            <input type="hidden" id="wheat" name="wheat" th:value="${member.isWheat()}">
+            <input type="hidden" id="mackerel" name="mackerel" th:value="${member.isMackerel()}">
+            <input type="hidden" id="crab" name="crab" th:value="${member.isCrab()}">
+            <input type="hidden" id="shrimp" name="shrimp" th:value="${member.isShrimp()}">
+            <input type="hidden" id="pork" name="pork" th:value="${member.isPork()}">
+            <input type="hidden" id="peach" name="peach" th:value="${member.isPeach()}">
+            <input type="hidden" id="tomato" name="tomato" th:value="${member.isTomato()}">
+            <input type="hidden" id="walnuts" name="walnuts" th:value="${member.isWalnuts()}">
+            <input type="hidden" id="chicken" name="chicken" th:value="${member.isChicken()}">
+            <input type="hidden" id="beef" name="beef" th:value="${member.isBeef()}">
+            <input type="hidden" id="squid" name="squid" th:value="${member.isSquid()}">
+            <input type="hidden" id="shellfish" name="shellfish" th:value="${member.isShellfish()}">
+            <input type="hidden" id="pineNut" name="pineNut" th:value="${member.isPineNut()}">
+            <!-- 이전 버튼 -->
+            <button type="button" id="back-btn" class="btn">이전</button>
+            <!-- 제출 버튼 -->
+            <button type="submit" class="btn">제출</button>
+            <script>
+                // 성별 버튼 클릭 시 선택된 성별을 hidden 필드에 업데이트하고, 선택된 버튼에 스타일 적용
+                document.getElementById('male-btn').addEventListener('click', function() {
+                    document.getElementById('gender').value = 'M';  // 남성 선택 시 hidden 필드 값 변경
+                    console.log("성별 선택: 남성");  // 로그 추가
+                    this.classList.add('selected');  // 남성 버튼에 'selected' 클래스 추가
+                    document.getElementById('female-btn').classList.remove('selected');  // 여성 버튼에서 'selected' 클래스 제거
+                });
+
+                document.getElementById('female-btn').addEventListener('click', function() {
+                    document.getElementById('gender').value = 'F';  // 여성 선택 시 hidden 필드 값 변경
+                    console.log("성별 선택: 여성");  // 로그 추가
+                    this.classList.add('selected');  // 여성 버튼에 'selected' 클래스 추가
+                    document.getElementById('male-btn').classList.remove('selected');  // 남성 버튼에서 'selected' 클래스 제거
+                });
+
+                // 다음 버튼 클릭 시 첫 번째 화면을 숨기고, 두 번째 화면을 표시
+                document.getElementById('next-btn').addEventListener('click', function() {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    // 비밀번호 확인 검사
+                    if (password !== confirmPassword) {
+                        alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+                        return; // 비밀번호가 일치하지 않으면 전송 중단
+                    }
+                    document.querySelector('.first-container').style.display = 'none';  // 첫 번째 화면 숨김
+                    document.querySelector('.second-container').style.display = 'block';  // 두 번째 화면 표시
+                });
+
+                // 이전 버튼 클릭 시 두 번째 화면을 숨기고, 첫 번째 화면을 표시
+                document.getElementById('back-btn').addEventListener('click', function() {
+                    document.querySelector('.first-container').style.display = 'block';  // 첫 번째 화면 표시
+                    document.querySelector('.second-container').style.display = 'none';  // 두 번째 화면 숨김
+                });
+
+                // 드롭다운 라벨 클릭 시 드롭다운 항목 토글 (열기/닫기)
+                document.querySelectorAll('.dropdown-label').forEach(function(label) {
+                    label.addEventListener('click', function() {
+                        const content = this.nextElementSibling;  // 클릭된 라벨에 해당하는 드롭다운 내용 선택
+                        content.style.display = (content.style.display === 'block') ? 'none' : 'block';  // 드롭다운 내용 표시/숨김 토글
+                    });
+                });
+
+                // 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
+                document.querySelectorAll('.dropdown-content label').forEach(label => {
+                    label.addEventListener('click', function() {
+                        const allergy = this.getAttribute('data-allergy');  // 알레르기 항목 가져오기
+                        const input = document.getElementById(allergy);  // 해당 알레르기와 연결된 hidden 필드 선택
+
+                        if (input.value === 'true') {  // 이미 선택된 항목이라면 선택 해제
+                            input.value = 'false';
+                            this.classList.remove('selected');
+                            console.log(allergy + " deselected");
+                        } else {  // 선택되지 않은 항목이라면 선택
+                            input.value = 'true';
+                            this.classList.add('selected');
+                            console.log(allergy + " selected");
+                        }
+
+                        console.log("Current allergy values: " + input.value);  // 현재 선택된 알레르기 값을 로그로 출력
+                    });
+                });
+
+                // 제출 버튼 클릭 시 AJAX로 데이터를 서버로 전송
+                document.getElementById('submit-btn').addEventListener('click', function() {
+                    // 입력된 값들을 가져와서 데이터 객체에 저장
+                    const email = document.getElementById('email').value;
+                    const nickname = document.getElementById('nickname').value;
+                    const password = document.getElementById('password').value;
+                    const birthdate = document.getElementById('birthdate').value;
+                    const gender = document.getElementById('gender').value;
+                    const height = document.getElementById('height').value;
+                    const weight = document.getElementById('weight').value;
+
+                    // 알레르기 정보 수집
+                    const allergies = [];
+                    document.querySelectorAll('input[type="hidden"]').forEach(function (checkbox) {
+                        if (checkbox.checked) {
+                            allergies.push(checkbox.getAttribute('data-allergy'));  // 체크된 알레르기 항목 수집
+                        }
+                    });
+
+                    // 서버로 전송할 데이터 객체 생성
+                    const data = {
+                        id: email,
+                        nickname: nickname,
+                        birthdate: birthdate,
+                        password: password,
+                        gender: gender,
+                        height: height,
+                        weight: weight,
+                        allergies: allergies
+                    };
+
+                    // AJAX 요청으로 데이터를 서버로 전송
+                    fetch('/member/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)  // 데이터 JSON으로 변환하여 전송
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();  // 성공적인 응답이면 JSON 데이터 반환
+                            } else {
+                                throw new Error('서버에서 오류가 발생했습니다.');  // 오류 처리
+                            }
+                        })
+                        .then(result => {
+                            // 성공적으로 제출한 후 처리
+                            console.log("서버 응답 데이터:", result);  // 서버에서 반환한 데이터를 로그로 출력
+                            alert('회원 정보가 성공적으로 업데이트되었습니다.');
+                            window.location.href = '/';  // 업데이트 후 프로필 페이지로 리다이렉트
+                        })
+                        .catch(error => {
+                            console.error('오류 발생:', error);  // 오류 발생 시 로그 출력
+                        });
+                });
+            </script>
+        </div>
+    </div>
 </div>

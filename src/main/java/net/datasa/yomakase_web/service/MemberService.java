@@ -1,5 +1,6 @@
 package net.datasa.yomakase_web.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.dto.MemberDTO;
@@ -10,6 +11,7 @@ import net.datasa.yomakase_web.repository.AllergyRepository;
 import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.UserBodyInfoRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,9 @@ public class MemberService {
     private final AllergyRepository allergyRepository;
     private final UserBodyInfoRepository userBodyInfoRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // 암호화
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void saveMember(MemberDTO memberDTO) {
         // 1. MemberEntity 저장
@@ -96,6 +101,7 @@ public class MemberService {
         member.setUserRole("ROLE_USER"); // 역할을 ROLE_USER로 변경
         memberRepository.save(member); // 변경된 사용자 정보 저장
     }
+
     /**
      * メールアドレスでユーザーを探すメソッド
      * @param email メールアドレス
@@ -119,5 +125,90 @@ public class MemberService {
             log.error("회원 정보를 찾을 수 없음: {}", username);
             throw new RuntimeException("회원 정보를 찾을 수 없습니다.");
         }
+    }
+
+    // 이메일을 통해 사용자 정보를 가져오는 메서드
+    public MemberDTO getUserByEmail(String email) {
+        MemberEntity memberEntity = memberRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // MemberEntity를 memberDTO로 변환
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setEmail(memberEntity.getId());
+        memberDTO.setNickname(memberEntity.getName());
+        memberDTO.setBirthdate(memberEntity.getBirthDate());
+        memberDTO.setGender(memberEntity.getGen());
+        memberDTO.setEggs(memberEntity.getAllergy().isEggs());
+        memberDTO.setMilk(memberEntity.getAllergy().isMilk());
+        memberDTO.setBuckwheat(memberEntity.getAllergy().isBuckwheat());
+        memberDTO.setPeanut(memberEntity.getAllergy().isPeanut());
+        memberDTO.setSoybean(memberEntity.getAllergy().isSoybean());
+        memberDTO.setWheat(memberEntity.getAllergy().isWheat());
+        memberDTO.setMackerel(memberEntity.getAllergy().isMackerel());
+        memberDTO.setCrab(memberEntity.getAllergy().isCrab());
+        memberDTO.setShrimp(memberEntity.getAllergy().isShrimp());
+        memberDTO.setPork(memberEntity.getAllergy().isPork());
+        memberDTO.setPeach(memberEntity.getAllergy().isPeach());
+        memberDTO.setTomato(memberEntity.getAllergy().isTomato());
+        memberDTO.setWalnuts(memberEntity.getAllergy().isWalnuts());
+        memberDTO.setChicken(memberEntity.getAllergy().isChicken());
+        memberDTO.setBeef(memberEntity.getAllergy().isBeef());
+        memberDTO.setSquid(memberEntity.getAllergy().isSquid());
+        memberDTO.setShellfish(memberEntity.getAllergy().isShellfish());
+        memberDTO.setPineNut(memberEntity.getAllergy().isPineNut());
+        memberDTO.setHeight(memberEntity.getBodyInfo().getHeight());
+        memberDTO.setWeight(memberEntity.getBodyInfo().getWeight());
+
+    // 필요한 필드만 선택적으로 포함
+        return memberDTO;
+}
+
+
+
+    // 사용자 정보를 업데이트하는 메서드
+    public void updateUser(MemberDTO memberDTO) {
+        MemberEntity entity = memberRepository.findById(memberDTO.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("없는 ID"));
+
+        // 비밀번호가 비어있지 않으면 비번도 수정
+        if (memberDTO.getPassword() == "") {
+        } else {entity.setPw(bCryptPasswordEncoder.encode(memberDTO.getPassword()));}
+
+        // MemberEntity 저장
+        MemberEntity member = MemberEntity.builder()
+                .gen(memberDTO.getGender())
+                .birthDate(memberDTO.getBirthdate())
+                .build();
+        memberRepository.save(member);
+
+        // UserBodyInfoEntity 저장
+        UserBodyInfoEntity bodyInfo = UserBodyInfoEntity.builder()
+                .height(memberDTO.getHeight())
+                .weight(memberDTO.getWeight())
+                .build();
+        userBodyInfoRepository.save(bodyInfo);
+
+        // AllergyEntity 저장
+        AllergyEntity allergy = AllergyEntity.builder()
+                .eggs(memberDTO.isEggs())
+                .milk(memberDTO.isMilk())
+                .buckwheat(memberDTO.isBuckwheat())
+                .peanut(memberDTO.isPeanut())
+                .soybean(memberDTO.isSoybean())
+                .wheat(memberDTO.isWheat())
+                .mackerel(memberDTO.isMackerel())
+                .crab(memberDTO.isCrab())
+                .shrimp(memberDTO.isShrimp())
+                .pork(memberDTO.isPork())
+                .peach(memberDTO.isPeach())
+                .tomato(memberDTO.isTomato())
+                .walnuts(memberDTO.isWalnuts())
+                .chicken(memberDTO.isChicken())
+                .beef(memberDTO.isBeef())
+                .squid(memberDTO.isSquid())
+                .shellfish(memberDTO.isShellfish())
+                .pineNut(memberDTO.isPineNut())
+                .build();
+        allergyRepository.save(allergy);
     }
 }
