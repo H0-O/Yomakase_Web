@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-top: 20px;
+      font-size: 2rem;
+    }
+
+    #userInfo{
+      padding-left: 10%;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #81c405;
+      color: white;
+      font-weight: bold;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    table a {
+      color: #81c405;
+      text-decoration: none;
+    }
+
+    table a:hover {
+      text-decoration: underline;
+    }
+
+    #navigator {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #navigator a {
+      color: #81c405;
+      margin: 0 5px;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    #navigator a:hover {
+      text-decoration: underline;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    form input[type="text"] {
+      padding: 7px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    form select, form input[type="submit"] {
+      padding: 8px 12px;
+      margin-left: 10px;
+      font-size: 1rem;
+      border: 1px solid #81c405;
+      background-color: #81c405;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover {
+      background-color: #7bb12a;
+    }
+
+    div[sec\:authorize] {
+      text-align: right;
+      margin: 0 10%;
+      padding-bottom: 10px;
+    }
+
+    button a {
+      color: white;
+      text-decoration: none;
+    }
+
+    button {
+      background-color: #81c405;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #7bb12a;
+    }
+
+    #pagingForm{
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1 th:text="${category}">카테고리별 게시글</h1>
+
+  <div sec:authorize="isAuthenticated()" id="userInfo">
+    <img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp
+    <span style="font-weight: bold;" th:text="${user.name}"></span>님&nbsp&nbsp<button><a th:href="@{/board/write}">글쓰기</a></button>
+  </div>
+  <!-- 글목록 출력 영역 -->
+  <table>
+    <tr>
+      <th>번호</th>
+      <th>카테고리</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>작성일</th>
+    </tr>
+    <tr th:each="board, status : ${boardPage}">
+      <td th:text="${board.boardNum}"></td>
+      <td th:text="${board.category}"></td>
+      <td>
+        <a th:text="${board.title}"
+           th:href="@{/board/read(boardNum=${board.boardNum})}"></a>
+        <!-- /* th:href="|read?boardNum=${board.boardNum}|"와 동일
+        URL는 /board/read?boardNum=1(글 번호)
+        */ -->
+      </td>
+      <td th:text="${board.name}"></td>
+      <td th:text="${#temporals.format(board.createDate, 'yy.MM.dd HH:mm')}"></td>
+    </tr>
+  </table>
+
+  <div id="navigator">
+    <!-- 페이지 이동 링크 -->
+    <span
+            th:if="${boardPage.getTotalPages() > 0}"
+            th:each="counter : ${#numbers.sequence((page - linkSize < 1 ? 1 : page - linkSize), (page + linkSize > boardPage.getTotalPages() ? boardPage.getTotalPages() : page + linkSize))}">
+			<th:block th:if="${counter == page}"><b></th:block>
+				<a th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>&nbsp;
+			<th:block th:if="${counter == page}"></b></th:block>
+		</span>
+    <span th:if="${boardPage.getTotalPages() > 0 and page != boardPage.getTotalPages()}">
+			<a th:href="|javascript:pagingFormSubmit(${boardPage.getTotalPages()})|">마지막페이지</a>
+		</span>
+    <br><br>
+
+
+    <!-- 검색폼 -->
+    <form id="pagingForm" method="get" th:action="@{/board/list}">
+
+      <input type="hidden" name="page" id="page">
+      <select id="type" name="searchType">
+        <option value="title" th:selected="${searchType == 'title'}">제목</option>
+        <option value="contents" th:selected="${searchType == 'contents'}">내용</option>
+        <option value="name" th:selected="${searchType == 'name'}">작성자</option>
+      </select>
+      <input type="text"  name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요">
+      <input type="submit" value="검색">
+
+    </form>
+  </div>
+
+</body>
+</html>

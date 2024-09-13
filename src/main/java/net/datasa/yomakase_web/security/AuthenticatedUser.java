@@ -23,6 +23,8 @@ public class AuthenticatedUser implements UserDetails {
     String password;     // 필수
     boolean enabled;     // 필수
     String roleName;     // 필수. 내가 정하는 이름(예를 들어, 권한 줄 때 구분하기 위해)
+    Integer memberNum;
+    String name;
     // 선택 부분은 사용하고 싶은 객체를 선언해서 사용할 수 있고,
 
     // 계정이 만료되지 않았는지 여부를 반환(리턴
@@ -65,5 +67,9 @@ public class AuthenticatedUser implements UserDetails {
     @Override
     public String getUsername() {
         return id;
+    }
+
+    public Integer getMemberNum() {
+    return memberNum;
     }
 }

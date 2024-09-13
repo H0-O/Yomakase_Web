@@ -1,0 +1,219 @@
+<div th:fragment="boardListView" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+	<div class="boardContent">
+
+		<h4>자유게시판</h4>
+
+		<div class="boardNavbar">
+			<ul>
+				<li><a href="/board/category?category=알림">알림</a></li>
+				<li><a href="/board/category?category=자취팁">자취팁</a></li>
+				<li><a href="/board/category?category=사담">사담</a></li>
+				<li><a href="/board/category?category=기타">기타</a></li>
+			</ul>
+		</div>
+
+		<div sec:authorize="isAuthenticated()" id="userInfo">
+			<img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp
+			<span id="loginUserName" style="font-weight: bold;">사용자</span>님&nbsp&nbsp<button id="boardWriteBt">글쓰기</button>
+		</div>
+
+		<div id="boardListContent"></div>
+
+		<!-- 검색폼 -->
+		<form id="pagingForm" method="get" th:action="@{/board/list}">
+
+			<input type="hidden" name="page" id="page">
+			<select id="type" name="searchType">
+				<option value="title" th:selected="${searchType == 'title'}">제목</option>
+				<option value="contents" th:selected="${searchType == 'contents'}">내용</option>
+				<option value="name" th:selected="${searchType == 'name'}">작성자</option>
+			</select>
+			<input type="text"  name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요">
+			<input type="submit" value="검색">
+
+		</form>
+
+	</div>
+
+	<style>
+		.boardNavbar {
+			display: flex;
+			justify-content: center;
+			background-color: #fff;
+			padding: 15px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			margin: 0 auto;
+			margin-bottom: 20px;
+			width: 80%;
+		}
+
+		.boardNavbar ul {
+			list-style: none;
+			display: flex;
+			gap: 100px;
+			padding: 0;
+			margin: 0;
+		}
+
+		.boardNavbar ul li {
+			font-size: 1.1rem;
+			font-weight: bold;
+			color: #555;
+		}
+
+		.boardNavbar ul li:hover {
+			color: #81c405;
+			cursor: pointer;
+		}
+
+		#boardWriteBt{
+			display: inline;
+		}
+
+		#userInfo{
+			padding-left: 10%;
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+		}
+
+		.boardTable{
+			width: 95%;
+			margin: 0 auto;
+			border-collapse: collapse;
+			background-color: #fff;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			overflow: visible !important;
+		}
+
+		.boardTable th, .boardTable td {
+			padding: 15px;
+			text-align: center;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.boardTable th {
+			background-color: #81c405;
+			color: white;
+			font-weight: bold;
+		}
+
+		#boardTableTbody {
+			overflow: visible !important;
+			height: auto !important;
+		}
+
+		.boardTable tr:nth-child(even) {
+			background-color: #f9f9f9;
+		}
+
+		.boardTable a {
+			color: #81c405;
+			text-decoration: none;
+		}
+
+		.boardTable a:hover {
+			text-decoration: underline;
+		}
+
+		#boardListContent{
+			height: auto !important;
+			overflow: visible !important;
+		}
+
+		.boardContent {
+			overflow: visible !important;
+		}
+
+		#pagingForm{
+			margin: 30px 0px 30px 25px;
+		}
+
+		form {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
+		#pagingForm input[type="text"] {
+			padding: 7px;
+			font-size: 1rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
+
+		#pagingForm select, form input[type="submit"] {
+			padding: 8px 12px;
+			margin-left: 10px;
+			font-size: 1rem;
+			border: 1px solid #81c405;
+			background-color: #81c405;
+			color: white;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		#pagingForm input[type="submit"]:hover {
+			background-color: #7bb12a;
+		}
+
+	</style>
+	<script src="/js/jquery-3.7.1.min.js"></script>
+	<script>
+		$(document).ready(function() {
+
+			loadBoardData(1); // 처음에 1페이지 데이터를 불러옴
+
+			function loadBoardData(page) {
+				$.ajax({
+					url: '/board/list',
+					method: 'GET',
+					data: {
+						page: page,
+						searchWord: '', // 초기에는 검색어 없음
+						searchType: ''  // 검색 타입 없음
+					},
+					success: function(response) {
+						// alert("1");
+						// 여러 데이터를 포함한 응답에서 필요한 데이터 추출
+						var boardPage = response.boardPage;
+						var user = response.user;
+						var searchType = response.searchType;
+						var searchWord = response.searchWord;
+
+						var boardList = ''; // 데이터를 넣을 HTML 변수
+						$.each(boardPage.content, function(index, board) {
+							boardList += '<tr>';
+							boardList += '<td>' + board.boardNum + '</td>';
+							boardList += '<td>' + board.category + '</td>';
+							boardList += '<td><a href="/board/read?boardNum=' + board.boardNum + '">' + board.title + '</a></td>';
+							boardList += '<td>' + board.name + '</td>';
+							boardList += '<td>' + new Date(board.createDate).toLocaleString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</td>';
+							boardList += '</tr>';
+						});
+
+						$('#boardListContent').html(`
+                        <table class="boardTable">
+                        	<tbody id="boardTableTbody">
+                            <tr>
+                                <th>번호</th>
+                                <th>카테고리</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>작성일</th>
+                            </tr>
+                            ${boardList}
+                            </tbody>
+                        </table>
+                    `);
+					},
+					error: function(error) {
+						console.log("Error loading board data:", error);
+					}
+				});
+			}
+
+		});
+	</script>
+
+</div>
