@@ -124,6 +124,10 @@
       <div class="cal-content">
           <table id="diet-modal-table">
             <tr>
+              <td colspan="2" id="clickedDietDay">클릭한 날짜</td>
+              <td></td>
+            </tr>
+            <tr>
               <th>아침</th>
               <td><input type="text" id="bName" placeholder="아침 식사 메뉴를 알려주세요"></td>
             </tr>
@@ -137,6 +141,7 @@
             </tr>
             <tr>
               <td colspan="2"><button id="dietBtn">식단 저장</button></td>
+              <td></td>
             </tr>
           </table>
       </div>
@@ -174,7 +179,7 @@
         let bName = document.getElementById('bName').value;
         let lName = document.getElementById('lName').value;
         let dName = document.getElementById('dName').value;
-
+        let clickedDietDay = document.getElementById('clickedDietDay').value;
         //console.log(bName, lName, dName);
 
         if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
@@ -182,7 +187,7 @@
           document.getElementById('bName').focus();
           return;
         }
-        let dietArr = [bName, lName, dName];
+        let dietArr = [bName, lName, dName, clickedDietDay];
           //서버로 비동기적인 요청
           $.ajax({
             url : '/cal/diet',		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분

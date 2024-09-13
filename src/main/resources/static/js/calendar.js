@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var today = new Date(),
         year = today.getFullYear(),
         month = today.getMonth(),
-        monthTag =["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+        monthTag =[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         day = today.getDate(),
         calendarTable = document.getElementById('calendar'),
         days = calendarTable.getElementsByTagName('td'),
@@ -52,13 +52,6 @@ document.addEventListener('DOMContentLoaded', function(){
             days[i].addEventListener('mouseover', function() { that.nutrientScore(this) });
         }
 */
-        // 모든 input 요소에 대해 이벤트 전파 방지
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-        });
-
 
         Calendar.prototype.doubleClickDay = function(td){
             modalOn();  // 모달 처리 함수는 따로 정의해야 함
@@ -67,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function(){
         Calendar.prototype.nutrientScore = function(td){
             modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
         }
+
 
         // input 요소 클릭 시 이벤트 전파를 방지
         document.querySelectorAll('input').forEach(input => {
@@ -92,11 +86,17 @@ document.addEventListener('DOMContentLoaded', function(){
             headMonth = document.getElementsByClassName('head-month');
 
         e ? headDay[0].innerHTML = e + "일"  : headDay[0].innerHTML = day;
-        headMonth[0].innerHTML = monthTag[month];
-        headDate.innerHTML =  year + '년 ' + monthTag[month];
-/*  그지같은것
-        clickedDay = headMonth.innerHTML + headDay.innerHTML;
-        document.getElementsByClassName('clickedDay').innerHTML = clickedDay;*/
+        headMonth[0].innerHTML = `${monthTag[month]}월`;
+        headDate.innerHTML =  year + '년 ' + monthTag[month] + '월';
+
+        let clickedDietDay = document.getElementById('clickedDietDay');
+
+        let formattedDate = `${year}-${monthTag[month]}-${e}`;
+        console.log(formattedDate);
+        clickedDietDay.value = formattedDate;
+        clickedDietDay.innerHTML = clickedDietDay.value;
+        //console.log(clickedDietDay.value);
+        //document.getElementsByClassName('clickedDay').innerHTML = clickedDay;
     }; //drawHeader 함수 end
 
     Calendar.prototype.drawDays = function() {

@@ -40,8 +40,8 @@ public class CalendarService {
                 .dName(calDTO.getDName())
                 .build();*/
         CalendarEntity calEntity = new CalendarEntity();
-        calEntity.setInputDate(LocalDate.now());
-        calEntity.setMemberNum(2);
+        calEntity.setInputDate(calDTO.getInputDate());
+        calEntity.setMemberNum(1);
         calEntity.setBName(calDTO.getBName());
         calEntity.setLName(calDTO.getLName());
         calEntity.setDName(calDTO.getDName());
