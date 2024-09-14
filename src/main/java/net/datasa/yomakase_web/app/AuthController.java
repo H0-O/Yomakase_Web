@@ -4,13 +4,12 @@ package net.datasa.yomakase_web.app;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.security.AuthenticatedUser;
-import net.datasa.yomakase_web.security.AuthenticatedUserDetailsService;
+import net.datasa.yomakase_web.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final AuthenticatedUserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 로그인 요청을 처리하는 메서드
     @PostMapping("/login")
@@ -36,11 +35,14 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-            LoginResponseDTO response = new LoginResponseDTO(authenticatedUser.getUsername(), "로그인 성공");
+            String token = jwtTokenProvider.generateToken(authenticatedUser); // JWT 토큰 생성
+
+
+            LoginResponseDTO response = new LoginResponseDTO(authenticatedUser.getUsername(), "로그인 성공", token);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("로그인 실패: {}", e.getMessage());
-            return ResponseEntity.status(401).body(new LoginResponseDTO(null, "로그인 실패"));
+            return ResponseEntity.status(401).body(new LoginResponseDTO(null, "로그인 실패",null));
         }
     }
 }
