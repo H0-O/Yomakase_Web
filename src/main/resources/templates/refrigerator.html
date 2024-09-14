@@ -12,23 +12,25 @@
             width: 350px; /* 냉장고 이미지 너비 */
             height: 650px; /* 냉장고 이미지 높이 */
             overflow: hidden; /* 자식 요소가 컨테이너를 넘어가지 않도록 설정 */
+        }
 
+        #ingredients-container {
+            position: absolute; /* 식재료 컨테이너를 절대 위치로 설정 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(9px); /* 원하는 이동 값 (픽셀 단위) */
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between; /* 각 열의 아이템 사이에 간격을 주어 균일하게 배치 */
-            align-content: space-between; /* 각 행 사이의 간격을 균일하게 조정 */
+            justify-content: space-between;
+            align-content: space-between;
         }
 
         .ingredient {
-            /*position: absolute; !* 식재료 이미지를 냉장고 이미지 위에 겹쳐서 배치 *!*/
-            /*display: inline-block;*/
             text-align: center; /* 텍스트를 중앙에 위치시킴 */
             cursor: pointer; /* 클릭 가능한 영역을 표시 */
-
-            /*width: 100px; !* 아이템 너비 *!*/
-            /*height: 100px; !* 아이템 높이 *!*/
             margin: 10px; /* 아이템 간격 */
-
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -37,7 +39,7 @@
             height: 106px; /* 각 아이템의 높이 설정 */
             box-sizing: border-box;
             position: relative; /* 이미지 위에 텍스트를 배치하기 위한 상대적 위치 */
-            transform: translateY(92px); /* 그리드를 아래로 이동 */
+            transform: translateY(95px); /* 그리드를 아래로 이동 */
         }
 
         .ingredient img {
@@ -191,8 +193,6 @@
             position: fixed; /* absolute */
             width: 100%;
             height: 100%; /* 1075px */
-            /*min-height: 100vh;*/
-            /*min-width: 768px;*/
             left: 0;
             top: 0; /* 737px */
             flex-direction: column;
@@ -219,8 +219,6 @@
             padding: 20px; /* 10px */
             max-width: 800px; /* 모달 너비 설정 */
             max-height: 600px; /* 모달 높이 설정 */
-            /*top: -100px;*/
-            /*left: 100px; !* 오른쪽으로 이동 *!*/
         }
 
         #RecipeModal .modal-window {
@@ -230,8 +228,6 @@
         }
 
         #delModal .modal-window {
-            /*width: 200px;*/
-            /*height: 130px;*/
             width: 260px;
             height: 140px;
             text-align: center;
@@ -262,8 +258,7 @@
             font-size: 20px;
             text-align: center;
             padding-top: 8px;
-            /*padding-left: 15px;*/
-            padding-bottom: 8px;
+            padding-left: 20px;
         }
 
         #delModal .btn {
@@ -278,7 +273,6 @@
             font-size: 20px;
             text-align: center;
             padding-left: 12px;
-            padding-bottom: 5px;
         }
 
         #date-container input[type="date"] {
@@ -312,7 +306,10 @@
                     <button id="RecipeModalBtn" class="btn">요리법 추천</button>
                     <br>
                     <div class="refrigerator-container" id="refrigerator-container">
-                        <!-- 냉장고, 식재료 이미지 추가 -->
+                        <!-- 냉장고 배경 이미지 추가 -->
+                        <div id="ingredients-container">
+                            <!-- 식재료 이미지 담을 컨테이너 -->
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -462,7 +459,7 @@
             fetch('/rest/stockImg')  // 컨트롤러 경로에 맞추어 요청
                 .then(response => response.json())
                 .then(stockItems => {
-                    const container = document.getElementById('refrigerator-container');
+                    const container = document.getElementById('ingredients-container');
 
                     // 컨테이너의 크기
                     const containerWidth = container.offsetWidth;
@@ -510,6 +507,9 @@
                         ingredientDiv.style.top = `${rowIndex * (itemHeight + rowGap)}px`; // y축 위치
                         ingredientDiv.style.left = `${colIndex * (itemWidth + colGap)}px`; // x축 위치
 
+                        // 삭제 버튼 클릭 이벤트 추가
+                        ingredientDiv.addEventListener('click', () => showIngredientName(item.name));
+
                         container.appendChild(ingredientDiv);
                     });
                 })
@@ -518,9 +518,19 @@
 
         // 재료 삭제 모달
         const delModal = document.getElementById('delModal');
+        const modalText = delModal.querySelector('.modal-text');
+
+        function showIngredientName(text) {
+            modalText.textContent = text;
+            delModalOn();
+        }
 
         function delModalOn() {
             delModal.style.display = 'flex';
+        }
+
+        function isDateModalOn() {
+            return delModal.style.display === "flex";
         }
 
         function delModalOff() {
@@ -545,7 +555,7 @@
             if (delModal.style.display === 'flex' && e.key === "Escape") {
                 delModalOff();
             }
-        });
+        }); // 삭제 모달창 끝
 
         // 날짜 수정 모달
         document.addEventListener("DOMContentLoaded", () => {
@@ -623,9 +633,9 @@
             RecipeModal.style.display = "none"; // 모달을 숨김
         }
 
-        // 특정 버튼을 누르면 모달창이 켜지게 하기
         const RecipeModalBtn = document.getElementById("RecipeModalBtn");
 
+        // 특정 버튼을 누르면 모달창이 켜지게 하기
         RecipeModalBtn.addEventListener("click", () => {
             RecipeModalOn();
         });

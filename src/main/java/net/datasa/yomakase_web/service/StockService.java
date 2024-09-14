@@ -81,9 +81,10 @@ public class StockService {
 
     // 이미지 파일명 리스트
     private final List<String> imageFileNames = List.of(
-            "food-container1.png",
-            "food-container2.png",
-            "food-container3.png"
+            "food-containerB.png",
+            "food-containerG.png",
+            "food-containerR.png",
+            "food-containerY.png"
     );
 
     /**
