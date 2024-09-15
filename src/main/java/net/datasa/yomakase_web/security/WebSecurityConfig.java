@@ -2,7 +2,9 @@ package net.datasa.yomakase_web.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,6 +32,7 @@ public class WebSecurityConfig {
             , "/idCheck"
             , "/home"
             , "/index"
+            ,"/api/auth/login" // 앱에서 사용하는 로그인 API
     };
 
     // @Bean : 메서드 레벨에서 사용되며, 해당 메서드의 리턴 값을 스프링 IoC 컨테이너가 관리하는 빈으로 등록하는 역할
@@ -79,4 +82,25 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // 앱에서 사용할 API 로그인을 위한 SecurityFilterChain
+    @Bean
+    public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/login").permitAll() // 앱의 로그인 API는 접근 허용
+                        .anyRequest().authenticated()                   // 다른 요청은 인증 필요
+                )
+                // CSRF 비활성화 (API 요청에서 필요하지 않음)
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // 폼 로그인을 비활성화하여 API 방식의 로그인을 허용
+                .formLogin(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+    // AuthenticationManager 빈 설정 (로그인 인증 처리에 필요)
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 }
