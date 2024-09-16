@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 읽기</title>
+</head>
+<body>
+
+<h1>[ 글 읽기 ]</h1>
+
+    <table>
+        <tr>
+            <th>작성자</th>
+            <td th:text="${board.getName()}"></td>
+        </tr>
+        <tr>
+            <th>작성일</th>
+            <td th:text="${board.createDate}"></td>
+        </tr>
+        <tr>
+            <th>추천수</th>
+            <td th:text="${board.recommended}"></td>
+        </tr>
+        <tr>
+            <th>제목</th>
+            <td th:text="${board.title}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td th:text="${board.contents}"></td>
+        </tr>
+        <tr>
+            <th>첨부파일</th>
+            <td>
+                <!-- 첨부파일이 있을 때만 이미지 출력 -->
+                <img th:if="${board.fileName != null}" th:src="|download?boardNum=${board.boardNum}|" style="width: 50px; height: 50px">
+
+                <!-- 파일이 있으면 다운로드 링크 표시 -->
+                <a th:if="${board.fileName != null}" th:href="@{/board/download(boardNum=${board.boardNum})}" th:text="${board.fileName}"></a>
+            </td>
+        </tr>
+    </table>
+    <!-- 수정/삭제 버튼(해당 글 작성자만 가능) -->
+    <div th:if="${#authentication.principal.memberNum == board.memberNum}">
+        <button id="deleteButton" th:data-num="${board.boardNum}">삭제</button>
+        <button id="updateButton" th:data-num="${board.boardNum}">수정</button>
+    </div>
+
+</body>
+</html>
