@@ -138,7 +138,8 @@ CREATE TABLE `complaint` (
                              `title` VARCHAR(200) NOT NULL,  -- 제목
                              `category` VARCHAR(10) NOT NULL,  -- 분류
                              `contents` MEDIUMTEXT NOT NULL,  -- 내용
-                             `input_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,  -- 입력 날짜
+                             `input_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,-- 입력 날짜
+                             `status` tinyint(1) DEFAULT 0 CHECK (`status` IN (0, 1)), -- 1 : 답변완료, 0 : 답변중
                              FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE -- 회원 테이블과의 관계
 );
 
