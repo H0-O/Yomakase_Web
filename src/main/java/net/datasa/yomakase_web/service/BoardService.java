@@ -1,8 +1,13 @@
 package net.datasa.yomakase_web.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import net.datasa.yomakase_web.domain.dto.BoardDTO;
 import net.datasa.yomakase_web.domain.entity.BoardEntity;
 import net.datasa.yomakase_web.domain.entity.MemberEntity;
@@ -13,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -127,5 +133,68 @@ public class BoardService {
 		Page<BoardDTO> boardDTOPage = entityPage.map(this::convertToDTO);
 
 		return boardDTOPage;
+	}
+
+	public BoardDTO getBoard(Integer boardNum) {
+		// 글 번호로 BoardEntity 조회하여 없으면 예외, 있으면 BoardDTO로 변환하여 리턴
+
+		BoardEntity entity = boardRepository.findById(boardNum)
+				.orElseThrow(() -> new EntityNotFoundException("글이 없습니다."));
+
+		// 조회결과 출력
+		log.debug("조회된 게시글 정보: {}", entity);
+
+		BoardDTO dto = convertToDTO(entity);
+
+		// 리플목록을 DTO로 변환하여 추가
+//		List<ReplyDTO> replyList = new ArrayList<>();
+//		for(ReplyEntity replyEntity : entity.getReplyList()) {
+//			ReplyDTO replyDTO = ReplyDTO.builder()
+//					.replyNum(replyEntity.getReplyNum())
+//					.boardNum(replyEntity.getBoard().getBoardNum())
+//					.memberId(replyEntity.getMember().getMemberId())
+//					.memberName(replyEntity.getMember().getMemberName())
+//					.contents(replyEntity.getContents())
+//					.createDate(replyEntity.getCreatDate())
+//					.build();
+//			replyList.add(replyDTO);
+//		}
+//
+//		dto.setReplyList(replyList);
+
+		return dto;}
+
+	public void download(Integer boardNum, String uploadPath, HttpServletResponse response) {
+
+		// 전달된 글 번호로 파일명 확인
+		BoardEntity boardEntity = boardRepository.findById(boardNum)
+				.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+		// 원래의 파일명을 헤더정보에 세팅
+		try {
+			response.setHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode(boardEntity.getFileName(), "UTF-8"));
+		} catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		// 저장된 파일 경로
+		String fullPath = uploadPath + "/" + boardEntity.getFileName();
+
+		// 서버의 파일을 읽을 입력 스트림과 클라이언트에게 전달할 출력스트림
+		FileInputStream filein = null;
+		ServletOutputStream fileout = null;
+
+		// 파일읽기
+		try {
+			filein = new FileInputStream(fullPath);
+			fileout = response.getOutputStream();
+			// Spring과 파일 관련 유틸 이용하여 출력
+			FileCopyUtils.copy(filein, fileout);
+
+			filein.close();
+			fileout.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		// response를 통해 출력
+
 	}
 }

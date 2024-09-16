@@ -6,7 +6,7 @@
 		<div class="boardNavbar">
 			<ul>
 				<li><a href="/board/category?category=알림">알림</a></li>
-				<li><a href="/board/category?category=자취팁">자취팁</a></li>
+				<li><a href="/board/category?category=자취꿀팁">자취꿀팁</a></li>
 				<li><a href="/board/category?category=사담">사담</a></li>
 				<li><a href="/board/category?category=기타">기타</a></li>
 			</ul>
@@ -156,11 +156,28 @@
 		#pagingForm input[type="submit"]:hover {
 			background-color: #7bb12a;
 		}
+		.boardNumCol{
+			width: 10%;
+		}
+		.boardCatCol{
+			width: 15%;
+		}
+		.writerNameCol{
+			width: 15%;
+		}
+		.writerDateCol{
+			width: 15%;
+		}
 
 	</style>
 	<script src="/js/jquery-3.7.1.min.js"></script>
 	<script>
+
 		$(document).ready(function() {
+
+			$('#boardWriteBt').click(function (){
+				window.location.href = 'board/write'
+			})
 
 			loadBoardData(1); // 처음에 1페이지 데이터를 불러옴
 
@@ -183,15 +200,25 @@
 
 						var boardList = ''; // 데이터를 넣을 HTML 변수
 						$.each(boardPage.content, function(index, board) {
+							var date = new Date(board.createDate);
+							var year = date.getFullYear().toString().slice(-2); // '24'
+							var month = (date.getMonth() + 1).toString().padStart(2, '0'); // '09'
+							var day = date.getDate().toString().padStart(2, '0'); // '11'
+							var hour = date.getHours().toString().padStart(2, '0'); // '10'
+							var minute = date.getMinutes().toString().padStart(2, '0'); // '09'
+
+							var formattedDate = `${year}.${month}.${day} ${hour}:${minute}`;
+
 							boardList += '<tr>';
-							boardList += '<td>' + board.boardNum + '</td>';
-							boardList += '<td>' + board.category + '</td>';
+							boardList += '<td class="boardNumCol">' + board.boardNum + '</td>';
+							boardList += '<td class="boardCatCol">' + board.category + '</td>';
 							boardList += '<td><a href="/board/read?boardNum=' + board.boardNum + '">' + board.title + '</a></td>';
-							boardList += '<td>' + board.name + '</td>';
-							boardList += '<td>' + new Date(board.createDate).toLocaleString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</td>';
+							boardList += '<td class="writerNameCol">' + board.name + '</td>';
+							boardList += '<td class="writerDateCol">' + formattedDate + '</td>';
 							boardList += '</tr>';
 						});
 
+						$('#loginUserName').html(user.name);
 						$('#boardListContent').html(`
                         <table class="boardTable">
                         	<tbody id="boardTableTbody">

@@ -1,5 +1,6 @@
 package net.datasa.yomakase_web.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import net.datasa.yomakase_web.domain.dto.BoardDTO;
 import net.datasa.yomakase_web.security.AuthenticatedUser;
 import net.datasa.yomakase_web.service.BoardService;
@@ -82,7 +83,10 @@ public class BoardController {
 	}
 	
 	@GetMapping("write")
-	public String write() {
+	public String write(@AuthenticationPrincipal AuthenticatedUser user, Model model) {
+
+		model.addAttribute("user", user);
+
 		return "boardWrite";
 	}
 	
@@ -90,21 +94,33 @@ public class BoardController {
 	public String write(@ModelAttribute BoardDTO dto,
 						@RequestParam("upload") MultipartFile upload,		// 변수명은 input태그의 name과 같아야 함
 						@AuthenticationPrincipal AuthenticatedUser user) {
-		log.debug("게시판 글 : {}", dto);
-		
+		// log.debug("게시판 글 : {}, 사용자정보: {}", dto, user);
+
 		dto.setMemberNum(user.getMemberNum());
-		
-		// 업로드한 파일에 대한 정보 확인
-		if(upload != null) {
-			log.debug("파일 존재 여부 : {}", upload.isEmpty());
-			log.debug("파라미터 이름 : {}", upload.getName());
-			log.debug("파일의 이름 : {}", upload.getOriginalFilename());
-			log.debug("크기 : {}", upload.getSize());
-			log.debug("파일 종류 : {}", upload.getContentType());
-		}
+
 		boardService.save(dto, uploadPath, upload);	// 작성글, 저장경로, 업로드파일에 대한 정보
 		
-		return "redirect:/board/list";
+		return "redirect:/";
+	}
+
+	@GetMapping("read")
+	public String read(Model model, @RequestParam("boardNum") Integer boardNum) {
+		try {
+			BoardDTO dto = boardService.getBoard(boardNum);
+			model.addAttribute("board", dto);
+			return "boardRead";
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return "redirect:list";
+		}
+	}
+
+	@GetMapping("download")
+	public void download(@RequestParam("boardNum") Integer boardNum
+			, HttpServletResponse response) {
+
+		boardService.download(boardNum, uploadPath, response);
 	}
 
 }

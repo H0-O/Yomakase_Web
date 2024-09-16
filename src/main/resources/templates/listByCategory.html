@@ -136,7 +136,7 @@
 
   <div sec:authorize="isAuthenticated()" id="userInfo">
     <img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp
-    <span style="font-weight: bold;" th:text="${user.name}"></span>님&nbsp&nbsp<button><a th:href="@{/board/write}">글쓰기</a></button>
+    <span style="font-weight: bold;" th:text="${user.name}"></span>님
   </div>
   <!-- 글목록 출력 영역 -->
   <table>

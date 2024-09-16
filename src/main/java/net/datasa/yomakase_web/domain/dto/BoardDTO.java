@@ -26,6 +26,6 @@ public class BoardDTO {
 	Integer recommended;
 	
 	// 리플 목록
-	//private List<ReplyDTO> replyList;	
+	private List<ReplyDTO> replyList;
 
 }
