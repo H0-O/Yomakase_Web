@@ -3,14 +3,16 @@ package net.datasa.yomakase_web.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.datasa.yomakase_web.domain.dto.MemberDTO;
 import net.datasa.yomakase_web.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -48,4 +50,24 @@ public class MemberRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 실패");
         }
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<Map<String, String>> updateMember(@RequestBody MemberDTO memberDTO) {
+        try {
+            // 회원 정보 업데이트 로직 (서비스를 통해 처리)
+            memberService.updateUser(memberDTO);
+
+            // 성공 메시지 반환
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "회원정보가 성공적으로 수정되었습니다.");
+            return ResponseEntity.ok(response); // JSON 응답
+        } catch (Exception e) {
+            // 오류 발생 시
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "회원정보 수정에 실패했습니다.");
+            return ResponseEntity.status(500).body(errorResponse); // 오류 응답
+        }
+    }
+
+
 }

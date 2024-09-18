@@ -5029,7 +5029,6 @@
   }
 }section.resume-section {
    display: flex;
-   align-items: center;
    padding-left: 1rem;
    padding-right: 1rem;
    padding-top: 5rem;
@@ -5067,7 +5066,6 @@
     background-color: #6aa003;
   }
   .mypagesContent {
-    padding: 20px;
     display: none;
   }
   #defaultContent {
