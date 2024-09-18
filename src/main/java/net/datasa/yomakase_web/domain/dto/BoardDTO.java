@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BoardDTO {
 	
-	Integer boardNum;
-	Integer memberNum;
+	int boardNum;
+	int memberNum;
 	String name;
 	String title;
 	String category;

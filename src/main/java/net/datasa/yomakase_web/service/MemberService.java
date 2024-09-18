@@ -163,52 +163,52 @@ public class MemberService {
         return memberDTO;
 }
 
-
-
-    // 사용자 정보를 업데이트하는 메서드
     public void updateUser(MemberDTO memberDTO) {
+        // 기존 회원을 ID(email)로 조회
         MemberEntity entity = memberRepository.findById(memberDTO.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("없는 ID"));
 
-        // 비밀번호가 비어있지 않으면 비번도 수정
-        if (memberDTO.getPassword() == "") {
-        } else {entity.setPw(bCryptPasswordEncoder.encode(memberDTO.getPassword()));}
+        // 비밀번호가 비어있지 않으면 비밀번호를 수정
+        if (memberDTO.getPassword() != null && !memberDTO.getPassword().isEmpty()) {
+            entity.setPw(bCryptPasswordEncoder.encode(memberDTO.getPassword()));
+        }
 
-        // MemberEntity 저장
-        MemberEntity member = MemberEntity.builder()
-                .gen(memberDTO.getGender())
-                .birthDate(memberDTO.getBirthdate())
-                .build();
-        memberRepository.save(member);
+        // 성별과 생년월일 업데이트
+        entity.setGen(memberDTO.getGender());
+        entity.setBirthDate(memberDTO.getBirthdate());
 
-        // UserBodyInfoEntity 저장
-        UserBodyInfoEntity bodyInfo = UserBodyInfoEntity.builder()
-                .height(memberDTO.getHeight())
-                .weight(memberDTO.getWeight())
-                .build();
+        // 회원 정보를 업데이트
+        memberRepository.save(entity);
+
+        // 기존의 UserBodyInfoEntity를 가져와 업데이트 또는 새로 생성
+        UserBodyInfoEntity bodyInfo = userBodyInfoRepository.findByMember(entity)
+                .orElseGet(() -> UserBodyInfoEntity.builder().member(entity).build());  // 없으면 새로 생성
+        bodyInfo.setHeight(memberDTO.getHeight());
+        bodyInfo.setWeight(memberDTO.getWeight());
         userBodyInfoRepository.save(bodyInfo);
 
-        // AllergyEntity 저장
-        AllergyEntity allergy = AllergyEntity.builder()
-                .eggs(memberDTO.isEggs())
-                .milk(memberDTO.isMilk())
-                .buckwheat(memberDTO.isBuckwheat())
-                .peanut(memberDTO.isPeanut())
-                .soybean(memberDTO.isSoybean())
-                .wheat(memberDTO.isWheat())
-                .mackerel(memberDTO.isMackerel())
-                .crab(memberDTO.isCrab())
-                .shrimp(memberDTO.isShrimp())
-                .pork(memberDTO.isPork())
-                .peach(memberDTO.isPeach())
-                .tomato(memberDTO.isTomato())
-                .walnuts(memberDTO.isWalnuts())
-                .chicken(memberDTO.isChicken())
-                .beef(memberDTO.isBeef())
-                .squid(memberDTO.isSquid())
-                .shellfish(memberDTO.isShellfish())
-                .pineNut(memberDTO.isPineNut())
-                .build();
+        // 기존의 AllergyEntity를 가져와 업데이트 또는 새로 생성
+        AllergyEntity allergy = allergyRepository.findByMember(entity)
+                .orElseGet(() -> AllergyEntity.builder().member(entity).build());  // 없으면 새로 생성
+        allergy.setEggs(memberDTO.isEggs());
+        allergy.setMilk(memberDTO.isMilk());
+        allergy.setBuckwheat(memberDTO.isBuckwheat());
+        allergy.setPeanut(memberDTO.isPeanut());
+        allergy.setSoybean(memberDTO.isSoybean());
+        allergy.setWheat(memberDTO.isWheat());
+        allergy.setMackerel(memberDTO.isMackerel());
+        allergy.setCrab(memberDTO.isCrab());
+        allergy.setShrimp(memberDTO.isShrimp());
+        allergy.setPork(memberDTO.isPork());
+        allergy.setPeach(memberDTO.isPeach());
+        allergy.setTomato(memberDTO.isTomato());
+        allergy.setWalnuts(memberDTO.isWalnuts());
+        allergy.setChicken(memberDTO.isChicken());
+        allergy.setBeef(memberDTO.isBeef());
+        allergy.setSquid(memberDTO.isSquid());
+        allergy.setShellfish(memberDTO.isShellfish());
+        allergy.setPineNut(memberDTO.isPineNut());
         allergyRepository.save(allergy);
     }
+
 }

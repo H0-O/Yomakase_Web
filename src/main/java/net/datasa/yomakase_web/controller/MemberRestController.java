@@ -11,6 +11,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Slf4j
 @RequestMapping("/member")
@@ -48,18 +51,23 @@ public class MemberRestController {
         }
     }
 
-    // 회원 정보 수정 요청을 처리하는 메서드
     @PostMapping("/update")
-    public String updateProfile(@ModelAttribute MemberDTO member) {
-        log.debug("수정할 회원 정보: " + member.toString());  // 수정할 회원 정보 로그 출력
+    public ResponseEntity<Map<String, String>> updateMember(@RequestBody MemberDTO memberDTO) {
+        try {
+            // 회원 정보 업데이트 로직 (서비스를 통해 처리)
+            memberService.updateUser(memberDTO);
 
-        // 서비스에서 회원 정보 업데이트 로직 실행
-        memberService.updateUser(member);
-
-        log.debug("회원 정보가 성공적으로 업데이트되었습니다.");  // 업데이트 완료 로그 출력
-
-        // 수정 완료 후 다시 프로필 화면으로 리다이렉트
-        return "redirect:/";
+            // 성공 메시지 반환
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "회원정보가 성공적으로 수정되었습니다.");
+            return ResponseEntity.ok(response); // JSON 응답
+        } catch (Exception e) {
+            // 오류 발생 시
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "회원정보 수정에 실패했습니다.");
+            return ResponseEntity.status(500).body(errorResponse); // 오류 응답
+        }
     }
+
 
 }
