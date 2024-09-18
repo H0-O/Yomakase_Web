@@ -31,33 +31,31 @@ public class StockService {
     private final Random random = new Random();
 
     @Transactional
-    public void saveStock(List<Map<String, String>> ingredients) {
-        // 현재 로그인된 사용자의 ID를 가져옵니다.
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 사용자 ID (이메일)
-        // 이메일로 MemberEntity를 조회합니다.
-        MemberEntity member = memberRepository.findById(username)
-                .orElseThrow(() -> new RuntimeException("User not found")); // 사용자 없을 때 예외 처리
+    public void saveStock(List<Map<String, String>> ingredients, Object identifier) {
+        Integer memberNum = null;
 
-        Integer memberNum = member.getMemberNum(); // MemberEntity에서 member_num 값을 가져옵니다.
-
+        if (identifier instanceof Integer) {
+            // 앱에서 온 요청: memberNum이 Integer로 전달됨
+            memberNum = (Integer) identifier;
+        } else if (identifier instanceof String) {
+            // 이메일(아이디)를 사용해 memberNum을 조회
+            MemberEntity member = memberRepository.findById((String) identifier)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            memberNum = member.getMemberNum();
+        }
         for (Map<String, String> ingredient : ingredients) {
             String ingredientName = ingredient.get("ingredientName");
             String expirationDate = ingredient.get("expirationDate");
-            log.info("Saving ingredient: {}, Expiration Date: {}", ingredientName, expirationDate); // 각 재료 로그 출력
+            log.info("Saving ingredient: {}, Expiration Date: {}", ingredientName, expirationDate);
 
-            // 현재 날짜를 가져옵니다.
             LocalDate currentDate = LocalDate.now();
-
-            // expirationDate를 일(day) 단위로 추가합니다.
             LocalDate useByDate = currentDate.plus(Integer.parseInt(expirationDate), ChronoUnit.DAYS);
 
-            // StockEntity 객체를 생성합니다.
             StockEntity stockEntity = StockEntity.builder()
                     .ingredientName(ingredientName)
                     .isHaving(true)
                     .memberNum(memberNum)
-                    .useByDate(useByDate) // 현재 날짜에 expirationDate를 더한 날짜를 사용
+                    .useByDate(useByDate)
                     .build();
 
             stockRepository.save(stockEntity);
