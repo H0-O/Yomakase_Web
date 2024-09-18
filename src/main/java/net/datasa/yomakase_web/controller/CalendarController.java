@@ -44,7 +44,7 @@ public class CalendarController {
         calDTO.setInputDate(date);
 
         log.debug("배열:{},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.dietSave(calDTO, user);
+        calendarService.dietSave(calDTO, user.getUsername());
 
     }
 

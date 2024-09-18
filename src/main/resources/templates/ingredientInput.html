@@ -11,9 +11,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="receipt-upload">
-                        <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image" style="cursor: pointer;">
-                    </label>
+                    <img th:src="@{/img/receipt_illustration.png}" id="uploaded-image" style="cursor: pointer;">
                 </td>
                 <td>
                     <div id="ingredients-list">
@@ -278,6 +276,10 @@
                     input.style.color = 'black'; // 이름이 일치하지 않으면 검정색으로 표시
                 }
             });
+        });
+        // 이미지 클릭 시 파일 선택 창 열기
+        document.getElementById('uploaded-image').addEventListener('click', function () {
+            document.getElementById('receipt-upload').click(); // input type="file" 요소를 클릭
         });
         // inputGroup 생성 함수 (이 함수는 중복 코드를 줄이기 위해 분리됨)
         function createInputGroup(ingredientName = '', expiration = '') {
