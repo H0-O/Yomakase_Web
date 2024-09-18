@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StockRepository extends JpaRepository<StockEntity, MemberStock> {
@@ -16,4 +17,7 @@ public interface StockRepository extends JpaRepository<StockEntity, MemberStock>
 
     @Query("SELECT s FROM StockEntity s ORDER BY s.useByDate ASC")
     List<StockEntity> findTop9ByOrderByUseByDateAsc(Pageable pageable);
+
+    Optional<StockEntity> findByIngredientNameAndMemberNum(String ingredientName, Integer memberNum);
+
 }

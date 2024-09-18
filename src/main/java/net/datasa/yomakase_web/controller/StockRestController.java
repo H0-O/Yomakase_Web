@@ -59,4 +59,17 @@ public class StockRestController {
 		}
 	}
 
+	@PostMapping("/stockDate")
+	public ResponseEntity<String> updateUseByDate(@RequestBody StockDTO stockDTO) {
+		try {
+			// LocalDate 타입이므로 직접 사용
+			LocalDate useByDate = stockDTO.getUseByDate();
+
+			stockService.updateUseByDate(stockDTO.getIngredientName(), stockDTO.getMemberNum(), useByDate);
+			return ResponseEntity.ok("업데이트 성공");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("업데이트 실패: " + e.getMessage());
+		}
+	}
+
 }

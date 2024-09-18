@@ -122,9 +122,19 @@ public class StockService {
         return imageFileNames.get(index); // 예를 들어 '3.png'와 같은 파일명
     }
 
+    public void updateUseByDate(String ingredientName, int memberNum, LocalDate useByDate) {
+        // 재고 항목을 찾습니다.
+        StockEntity stockEntity = stockRepository.findByIngredientNameAndMemberNum(ingredientName, memberNum)
+                .orElseThrow(() -> new RuntimeException("재고 항목을 찾을 수 없습니다."));
+
+        // found stockEntity의 useByDate 업데이트
+        stockEntity.setUseByDate(useByDate);
+
+        // 업데이트된 엔티티 저장
+        stockRepository.save(stockEntity);
+    }
 
     public List<String> getAllIngredientNames() {
         return stockRepository.findAllIngredientNames();
     }
-
 }
