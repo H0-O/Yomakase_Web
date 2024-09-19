@@ -5031,7 +5031,6 @@
    display: flex;
    padding-left: 1rem;
    padding-right: 1rem;
-   padding-top: 5rem;
    padding-bottom: 5rem;
    max-width: 75rem;
  }section.resume-section .resume-section-content {
@@ -5044,7 +5043,6 @@
   section.resume-section {
     padding-left: 3rem;
     padding-right: 3rem;
-    padding-top: 5rem;
     padding-bottom: 5rem;
   }
 
