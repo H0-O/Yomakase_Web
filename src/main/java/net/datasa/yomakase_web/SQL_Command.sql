@@ -117,10 +117,10 @@ select * from `cal`;
 CREATE TABLE `history` (
                            `ingredient_name` varchar(700) NOT NULL,
                            `member_num` int NOT NULL,
-                           `date` date NULL,
+                           `date` date NOT NULL, -- 복합키에 포함되는 date 컬럼
                            `type` varchar(10) NOT NULL CHECK (`type` IN ('c', 'b')), -- c : 소비, b : 버림
-                           PRIMARY KEY (`ingredient_name`, `member_num`),
-                           FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE
+                           PRIMARY KEY (`ingredient_name`, `member_num`, `date`), -- 복합키에 date 추가
+                           FOREIGN KEY (`ingredient_name`, `member_num`) REFERENCES `stock`(`ingredient_name`, `member_num`) ON DELETE CASCADE
 );
 
 select * from `history`;
@@ -133,18 +133,6 @@ CREATE TABLE `subscription` (
                                 FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE
 );
 
-CREATE TABLE `complaint` (
-                             `member_num` INT NOT NULL,  -- 회원 고유 번호 (FK)
-                             `complaint_num` INT AUTO_INCREMENT PRIMARY KEY,  -- 문의사항 고유 번호
-                             `title` VARCHAR(200) NOT NULL,  -- 제목
-                             `category` VARCHAR(50) NOT NULL,  -- 분류
-                             `contents` MEDIUMTEXT NOT NULL,  -- 내용
-                             `input_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,-- 입력 날짜
-                             `status` tinyint(1) DEFAULT 0 CHECK (`status` IN (0, 1)), -- 1 : 답변완료, 0 : 답변중
-                             FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE -- 회원 테이블과의 관계
-);
-
-
 drop table  allergy ;
 drop table  history  ;
 drop table  user_body_info  ;
@@ -155,3 +143,39 @@ drop table  cal ;
 drop table member;
 drop table  `stock`;
 drop table  `complaint`;
+
+-- history 테이블에 더미 데이터 추가
+INSERT INTO `history` (`ingredient_name`, `member_num`, `date`, `type`) VALUES
+                                                                            ('토마토', 8, '2024-09-12', 'c'),  -- 소비
+                                                                            ('당근', 8, '2024-09-13', 'b'),    -- 버림
+                                                                            ('감자', 8, '2024-09-14', 'c'),    -- 소비
+                                                                            ('상추', 8, '2024-09-15', 'b'),    -- 버림
+                                                                            ('양파', 8, '2024-09-16', 'c'),    -- 소비
+                                                                            ('마늘', 8, '2024-09-17', 'b'),    -- 버림
+                                                                            ('오이', 8, '2024-09-18', 'c'),     -- 소비
+                                                                            ('피망', 8, '2024-09-19', 'b'),    -- 버림
+                                                                            ('시금치', 8, '2024-09-20', 'c'),  -- 소비
+                                                                            ('브로콜리', 8, '2024-09-21', 'c'), -- 소비
+                                                                            ('콜리플라워', 8, '2024-09-22', 'b'), -- 버림
+                                                                            ('애호박', 8, '2024-09-23', 'c'),  -- 소비
+                                                                            ('가지', 8, '2024-09-24', 'b'),    -- 버림
+                                                                            ('호박', 8, '2024-09-25', 'c'),    -- 소비
+                                                                            ('고구마', 8, '2024-09-26', 'b');  -- 버림
+
+-- stock 테이블에 더미 데이터 추가
+INSERT INTO `stock` (`ingredient_name`, `member_num`, `is_having`, `use_by_date`, `update_date`) VALUES
+                                                                                                     ('토마토', 8, 1, '2024-10-01', CURRENT_TIMESTAMP),  -- 재고 있음
+                                                                                                     ('당근', 8, 0, '2024-09-20', CURRENT_TIMESTAMP),    -- 재고 없음
+                                                                                                     ('감자', 8, 1, '2024-10-05', CURRENT_TIMESTAMP),    -- 재고 있음
+                                                                                                     ('상추', 8, 0, '2024-09-18', CURRENT_TIMESTAMP),    -- 재고 없음
+                                                                                                     ('양파', 8, 1, '2024-10-02', CURRENT_TIMESTAMP),    -- 재고 있음
+                                                                                                     ('마늘', 8, 0, '2024-09-15', CURRENT_TIMESTAMP),    -- 재고 없음
+                                                                                                     ('오이', 8, 1, '2024-10-07', CURRENT_TIMESTAMP),    -- 재고 있음
+                                                                                                     ('피망', 8, 0, '2024-09-22', CURRENT_TIMESTAMP),    -- 재고 없음
+                                                                                                     ('시금치', 8, 1, '2024-10-09', CURRENT_TIMESTAMP),  -- 재고 있음
+                                                                                                     ('브로콜리', 8, 1, '2024-10-11', CURRENT_TIMESTAMP), -- 재고 있음
+                                                                                                     ('콜리플라워', 8, 0, '2024-09-25', CURRENT_TIMESTAMP), -- 재고 없음
+                                                                                                     ('애호박', 8, 1, '2024-10-12', CURRENT_TIMESTAMP),  -- 재고 있음
+                                                                                                     ('가지', 8, 0, '2024-09-19', CURRENT_TIMESTAMP),    -- 재고 없음
+                                                                                                     ('호박', 8, 1, '2024-10-15', CURRENT_TIMESTAMP),    -- 재고 있음
+                                                                                                     ('고구마', 8, 0, '2024-09-28', CURRENT_TIMESTAMP);  -- 재고 없음

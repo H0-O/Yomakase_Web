@@ -33,10 +33,6 @@
         .mypagesContent {
             display: none;
         }
-
-        #defaultContent {
-            display: block;
-        }
         /* My Pages CSS End */
 
     </style>
@@ -56,7 +52,6 @@
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService')">구독 서비스</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
                     <a th:href="@{/profile}" class="mypages-tablink" onclick="openTab(event, 'profileUpdate')">회원정보수정</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'support')">이용문의</a>
                     <a href="#" class="mypages-tablink" onclick="openTab(event, 'withdrawal')">회원탈퇴</a>
                 </div>
             </div>
@@ -80,17 +75,12 @@
 
             <!-- 소비 기록 -->
             <div id="record" class="mypagesContent">
-                <div th:replace="myPages/record :: recordFragment"></div>
+                <div th:replace="myPages/historyChart :: recordFragment"></div>
             </div>
 
             <!-- 회원정보수정 -->
             <div id="profileUpdate" class="mypagesContent">
                 <div th:replace="myPages/profileUpdate :: profileUpdateFragment"></div>
-            </div>
-
-            <!-- 이용문의 -->
-            <div id="support" class="mypagesContent">
-<!--                <div th:replace="myPages/complaintList :: complaintListFragment"></div>-->
             </div>
 
             <!-- 회원 탈퇴 -->

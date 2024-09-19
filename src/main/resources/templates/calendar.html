@@ -1,4 +1,5 @@
-<div th:fragment = "calendar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="calendar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     xmlns:th="http://www.thymeleaf.org">
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center"></div>
@@ -16,16 +17,23 @@
                   <div class="head-month"></div>
                   <div class="head-day"></div> <br>
                   <br>
-                  <div class="diet-list"> <!--todo : 사용자가 입력한 식단을 DB에서 불러와서 출력-->
-                    <p>아침</p>
-                    <p>말미잘</p>
-                    <br>
-                    <p>점심</p>
-                    <p>앗싸 홍삼</p>
-                    <br>
-                    <p>저녁</p>
-                    <p>에블바리 홍삼</p>
+                  <div id="diet-list" style="display: none">
+                    <table>
+                      <tr>
+                        <td>아침</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td>점심</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td>저녁</td>
+                        <td></td>
+                      </tr>
+                    </table>
                   </div>
+                  <p id="diet-list-msg" style="display: block;">해당 날짜에 입력된 식단이 없습니다.</p>
                 </div>
               </div>
             </div>
@@ -35,7 +43,6 @@
                 <div class="pre-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-left"></i></div>
                 <div id="head-date" style="cursor: pointer;"></div> <!-- 2024년 9월 -->
                 <div class="head-month" ></div>
-
                 <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
               </div>
               <table id="calendarTable">
@@ -116,34 +123,34 @@
 
   <!--식단 입력 모달 부분-->
   <div id="diet-modal" class="cal-modal-overlay">
-    <div class="cal-modal-window" >
+    <div class="cal-modal-window">
       <div class="cal-title">
         <h2>식단 입력</h2>
       </div>
       <div class="close-btn"><img src="/img/x_circle_icon.png" style="height: 35px"></div>
       <div class="cal-content">
-          <table id="diet-modal-table">
-            <tr>
-              <th colspan="2" id="clickedDietDay">클릭한 날짜</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th>아침</th>
-              <td><input type="text" id="bName" placeholder="아침 식사 메뉴를 알려주세요"></td>
-            </tr>
-            <tr>
-              <th>점심</th>
-              <td><input type="text" id="lName" placeholder="점심 식사 메뉴를 알려주세요"></td>
-            </tr>
-            <tr>
-              <th>저녁</th>
-              <td><input type="text" id="dName" placeholder="저녁 식사 메뉴를 알려주세요"></td>
-            </tr>
-            <tr>
-              <td colspan="2"><button id="dietBtn">식단 저장</button></td>
-              <td></td>
-            </tr>
-          </table>
+        <table id="diet-modal-table">
+          <tr>
+            <th colspan="2" id="clickedDietDay">클릭한 날짜</th>
+            <td></td>
+          </tr>
+          <tr>
+            <th>아침</th>
+            <td><input type="text" id="bName" placeholder="아침 식사 메뉴를 알려주세요"></td>
+          </tr>
+          <tr>
+            <th>점심</th>
+            <td><input type="text" id="lName" placeholder="점심 식사 메뉴를 알려주세요"></td>
+          </tr>
+          <tr>
+            <th>저녁</th>
+            <td><input type="text" id="dName" placeholder="저녁 식사 메뉴를 알려주세요"></td>
+          </tr>
+          <tr>
+            <td colspan="2"><button id="dietBtn">식단 저장</button></td>
+            <td></td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -164,7 +171,7 @@
     </div>
   </div>
 
-<!--  <script src="/jq/jquery-3.7.1.min.js"></script>-->
+  <!--  <script src="/jq/jquery-3.7.1.min.js"></script>-->
   <script src="/js/calendar.js"></script>
   <script src="/js/diet-cal-modal_js.js"></script>
 
@@ -176,37 +183,40 @@
     }
 
     function dietInput(){
-        let bName = document.getElementById('bName').value;
-        let lName = document.getElementById('lName').value;
-        let dName = document.getElementById('dName').value;
-        let clickedDietDay = document.getElementById('clickedDietDay').value;
-        //console.log(bName, lName, dName);
+      let bName = document.getElementById('bName').value;
+      let lName = document.getElementById('lName').value;
+      let dName = document.getElementById('dName').value;
+      let clickedDietDay = document.getElementById('clickedDietDay').value;
+      //console.log(bName, lName, dName);
 
-        if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
-          alert("식단을 입력해 주세요.");
-          document.getElementById('bName').focus();
-          return;
+      if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
+        alert("식단을 입력해 주세요.");
+        document.getElementById('bName').focus();
+        return;
+      }
+      let dietArr = [bName, lName, dName, clickedDietDay];
+      //서버로 비동기적인 요청
+      $.ajax({
+        url : '/cal/dietSave',		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분
+        type : 'post',
+        data : {dietArr : dietArr},
+        success : function(){
+          alert('식단이 저장되었습니다.');
+          document.getElementById('bName').value = "";
+          document.getElementById('lName').value = "";
+          document.getElementById('dName').value = "";
+        },
+        error : function(){		//예외가 발생하면 여기로
+          alert('diet save error');		//아예 요청을 받지 않을 때 (ex.404 오류)
         }
-        let dietArr = [bName, lName, dName, clickedDietDay];
-          //서버로 비동기적인 요청
-          $.ajax({
-            url : '/cal/diet',		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분
-            type : 'post',
-            data : {dietArr : dietArr},
-            success : function(){
-              alert('식단이 저장되었습니다.');
-              document.getElementById('bName').value = "";
-              document.getElementById('lName').value = "";
-              document.getElementById('dName').value = "";
-            },
-            error : function(){		//예외가 발생하면 여기로
-              alert('error');		//아예 요청을 받지 않을 때 (ex.404 오류)
-            }
 
-          });
+      });
 
     }
   </script>
+
+  <!-- 식단 불러오기 기능 -->
+
 
 
   <link rel="stylesheet" href="/css/calendarCSS.css">

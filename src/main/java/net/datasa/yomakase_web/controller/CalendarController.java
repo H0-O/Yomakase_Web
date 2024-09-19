@@ -29,7 +29,7 @@ public class CalendarController {
      * @param arr
      * @param user 사용자 인증 정보
      */
-    @PostMapping("diet")
+    @PostMapping("dietSave")
     public void dietInputMethod(@RequestParam("dietArr") String[] arr, @AuthenticationPrincipal AuthenticatedUser user) {
 //        throw new RuntimeException("오류");
         //calendarDTO.setMemberNum(user);
@@ -43,9 +43,22 @@ public class CalendarController {
         calDTO.setDName(arr[2]);
         calDTO.setInputDate(date);
 
-        log.debug("배열:{},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.dietSave(calDTO, user.getUsername());
+        log.debug("식단 저장 배열: {},{},{},{}", arr[0], arr[1], arr[2], date);
+        calendarService.dietSave(calDTO, user);
+    }
 
+    //날짜, 사용자 인증정보로 DB에 저장된 식단을 찾는 메소드
+    @PostMapping("dietList")
+    public CalendarDTO dietListSelect(@RequestParam("selectedDay") String selectedDay,
+                                      @AuthenticationPrincipal AuthenticatedUser user){
+        log.debug("식단 확인: {},{}", selectedDay, user.getUsername());
+
+        LocalDate date = LocalDate.parse(selectedDay, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        CalendarDTO calDTO = new CalendarDTO();
+        calDTO.setInputDate(date);
+        calDTO.setId(user.getUsername());
+        calDTO = calendarService.dietListSelect(calDTO);
+        return calDTO;
     }
 
 }
