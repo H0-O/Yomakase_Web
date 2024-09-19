@@ -5,14 +5,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import net.datasa.yomakase_web.domain.dto.BoardDTO;
+import net.datasa.yomakase_web.domain.dto.ReplyDTO;
 import net.datasa.yomakase_web.domain.entity.BoardEntity;
 import net.datasa.yomakase_web.domain.entity.MemberEntity;
+import net.datasa.yomakase_web.domain.entity.ReplyEntity;
 import net.datasa.yomakase_web.repository.BoardRepository;
 import net.datasa.yomakase_web.repository.MemberRepository;
+import net.datasa.yomakase_web.repository.ReplyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +38,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class BoardService {
 	
 	private final BoardRepository boardRepository;
 	private final MemberRepository memberRepository;
+	private final ReplyRepository replyRepository;
 
+	// BoardEntity를 BoardDTO 타입으로 변경
 	private BoardDTO convertToDTO(BoardEntity entity) {
 				
 		return BoardDTO.builder()
@@ -48,7 +61,6 @@ public class BoardService {
 				.recommended(entity.getRecommended())
 				.build();
 	}
-
 
 	public void save(BoardDTO dto, String uploadPath, MultipartFile uploadFile) {
 		
@@ -135,6 +147,19 @@ public class BoardService {
 		return boardDTOPage;
 	}
 
+	// ReplyEntity객체를 ReplyDTO 객체로 변환
+	private ReplyDTO convertToReplyDTO(ReplyEntity entity) {
+		return ReplyDTO.builder()
+				.replyNum(entity.getReplyNum())
+				.boardNum(entity.getBoard().getBoardNum())
+				.memberNum(entity.getMember().getMemberNum())
+				.memberName(entity.getMember().getName())
+				.replyContents(entity.getReplyContents())
+				.createDate(entity.getCreatDate())
+				.build();
+	}
+
+
 	public BoardDTO getBoard(Integer boardNum) {
 		// 글 번호로 BoardEntity 조회하여 없으면 예외, 있으면 BoardDTO로 변환하여 리턴
 
@@ -146,23 +171,14 @@ public class BoardService {
 
 		BoardDTO dto = convertToDTO(entity);
 
-		// 리플목록을 DTO로 변환하여 추가
-//		List<ReplyDTO> replyList = new ArrayList<>();
-//		for(ReplyEntity replyEntity : entity.getReplyList()) {
-//			ReplyDTO replyDTO = ReplyDTO.builder()
-//					.replyNum(replyEntity.getReplyNum())
-//					.boardNum(replyEntity.getBoard().getBoardNum())
-//					.memberId(replyEntity.getMember().getMemberId())
-//					.memberName(replyEntity.getMember().getMemberName())
-//					.contents(replyEntity.getContents())
-//					.createDate(replyEntity.getCreatDate())
-//					.build();
-//			replyList.add(replyDTO);
-//		}
-//
-//		dto.setReplyList(replyList);
-
-		return dto;}
+		List<ReplyDTO> replyDTOList = new ArrayList<>();
+		for (ReplyEntity replyEntity : entity.getReplyList()) {
+			ReplyDTO replyDTO = convertToReplyDTO(replyEntity);
+			replyDTOList.add(replyDTO);
+		}
+		dto.setReplyList(replyDTOList);
+		return dto;
+	}
 
 	public void download(Integer boardNum, String uploadPath, HttpServletResponse response) {
 
@@ -196,5 +212,97 @@ public class BoardService {
 		}
 		// response를 통해 출력
 
+	}
+
+	public void replyWrite(ReplyDTO replyDTO) {
+
+			MemberEntity memberEntity = memberRepository.findById(replyDTO.getMemberNum())
+					.orElseThrow(() -> new EntityNotFoundException("사용자 아이디가 없습니다."));
+
+			BoardEntity boardEntity = boardRepository.findById(replyDTO.getBoardNum())
+					.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+			ReplyEntity entity = ReplyEntity.builder()
+					.board(boardEntity)
+					.member(memberEntity)
+					.replyContents(replyDTO.getReplyContents())
+					.build();
+
+			replyRepository.save(entity);
+
+	}
+
+	public void replyDelete(Integer replyNum, Integer memberNum) {
+
+		ReplyEntity replyEntity = replyRepository.findById(replyNum)
+				.orElseThrow(() -> new EntityNotFoundException("리플이 없습니다."));
+
+		if (!replyEntity.getMember().getMemberNum().equals(memberNum)) {
+			throw new RuntimeException("삭제 권한이 없습니다.");
+		}
+		replyRepository.delete(replyEntity);
+
+	}
+
+	public void delete(int boardNum, Integer memberNum, String uploadPath) {
+
+		BoardEntity boardEntity = boardRepository.findById(boardNum)
+				.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+		if (boardEntity.getMember().getMemberNum() != memberNum) {
+			throw new RuntimeException("삭제 권한이 없습니다.");
+		}
+
+		try {
+			Path filePath = Paths.get(uploadPath, boardEntity.getFileName());
+			Files.deleteIfExists(filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boardRepository.delete(boardEntity);
+
+	}
+
+	public void update(BoardDTO boardDTO, Integer memberNum, String uploadPath, MultipartFile upload) {
+
+		BoardEntity boardEntity = boardRepository.findById(boardDTO.getBoardNum())
+				.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+		log.debug("수정할 엔티티: {}", boardEntity);
+		log.debug("바꿀 내용 DTO: {}", boardDTO);
+		if (!boardEntity.getMember().getMemberNum().equals(memberNum)) {
+			throw new RuntimeException("수정 권한이 없습니다.");
+		}
+
+		// 수정하면서 새로 첨부한 파일이 있을 때
+		if(upload != null && !upload.isEmpty()) {
+			// 그 전에 업로드한 기존 파일이 있으면 먼저 파일 삭제
+			File file = new File(uploadPath, boardEntity.getFileName());
+			file.delete();
+			// 새로 첨부한 파일의 이름
+			String fileName = upload.getOriginalFilename();
+
+			try {
+				File filePath = new File(uploadPath + "/" + fileName);
+				upload.transferTo(filePath);
+
+				boardEntity.setFileName(fileName);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		boardEntity.setTitle(boardDTO.getTitle());
+		boardEntity.setContents(boardDTO.getContents());
+	}
+
+	public void recommend(Integer boardNum) {
+
+		BoardEntity boardEntity = boardRepository.findById(boardNum)
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글 입니다."));
+
+		Integer recommentCount = boardEntity.getRecommended() + 1;
+		boardEntity.setRecommended(recommentCount);
 	}
 }

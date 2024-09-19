@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ReplyDTO {
 	Integer replyNum;
 	Integer boardNum;
-	String memberNum;
+	Integer memberNum;
 	String memberName;
 	String replyContents;
 	LocalDateTime createDate;

@@ -16,7 +16,7 @@ public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_num")
-    private int memberNum;
+    private Integer memberNum;
 
     @Column(nullable = false, unique = true, length = 50)
     private String id;  // 이메일

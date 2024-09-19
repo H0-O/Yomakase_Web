@@ -1,7 +1,7 @@
 <div th:fragment="boardListView" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 	<div class="boardContent">
 
-		<h4>자유게시판</h4>
+		<h3>자유게시판</h3>
 
 		<div class="boardNavbar">
 			<ul>
@@ -19,18 +19,20 @@
 
 		<div id="boardListContent"></div>
 
+		<div id="paginationControls"></div>
+
 		<!-- 검색폼 -->
 		<form id="pagingForm" method="get" th:action="@{/board/list}">
-
+		<div class="searchBox">
 			<input type="hidden" name="page" id="page">
-			<select id="type" name="searchType">
+			<select id="searchType" name="searchType">
 				<option value="title" th:selected="${searchType == 'title'}">제목</option>
 				<option value="contents" th:selected="${searchType == 'contents'}">내용</option>
 				<option value="name" th:selected="${searchType == 'name'}">작성자</option>
 			</select>
-			<input type="text"  name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요">
+			<input type="text" id="searchWord"  name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요">
 			<input type="submit" value="검색">
-
+		</div>
 		</form>
 
 	</div>
@@ -39,12 +41,16 @@
 		.boardNavbar {
 			display: flex;
 			justify-content: center;
-			background-color: #fff;
+			background-color: #f4f4f4;
 			padding: 15px;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 			margin: 0 auto;
 			margin-bottom: 20px;
 			width: 80%;
+		}
+
+		h3{
+			text-align: center;
 		}
 
 		.boardNavbar ul {
@@ -168,6 +174,20 @@
 		.writerDateCol{
 			width: 15%;
 		}
+		#paginationControls{
+			display: flex;
+			justify-content: center;
+			margin-top: 30px;
+		}
+		.paginationButton{
+			background-color: white;
+			color: #81c405;
+		}
+
+		.searchBox{
+			display: flex;
+			justify-content: center;
+		}
 
 	</style>
 	<script src="/js/jquery-3.7.1.min.js"></script>
@@ -181,58 +201,70 @@
 
 			loadBoardData(1); // 처음에 1페이지 데이터를 불러옴
 
-			function loadBoardData(page) {
+			$('#pagingForm').submit(function(event) {
+				event.preventDefault();
+				var searchType = $('#searchType').val();
+				var searchWord = $('#searchWord').val();
+				loadBoardData(1, searchType, searchWord);
+			});
+
+			$(document).on('click', '.paginationButton', function() {
+				var page = $(this).data('page');
+				loadBoardData(page);
+			});
+
+			function loadBoardData(page, searchType = '', searchWord = '') {
 				$.ajax({
 					url: '/board/list',
 					method: 'GET',
 					data: {
 						page: page,
-						searchWord: '', // 초기에는 검색어 없음
-						searchType: ''  // 검색 타입 없음
+						searchWord: searchWord, // 검색어 반영
+						searchType: searchType  // 검색 타입 반영
 					},
 					success: function(response) {
-						// alert("1");
-						// 여러 데이터를 포함한 응답에서 필요한 데이터 추출
-						var boardPage = response.boardPage;
+
 						var user = response.user;
-						var searchType = response.searchType;
-						var searchWord = response.searchWord;
+						var boardPage = response.boardPage;
+						var boardList = '';
 
-						var boardList = ''; // 데이터를 넣을 HTML 변수
 						$.each(boardPage.content, function(index, board) {
-							var date = new Date(board.createDate);
-							var year = date.getFullYear().toString().slice(-2); // '24'
-							var month = (date.getMonth() + 1).toString().padStart(2, '0'); // '09'
-							var day = date.getDate().toString().padStart(2, '0'); // '11'
-							var hour = date.getHours().toString().padStart(2, '0'); // '10'
-							var minute = date.getMinutes().toString().padStart(2, '0'); // '09'
-
-							var formattedDate = `${year}.${month}.${day} ${hour}:${minute}`;
-
-							boardList += '<tr>';
-							boardList += '<td class="boardNumCol">' + board.boardNum + '</td>';
-							boardList += '<td class="boardCatCol">' + board.category + '</td>';
-							boardList += '<td><a href="/board/read?boardNum=' + board.boardNum + '">' + board.title + '</a></td>';
-							boardList += '<td class="writerNameCol">' + board.name + '</td>';
-							boardList += '<td class="writerDateCol">' + formattedDate + '</td>';
-							boardList += '</tr>';
+							var formattedDate = formatDate(board.createDate);
+							boardList += `<tr>
+                    <td class="boardNumCol">${board.boardNum}</td>
+                    <td class="boardCatCol">${board.category}</td>
+                    <td><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
+                    <td class="writerNameCol">${board.name}</td>
+                    <td class="writerDateCol">${formattedDate}</td>
+                </tr>`;
 						});
-
 						$('#loginUserName').html(user.name);
 						$('#boardListContent').html(`
-                        <table class="boardTable">
-                        	<tbody id="boardTableTbody">
-                            <tr>
-                                <th>번호</th>
-                                <th>카테고리</th>
-                                <th>제목</th>
-                                <th>작성자</th>
-                                <th>작성일</th>
-                            </tr>
-                            ${boardList}
-                            </tbody>
-                        </table>
-                    `);
+                <table class="boardTable">
+                    <tbody id="boardTableTbody">
+                        <tr>
+                            <th>번호</th>
+                            <th>카테고리</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                        </tr>
+                        ${boardList}
+                    </tbody>
+                </table>
+            `);
+
+						var paginationHtml = '';
+						if (boardPage.hasPrevious) {
+							paginationHtml += `<button class="paginationButton" data-page="${boardPage.number - 1}">이전</button>`;
+						}
+						for (var i = 1; i <= boardPage.totalPages; i++) {
+							paginationHtml += `<button class="paginationButton" data-page="${i}">${i}</button>`;
+						}
+						if (boardPage.hasNext) {
+							paginationHtml += `<button class="paginationButton" data-page="${boardPage.number + 1}">다음</button>`;
+						}
+						$('#paginationControls').html(paginationHtml);
 					},
 					error: function(error) {
 						console.log("Error loading board data:", error);
@@ -240,7 +272,18 @@
 				});
 			}
 
+			function formatDate(createDate) {
+				var date = new Date(createDate);
+				var year = date.getFullYear().toString().slice(-2); // '24'
+				var month = (date.getMonth() + 1).toString().padStart(2, '0'); // '09'
+				var day = date.getDate().toString().padStart(2, '0'); // '11'
+				var hour = date.getHours().toString().padStart(2, '0'); // '10'
+				var minute = date.getMinutes().toString().padStart(2, '0'); // '09'
+				return `${year}.${month}.${day} ${hour}:${minute}`;
+			}
+
 		});
+
 	</script>
 
 </div>

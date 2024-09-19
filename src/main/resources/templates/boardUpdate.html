@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        th {
+            width: 75px;
+            text-align: left;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+            font-weight: normal;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* input, select, textarea styles */
+        input[type="text"],
+        textarea,
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            white-space: pre-wrap; /* ensures line breaks are preserved */
+        }
+
+        button {
+            background-color: #81c405;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #boardUpdateBox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 550px;
+        }
+
+    </style>
+
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#updateForm').submit(function () {
+                if ($('#title').val().length < 1) {
+                    alert("제목을 한글자 이상 입력하세요.");
+                    $('#title').focus();
+                    $('#title').select();
+                    return false;
+                }
+                if ($('#contents').val().length < 1) {
+                    alert("내용을 한글자 이상 입력하세요.");
+                    $('#contents').focus();
+                    $('#contents').select();
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+<h1>[ 글 수정 ]</h1>
+
+<div id="boardUpdateBox">
+    <form id="updateForm" th:action="@{/board/update}" method="post" enctype="multipart/form-data">
+        <!--글 번호 -->
+        <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+
+        <table>
+            <tr>
+                <th>작성자</th>
+                <td th:text="${board.getName()}"></td>
+            </tr>
+            <tr>
+                <th>작성일</th>
+                <td th:text="${#temporals.format(board.createDate, 'yy.MM.dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th>제목</th>
+                <td>
+                    <input type="text" name="title" id="title" th:value="${board.title}">
+                </td>
+            </tr>
+            <tr class="boardContentsCol">
+                <th>내용</th>
+                <td>
+                    <textarea name="contents" id="contents" th:text="${board.contents}" style="white-space: pre-wrap;"
+                              cols="48" rows="15" ></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>추천수</th>
+                <td th:text="${board.recommended}"></td>
+            </tr>
+            <tr>
+                <th>첨부파일</th>
+                <td>
+                    <input type="file" name="upload">
+                    <span th:text="${board.fileName}"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">수정</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</body>
+</html>
