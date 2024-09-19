@@ -116,10 +116,10 @@ select * from `cal`;
 CREATE TABLE `history` (
                            `ingredient_name` varchar(700) NOT NULL,
                            `member_num` int NOT NULL,
-                           `date` date NULL,
+                           `date` date NOT NULL, -- 복합키에 포함되는 date 컬럼
                            `type` varchar(10) NOT NULL CHECK (`type` IN ('c', 'b')), -- c : 소비, b : 버림
-                           PRIMARY KEY (`ingredient_name`, `member_num`),
-                           FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE
+                           PRIMARY KEY (`ingredient_name`, `member_num`, `date`), -- 복합키에 date 추가
+                           FOREIGN KEY (`ingredient_name`, `member_num`) REFERENCES `stock`(`ingredient_name`, `member_num`) ON DELETE CASCADE
 );
 
 select * from `history`;
