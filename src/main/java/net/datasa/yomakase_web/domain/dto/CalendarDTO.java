@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @SuperBuilder
 public class CalendarDTO {
+    private String id;
     private int memberNum;
     private LocalDate inputDate;
     private String bName;
