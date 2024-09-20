@@ -177,6 +177,7 @@
 
     <script>
         $(document).ready(function() {
+
             //글 삭제
             $('#deleteButton').click(function() {
                 let boardNum = $(this).data('num');
@@ -202,13 +203,6 @@
                 return true;
             });
 
-            //리플 삭제
-            function replyDelete(replyNum, boardNum) {
-                if (confirm('삭제하시겠습니까?')) {
-                    location.href = `replyDelete?replyNum=${replyNum}&boardNum=${boardNum}`;
-                }
-            }
-
             $('#recommend').click(function() {
                 let boardNum = $(this).data('num');
 
@@ -231,6 +225,13 @@
                 });
             });
         });
+
+        //리플 삭제
+        function replyDelete(replyNum, boardNum) {
+            if (confirm('삭제하시겠습니까?')) {
+                location.href = `replyDelete?replyNum=${replyNum}&boardNum=${boardNum}`;
+            }
+        }
     </script>
 
 </head>
@@ -239,6 +240,10 @@
 <h1>[ 글 읽기 ]</h1>
 
     <table>
+        <tr>
+            <th>카테고리</th>
+            <td th:text="${board.getCategory()}"></td>
+        </tr>
         <tr>
             <th>작성자</th>
             <td th:text="${board.getName()}"></td>
@@ -276,8 +281,8 @@
             </td>
         </tr>
     </table>
-    <!-- 수정/삭제 버튼(해당 글 작성자만 가능) -->
-    <div id="upDelBt" th:if="${#authentication.principal.memberNum == board.memberNum}">
+    <!-- 수정/삭제 버튼(해당 글 작성자와 관리자만 가능) -->
+    <div id="upDelBt" th:if="${#authentication.principal.memberNum == board.memberNum} or ${#authentication.principal.roleName == 'ROLE_ADMIN'}">
         <button id="deleteButton" th:data-num="${board.boardNum}">삭제</button>
         <button id="updateButton" th:data-num="${board.boardNum}">수정</button>
     </div>
@@ -299,7 +304,7 @@
                     <td class="replyText"><span th:text="${reply.getReplyContents()}"></span></td>
                     <td class="reply-time"><span th:text="${#temporals.format(reply.createDate, 'yy.MM.dd HH:mm')}"></span></td>
                     <td class="replyDeleteBt">
-                    <span th:if="${#authentication.principal.memberNum} == ${reply.memberNum}">
+                    <span th:if="${#authentication.principal.memberNum} == ${reply.memberNum} or ${#authentication.principal.roleName == 'ROLE_ADMIN'}">
                         <a th:href="|javascript:replyDelete(${reply.replyNum}, ${reply.boardNum})|">
                             <img th:src="@{/img/delete_icon.png}" alt="삭제" style="width: 20px; height: 20px;">
                         </a>

@@ -5,10 +5,11 @@
 
 		<div class="boardNavbar">
 			<ul>
-				<li><a href="/board/category?category=알림">알림</a></li>
-				<li><a href="/board/category?category=자취꿀팁">자취꿀팁</a></li>
-				<li><a href="/board/category?category=사담">사담</a></li>
-				<li><a href="/board/category?category=기타">기타</a></li>
+				<li><a href="#" class="category-link" data-category="">전체</a></li>
+				<li><a href="#" class="category-link" data-category="알림">알림</a></li>
+				<li><a href="#" class="category-link" data-category="자취꿀팁">자취꿀팁</a></li>
+				<li><a href="#" class="category-link" data-category="사담">사담</a></li>
+				<li><a href="#" class="category-link" data-category="기타">기타</a></li>
 			</ul>
 		</div>
 
@@ -38,49 +39,73 @@
 	</div>
 
 	<style>
-		.boardNavbar {
-			display: flex;
-			justify-content: center;
-			background-color: #f4f4f4;
-			padding: 15px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			margin: 0 auto;
-			margin-bottom: 20px;
-			width: 80%;
-		}
 
 		h3{
 			text-align: center;
 		}
 
+		.boardNavbar{
+			display: flex;
+			justify-content: center;
+			margin: 0 auto;
+			margin-top: 40px;
+			margin-bottom: 20px;
+			width: 80%;
+
+		}
+
 		.boardNavbar ul {
 			list-style: none;
-			display: flex;
-			gap: 100px;
 			padding: 0;
 			margin: 0;
+			display: flex;
+			justify-content: center;
+			gap: 50px;
 		}
 
 		.boardNavbar ul li {
-			font-size: 1.1rem;
-			font-weight: bold;
-			color: #555;
+			font-family: 'Arial', sans-serif; /* 폰트를 변경 */
+			font-size: 1.1rem; /* 글자 크기 */
+
 		}
 
-		.boardNavbar ul li:hover {
-			color: #81c405;
+		.boardNavbar ul li a {
+			text-decoration: none; /* 밑줄 제거 */
+			color: #333; /* 기본 글자색 */
+			font-weight: bold; /* 글자 두껍게 */
+			padding: 5px 10px; /* 링크 클릭 영역을 넓히기 위한 패딩 */
+			border-radius: 5px; /* 테두리 둥글게 */
+			transition: background-color 0.3s, color 0.3s; /* 부드러운 색상 전환 */
+		}
+
+		.boardNavbar ul li a:hover {
+			color: #81c405; /* 호버 시 글자색 변경 */
 			cursor: pointer;
 		}
 
+		/* 선택된 카테고리 링크에 대한 스타일 */
+		.boardNavbar ul li a.active {
+			background-color: #007BFF; /* 선택된 카테고리 배경색 */
+			color: white; /* 선택된 카테고리 글자색 */
+		}
+
 		#boardWriteBt{
-			display: inline;
+			padding: 8px 10px; /* 패딩을 조절해서 버튼 크기를 줄임 */
+			font-size: 15px; /* 글자 크기 조절 */
+			border-radius: 4px; /* 테두리를 살짝 둥글게 */
+			background-color: #81c405; /* 버튼 배경색 */
+			color: white; /* 버튼 글자색 */
+			border: none; /* 테두리 제거 */
+			cursor: pointer; /* 커서 모양 */
+			transition: background-color 0.3s ease; /* 부드러운 색상 전환 */
 		}
 
 		#userInfo{
-			padding-left: 10%;
+			padding-right: 5%;
 			margin-bottom: 20px;
 			display: flex;
 			align-items: center;
+			justify-content: flex-end;
 		}
 
 		.boardTable{
@@ -195,12 +220,22 @@
 
 		$(document).ready(function() {
 
+			// 처음에 1페이지 데이터를 불러옴
+			loadBoardData(1);
+
+			// 글쓰기 버튼 클릭 시 글쓰기 페이지로 이동
 			$('#boardWriteBt').click(function (){
 				window.location.href = 'board/write'
 			})
 
-			loadBoardData(1); // 처음에 1페이지 데이터를 불러옴
+			// 카테고리 클릭 이벤트
+			$('.category-link').click(function(event) {
+				event.preventDefault();
+				var category = $(this).data('category');
+				loadBoardData(1, '', '', category); // 페이지는 1로 고정, 검색어와 타입은 빈 값
+			});
 
+			// 게시판 글 검색 기능 : 검색타입과 단어에 해당하는 글 출력
 			$('#pagingForm').submit(function(event) {
 				event.preventDefault();
 				var searchType = $('#searchType').val();
@@ -208,52 +243,57 @@
 				loadBoardData(1, searchType, searchWord);
 			});
 
+			// 페이지 버튼 클릭 시 해당 페이지로 이동
 			$(document).on('click', '.paginationButton', function() {
 				var page = $(this).data('page');
 				loadBoardData(page);
 			});
 
-			function loadBoardData(page, searchType = '', searchWord = '') {
+			// page, searchType, searchWord, category를 파라미터로 받아 해당 게시글 목록을 출력하는 함수
+			function loadBoardData(page, searchType = '', searchWord = '', category = '') {
 				$.ajax({
 					url: '/board/list',
 					method: 'GET',
 					data: {
 						page: page,
-						searchWord: searchWord, // 검색어 반영
-						searchType: searchType  // 검색 타입 반영
+						searchWord: searchWord,
+						searchType: searchType,
+						category: category // 선택한 카테고리를 데이터에 추가
 					},
 					success: function(response) {
-
-						var user = response.user;
+						// 받은 데이터로 게시글 목록 업데이트
 						var boardPage = response.boardPage;
+						var user = response.user
 						var boardList = '';
 
 						$.each(boardPage.content, function(index, board) {
 							var formattedDate = formatDate(board.createDate);
 							boardList += `<tr>
-                    <td class="boardNumCol">${board.boardNum}</td>
-                    <td class="boardCatCol">${board.category}</td>
-                    <td><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
-                    <td class="writerNameCol">${board.name}</td>
-                    <td class="writerDateCol">${formattedDate}</td>
-                </tr>`;
+									<td class="boardNumCol">${board.boardNum}</td>
+									<td class="boardCatCol">${board.category}</td>
+									<td><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
+									<td class="writerNameCol">${board.name}</td>
+									<td class="writerDateCol">${formattedDate}</td>
+								</tr>`;
 						});
+
 						$('#loginUserName').html(user.name);
 						$('#boardListContent').html(`
-                <table class="boardTable">
-                    <tbody id="boardTableTbody">
-                        <tr>
-                            <th>번호</th>
-                            <th>카테고리</th>
-                            <th>제목</th>
-                            <th>작성자</th>
-                            <th>작성일</th>
-                        </tr>
-                        ${boardList}
-                    </tbody>
-                </table>
-            `);
+							<table class="boardTable">
+								<tbody id="boardTableTbody">
+									<tr>
+										<th>번호</th>
+										<th>카테고리</th>
+										<th>제목</th>
+										<th>작성자</th>
+										<th>작성일</th>
+									</tr>
+									${boardList}
+								</tbody>
+							</table>
+                		`);
 
+						// 페이지네이션 업데이트
 						var paginationHtml = '';
 						if (boardPage.hasPrevious) {
 							paginationHtml += `<button class="paginationButton" data-page="${boardPage.number - 1}">이전</button>`;
@@ -272,6 +312,7 @@
 				});
 			}
 
+			// 날짜를 형식에 맞춰 반환하는 함수
 			function formatDate(createDate) {
 				var date = new Date(createDate);
 				var year = date.getFullYear().toString().slice(-2); // '24'

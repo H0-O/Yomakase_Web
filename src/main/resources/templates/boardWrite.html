@@ -123,7 +123,7 @@
                             <option value="사담">사담</option>
                             <option value="기타">기타</option>
                         </select>
-                        <div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -153,6 +153,7 @@
 
 <script>
     $(document).ready(function(){
+
         $('#boardWriteForm').submit(function(event){
             // validation 함수가 false를 반환하면 이벤트 전파를 막아야 하므로
             if (!validation()) {

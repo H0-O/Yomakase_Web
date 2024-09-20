@@ -38,20 +38,19 @@ public class BoardController {
 	
 	@Value("${board.uploadPath}")
 	String uploadPath;	// 첨부파일 저장 경로
-	
-	// 게시글 목록 출력
+
 	@GetMapping("list")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> list(Model model,
-													@AuthenticationPrincipal AuthenticatedUser user,
-													@RequestParam(name="searchWord", defaultValue="") String searchWord,
-													@RequestParam(name="page", defaultValue = "1") int page,
-													@RequestParam(name="searchType", defaultValue = "") String searchType   // 제목, 내용, 작성자, 카테고리
-			) {
+	public ResponseEntity<Map<String, Object>> list(
+			@AuthenticationPrincipal AuthenticatedUser user,
+			@RequestParam(name="searchWord", defaultValue="") String searchWord,
+			@RequestParam(name="page", defaultValue = "1") int page,
+			@RequestParam(name="searchType", defaultValue = "") String searchType,
+			@RequestParam(name="category", defaultValue = "") String category // 카테고리 파라미터 추가
+	) {
+		log.debug("요청 파라미터 : page={}, searchType={}, searchWord={}, category={}", page, searchType, searchWord, category);
 
-		log.debug("요청 파라미터 : page={}, searchType={}, searchWord={}", page, searchType, searchWord);
-
-		Page<BoardDTO> boardPage = boardService.getList(page, pageSize, searchType, searchWord);
+		Page<BoardDTO> boardPage = boardService.getList(page, pageSize, searchType, searchWord, category);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("boardPage", boardPage);
@@ -59,31 +58,10 @@ public class BoardController {
 		response.put("linkSize", linkSize);
 		response.put("searchType", searchType);
 		response.put("searchWord", searchWord);
+		response.put("category", category);
 		response.put("user", user);
 
 		return ResponseEntity.ok(response);
-	}
-
-	// 카테고리 별 게시판으로 이동
-	@GetMapping("category")
-	public String category(@RequestParam("category") String category,
-						   @RequestParam(name="searchWord", defaultValue="") String searchWord,
-						   @RequestParam(name="page", defaultValue = "1") int page,
-						   @RequestParam(name="searchType", defaultValue = "") String searchType,
-						   @AuthenticationPrincipal AuthenticatedUser user,
-						   Model model) {
-		log.debug("요청 파라미터 : page={}, searchType={}, searchWord={}, category={}", page, searchType, searchWord, category);
-		Page<BoardDTO> boardPage = boardService.getCategoryList(page, pageSize, searchType, searchWord, category);
-
-		model.addAttribute("boardPage", boardPage);
-		model.addAttribute("page", page);
-		model.addAttribute("linkSize", linkSize);
-		model.addAttribute("searchType", searchType);
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("user", user);
-		model.addAttribute("category", category);
-
-		return "listByCategory";
 	}
 	
 	// 글쓰기 페이지로 이동
@@ -130,7 +108,8 @@ public class BoardController {
 			, @AuthenticationPrincipal AuthenticatedUser user) {
 
 		try {
-			boardService.delete(boardNum, user.getMemberNum(), uploadPath);
+			log.debug("1");
+			boardService.delete(boardNum, user.getMemberNum(), uploadPath, user.getRoleName());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -149,10 +128,11 @@ public class BoardController {
 		try {
 			BoardDTO boardDTO = boardService.getBoard(boardNum);
 
-			if (!user.getMemberNum().equals(boardDTO.getMemberNum())) {
+			if (!user.getMemberNum().equals(boardDTO.getMemberNum()) && !user.getRoleName().equals("ROLE_ADMIN")) {
 				throw new RuntimeException("수정 권한이 없습니다.");
 			}
 			model.addAttribute("board", boardDTO);
+			model.addAttribute("user", user);
 			return "boardUpdate";
 		}
 		catch (Exception e) {
@@ -170,7 +150,7 @@ public class BoardController {
 
 		try {
 
-			boardService.update(boardDTO, user.getMemberNum(), uploadPath, upload);
+			boardService.update(boardDTO, user, uploadPath, upload);
 			return "redirect:read?boardNum=" + boardDTO.getBoardNum();
 
 		}
@@ -179,6 +159,7 @@ public class BoardController {
 			return "redirect:/";
 		}
 	}
+
 	@PostMapping("recommend")
 	@ResponseBody
 	public Map<String, String> recommend(@RequestParam("boardNum") Integer boardNum, HttpServletResponse response, HttpServletRequest request){
@@ -234,7 +215,7 @@ public class BoardController {
 			, @AuthenticationPrincipal AuthenticatedUser user) {
 
 		try {
-			boardService.replyDelete(replyDTO.getReplyNum(), user.getMemberNum());
+			boardService.replyDelete(replyDTO.getReplyNum(), user);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

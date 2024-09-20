@@ -93,6 +93,7 @@
 
     <script>
         $(document).ready(function() {
+
             $('#updateForm').submit(function () {
                 if ($('#title').val().length < 1) {
                     alert("제목을 한글자 이상 입력하세요.");
@@ -122,6 +123,26 @@
         <input type="hidden" name="boardNum" th:value="${board.boardNum}">
 
         <table>
+            <tr>
+                <th>카테고리</th>
+                <td>
+                    <div th:if="${user.roleName == 'ROLE_ADMIN'}">
+                        <select class="category" name="category">
+                            <option value="알림" th:selected="${board.category == '알림'}">알림</option>
+                            <option value="자취꿀팁" th:selected="${board.category == '자취꿀팁'}">자취꿀팁</option>
+                            <option value="사담" th:selected="${board.category == '사담'}">사담</option>
+                            <option value="기타" th:selected="${board.category == '기타'}">기타</option>
+                        </select>
+                    </div>
+                    <div th:unless="${user.roleName == 'ROLE_ADMIN'}">
+                        <select class="category" name="category">
+                            <option value="자취꿀팁" th:selected="${board.category == '자취꿀팁'}">자취꿀팁</option>
+                            <option value="사담" th:selected="${board.category == '사담'}">사담</option>
+                            <option value="기타" th:selected="${board.category == '기타'}">기타</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <th>작성자</th>
                 <td th:text="${board.getName()}"></td>

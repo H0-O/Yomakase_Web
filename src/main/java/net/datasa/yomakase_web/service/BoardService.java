@@ -23,6 +23,7 @@ import net.datasa.yomakase_web.domain.entity.ReplyEntity;
 import net.datasa.yomakase_web.repository.BoardRepository;
 import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.ReplyRepository;
+import net.datasa.yomakase_web.security.AuthenticatedUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -101,46 +102,44 @@ public class BoardService {
 		
 	}
 
-    public Page<BoardDTO> getList(int page, int pageSize, String searchType, String searchWord) {
+	public Page<BoardDTO> getList(int page, int pageSize, String searchType, String searchWord, String category) {
 
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "boardNum"));
 
 		Page<BoardEntity> entityPage = null;
 
+		if (category == null || category.isEmpty()) { // category가 비어있을 경우
 			switch (searchType) {
-				case "title" :
-					entityPage = boardRepository.findByTitleContaining(searchWord, pageable);     break;
-				case "contents" :
-					entityPage = boardRepository.findByContentsContaining(searchWord, pageable);     break;
-				case "name" :
-					entityPage = boardRepository.findByMember_Name(searchWord, pageable);     break;
-				default :
-					entityPage = boardRepository.findAll(pageable);     break;
-
+				case "title":
+					entityPage = boardRepository.findByTitleContaining(searchWord, pageable);
+					break;
+				case "contents":
+					entityPage = boardRepository.findByContentsContaining(searchWord, pageable);
+					break;
+				case "name":
+					entityPage = boardRepository.findByMember_NameContaining(searchWord, pageable);
+					break;
+				default:
+					entityPage = boardRepository.findAll(pageable); // 모든 게시글을 조회
+					break;
 			}
-		log.debug("조회된 결과 엔티티페이지 : {}", entityPage.getContent());
-
-		Page<BoardDTO> boardDTOPage = entityPage.map(this::convertToDTO);
-
-		return boardDTOPage;
-	}
-
-	public Page<BoardDTO> getCategoryList(int page, int pageSize, String searchType, String searchWord, String category) {
-
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "boardNum"));
-
-		Page<BoardEntity> entityPage = null;
-
-		switch (searchType) {
-			case "title" :
-				entityPage = boardRepository.findByCategoryAndTitle(category, searchWord, pageable);     break;
-			case "contents" :
-				entityPage = boardRepository.findByCategoryAndContents(category, searchWord, pageable);     break;
-			case "name" :
-				entityPage = boardRepository.findByCategoryAndMember_Name(category, searchWord, pageable);     break;
-			default :
-				entityPage = boardRepository.findByCategory(category, pageable);     break;
+		} else { // category가 있을 경우
+			switch (searchType) {
+				case "title":
+					entityPage = boardRepository.findByCategoryAndTitleContaining(category, searchWord, pageable);
+					break;
+				case "contents":
+					entityPage = boardRepository.findByCategoryAndContentsContaining(category, searchWord, pageable);
+					break;
+				case "name":
+					entityPage = boardRepository.findByCategoryAndMember_NameContaining(category, searchWord, pageable);
+					break;
+				default:
+					entityPage = boardRepository.findByCategory(category, pageable);
+					break;
+			}
 		}
+
 		log.debug("조회된 결과 엔티티페이지 : {}", entityPage.getContent());
 		Page<BoardDTO> boardDTOPage = entityPage.map(this::convertToDTO);
 
@@ -232,24 +231,24 @@ public class BoardService {
 
 	}
 
-	public void replyDelete(Integer replyNum, Integer memberNum) {
+	public void replyDelete(Integer replyNum, AuthenticatedUser user) {
 
 		ReplyEntity replyEntity = replyRepository.findById(replyNum)
 				.orElseThrow(() -> new EntityNotFoundException("리플이 없습니다."));
 
-		if (!replyEntity.getMember().getMemberNum().equals(memberNum)) {
+		if (!replyEntity.getMember().getMemberNum().equals(user.getMemberNum()) && !user.getRoleName().equals("ROLE_ADMIN")) {
 			throw new RuntimeException("삭제 권한이 없습니다.");
 		}
 		replyRepository.delete(replyEntity);
 
 	}
 
-	public void delete(int boardNum, Integer memberNum, String uploadPath) {
+	public void delete(int boardNum, Integer memberNum, String uploadPath, String roleName) {
 
 		BoardEntity boardEntity = boardRepository.findById(boardNum)
 				.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
 
-		if (boardEntity.getMember().getMemberNum() != memberNum) {
+		if (!boardEntity.getMember().getMemberNum().equals(memberNum) && !roleName.equals("ROLE_ADMIN")) {
 			throw new RuntimeException("삭제 권한이 없습니다.");
 		}
 
@@ -260,17 +259,19 @@ public class BoardService {
 			e.printStackTrace();
 		}
 		boardRepository.delete(boardEntity);
+		log.debug("2");
+
 
 	}
 
-	public void update(BoardDTO boardDTO, Integer memberNum, String uploadPath, MultipartFile upload) {
+	public void update(BoardDTO boardDTO, AuthenticatedUser user, String uploadPath, MultipartFile upload) {
 
 		BoardEntity boardEntity = boardRepository.findById(boardDTO.getBoardNum())
 				.orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
 
 		log.debug("수정할 엔티티: {}", boardEntity);
 		log.debug("바꿀 내용 DTO: {}", boardDTO);
-		if (!boardEntity.getMember().getMemberNum().equals(memberNum)) {
+		if (!boardEntity.getMember().getMemberNum().equals(user.getMemberNum()) && !user.getRoleName().equals("ROLE_ADMIN") ) {
 			throw new RuntimeException("수정 권한이 없습니다.");
 		}
 
@@ -293,6 +294,7 @@ public class BoardService {
 
 		}
 
+		boardEntity.setCategory(boardDTO.getCategory());
 		boardEntity.setTitle(boardDTO.getTitle());
 		boardEntity.setContents(boardDTO.getContents());
 	}
