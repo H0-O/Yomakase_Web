@@ -77,6 +77,7 @@ CREATE TABLE `reply` (
                          `board_num` int NOT NULL,
                          `member_num` int NOT NULL,
                          `reply_contents` varchar(1000) NULL,
+                         `create_date`	timestamp default current_timestamp,
                          PRIMARY KEY (`reply_num`),
                          FOREIGN KEY (`board_num`) REFERENCES `board`(`board_num`) ON DELETE CASCADE,
                          FOREIGN KEY (`member_num`) REFERENCES `member`(`member_num`) ON DELETE CASCADE

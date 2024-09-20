@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 글쓰기</title>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        #boardWriteBox{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* 폼 스타일 */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 550px;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        th {
+            width: 75px;
+            text-align: left;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+            font-weight: normal;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* input, select, textarea 스타일 */
+        input[type="text"],
+        textarea,
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input[type="reset"],
+        input[type="submit"] {
+            background-color: #81c405;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        input[type="reset"] {
+            background-color: coral;
+            margin-right: 10px;
+        }
+
+        input[type="reset"]:hover,
+        input[type="submit"]:hover {
+            opacity: 0.8;
+        }
+
+        #boardWriteBts{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>글쓰기</h1>
+
+    <div id="boardWriteBox">
+        <form id="boardWriteForm" action="write" method="post" enctype="multipart/form-data">	<!-- 첨부파일이 있는 폼에는 entype을 붙여줘야 한다 -->
+            <table>
+                <tr>
+                    <th>카테고리</th>
+                    <td>
+                        <div th:if="${user.roleName == 'ROLE_ADMIN'}">
+                            <select class="category" name="category">
+                                <option value="알림">알림</option>
+                                <option value="자취꿀팁">자취꿀팁</option>
+                                <option value="사담">사담</option>
+                                <option value="기타">기타</option>
+                            </select>
+                        </div>
+                        <div th:unless="${user.roleName == 'ROLE_ADMIN'}">
+                        <select class="category" name="category">
+                            <option value="자취꿀팁">자취꿀팁</option>
+                            <option value="사담">사담</option>
+                            <option value="기타">기타</option>
+                        </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td th:text="${user.name}">작성자 이름</td>
+                </tr>
+                <tr>
+                    <th>제목</th>
+                    <td><input id="boardTitle" type="text" name="title" size="50"></td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td><textarea id="boardContents" cols="48" rows="15" name="contents"></textarea></td>
+                </tr>
+                <tr>
+                    <th>파일첨부</th>
+                    <td><input type="file" name="upload"></td>
+                </tr>
+            </table>
+        <div id="boardWriteBts">
+            <input type="reset" value="초기화">
+            <input type="submit" value="저장">
+        </div>
+        </form>
+    </div>
+
+
+<script>
+    $(document).ready(function(){
+
+        $('#boardWriteForm').submit(function(event){
+            // validation 함수가 false를 반환하면 이벤트 전파를 막아야 하므로
+            if (!validation()) {
+                event.preventDefault(); // 폼 제출을 막음
+            }
+        });
+    });
+
+    function validation(){
+        let boardTitle = $('#boardTitle').val();
+        let boardContents = $('#boardContents').val();
+
+        if(boardTitle === ''){
+            alert('제목을 입력하세요');
+            return false;  // 제목이 비어 있으면 제출 방지
+        }
+
+        if(boardContents === ''){
+            alert('내용을 입력하세요');
+            return false;  // 내용이 비어 있으면 제출 방지
+        }
+
+        return true;  // 모든 조건을 통과하면 폼 제출 허용
+    }
+
+</script>
+
+</body>
+</html>

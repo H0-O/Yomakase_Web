@@ -31,6 +31,7 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
                 .id(entity.getId())  // 실제 DB에서 가져온 아이디로 설정
                 .password(entity.getPw())  // 비밀번호 설정
                 .name(entity.getName())
+                .memberNum(entity.getMemberNum())
                 .roleName(entity.getUserRole())  // 역할(권한) 설정
                 .enabled(entity.getEnabled())  // 계정 활성화 여부 설정
                 .memberNum(entity.getMemberNum())  // memberNum 추가

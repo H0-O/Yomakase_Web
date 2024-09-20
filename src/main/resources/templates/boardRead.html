@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 읽기</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .replyText {
+            width: 400px;
+            word-wrap: break-word;
+        }
+
+        img {
+            display: block;
+            margin-top: 10px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            background-color: #81c405;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #7bb12a;
+        }
+
+        form {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #81c405;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #7bb12a;
+        }
+
+        .reply-section table {
+            width: 100%;
+        }
+
+        .reply-section td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reply-section img {
+            cursor: pointer;
+        }
+
+        .reply-author {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .reply-time {
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+
+        #upDelBt{
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .replyDeleteBt{
+            display: flex;
+            justify-content: center;
+        }
+
+        .boardContentsCol{
+            height: 300px;
+        }
+
+        .recommendation-cell {
+            display: flex;
+            align-items: center; /* 텍스트와 이미지를 세로로 가운데 정렬 */
+            justify-content: space-between; /* 텍스트와 이미지를 양 끝으로 배치 */
+        }
+
+        .recommend-text {
+            margin-right: auto; /* 텍스트를 왼쪽으로 정렬 */
+        }
+
+        .recommend-image {
+            display: inline-block;
+            background-color: white;
+        }
+
+        .recommend-img {
+            display: inline-block;
+            height: 25px;
+            margin-top: 0px;
+        }
+
+        #recommendIcon {
+            width: 25px;
+            margin-bottom: 2px;
+        }
+
+        .recommend-image:hover {
+            background-color: white;
+        }
+
+    </style>
+
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            //글 삭제
+            $('#deleteButton').click(function() {
+                let boardNum = $(this).data('num');
+                if (confirm('삭제하시겠습니까?')) {
+                    location.href = 'delete?boardNum=' + boardNum;
+                }
+            });
+
+            //글 수정
+            $('#updateButton').click(function() {
+                let boardNum = $(this).data('num');
+                location.href = 'update?boardNum=' + boardNum;
+            });
+
+            //리플 작성
+            $('#replyForm').submit(function() {
+                if ($('#replyContents').val().length < 1) {
+                    alert('리플 내용을 한글자 이상 입력하세요.');
+                    $('#replyContents').focus();
+                    $('#replyContents').select();
+                    return false;
+                }
+                return true;
+            });
+
+            $('#recommend').click(function() {
+                let boardNum = $(this).data('num');
+
+                $.ajax({
+                    url: 'recommend',
+                    type: 'post',
+                    data: { boardNum: boardNum }, // boardNum을 전달해야 함
+                    success: function (response) {
+                        if (response.status === "already") {
+                            alert(response.message); // 이미 추천한 경우
+                        } else if (response.status === "success") {
+                            alert(response.message); // 추천 성공한 경우
+                            // 추천수가 증가된 UI 업데이트 로직 추가 가능
+                            location.href = 'read?boardNum=' + boardNum;
+                        }
+                    },
+                    error: function () {
+                        alert('추천 처리 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+        });
+
+        //리플 삭제
+        function replyDelete(replyNum, boardNum) {
+            if (confirm('삭제하시겠습니까?')) {
+                location.href = `replyDelete?replyNum=${replyNum}&boardNum=${boardNum}`;
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+<h1>[ 글 읽기 ]</h1>
+
+    <table>
+        <tr>
+            <th>카테고리</th>
+            <td th:text="${board.getCategory()}"></td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td th:text="${board.getName()}"></td>
+        </tr>
+        <tr>
+            <th>작성일</th>
+            <td th:text="${#temporals.format(board.createDate, 'yy.MM.dd HH:mm')}"></td>
+        </tr>
+        <tr>
+            <th>제목</th>
+            <td th:text="${board.title}"></td>
+        </tr>
+        <tr class="boardContentsCol">
+            <th>내용</th>
+            <td th:text="${board.contents}" style="white-space: pre-wrap;"></td>
+        </tr>
+        <tr>
+            <th>추천수</th>
+            <td class="recommendation-cell">
+                <span th:text="${board.recommended}" class="recommend-text"></span>
+                <button class="recommend-image" id="recommend" th:data-num="${board.boardNum}">
+                    <img src="/img/recommendText.png" id="recommendText" class="recommend-img">
+                    <img src="/img/good_icon.png" id="recommendIcon" alt="Good Icon" class="recommend-img">
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th>첨부파일</th>
+            <td>
+                <!-- 첨부파일이 있을 때만 이미지 출력 -->
+                <img th:if="${board.fileName != null}" th:src="|download?boardNum=${board.boardNum}|" style="width: 50px; height: 50px">
+
+                <!-- 파일이 있으면 다운로드 링크 표시 -->
+                <a th:if="${board.fileName != null}" th:href="@{/board/download(boardNum=${board.boardNum})}" th:text="${board.fileName}"></a>
+            </td>
+        </tr>
+    </table>
+    <!-- 수정/삭제 버튼(해당 글 작성자와 관리자만 가능) -->
+    <div id="upDelBt" th:if="${#authentication.principal.memberNum == board.memberNum} or ${#authentication.principal.roleName == 'ROLE_ADMIN'}">
+        <button id="deleteButton" th:data-num="${board.boardNum}">삭제</button>
+        <button id="updateButton" th:data-num="${board.boardNum}">수정</button>
+    </div>
+
+    <!-- 로그인한 사람들만 리플 작성 가능 -->
+    <div sec:authorize="isAuthenticated()">
+        <!-- 리플 작성 폼 -->
+        <form id="replyForm" th:action="@{/board/replyWrite}" method="post">
+            <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+            <input type="text" name="replyContents" id="replyContents" style="width:500px;">
+            <input type="submit" value="확인">
+        </form>
+    </div>
+    <div class="reply-section">
+        <table>
+            <p th:each="reply : ${board.replyList}">
+                <tr>
+                    <td class="reply-author"><span th:text="${reply.getMemberName()}"></span></td>
+                    <td class="replyText"><span th:text="${reply.getReplyContents()}"></span></td>
+                    <td class="reply-time"><span th:text="${#temporals.format(reply.createDate, 'yy.MM.dd HH:mm')}"></span></td>
+                    <td class="replyDeleteBt">
+                    <span th:if="${#authentication.principal.memberNum} == ${reply.memberNum} or ${#authentication.principal.roleName == 'ROLE_ADMIN'}">
+                        <a th:href="|javascript:replyDelete(${reply.replyNum}, ${reply.boardNum})|">
+                            <img th:src="@{/img/delete_icon.png}" alt="삭제" style="width: 20px; height: 20px;">
+                        </a>
+                    </span>
+                    </td>
+
+                </tr>
+            </p>
+        </table>
+    </div>
+</body>
+</html>
