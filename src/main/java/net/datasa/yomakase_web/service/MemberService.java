@@ -161,28 +161,7 @@ public class MemberService {
         memberDTO.setHeight(memberEntity.getBodyInfo().getHeight());
         memberDTO.setWeight(memberEntity.getBodyInfo().getWeight());
 
-        Map<String, Boolean> allergies = new HashMap<>();
-        allergies.put("Eggs", memberEntity.getAllergy().isEggs());
-        allergies.put("Milk", memberEntity.getAllergy().isMilk());
-        allergies.put("Buckwheat", memberEntity.getAllergy().isBuckwheat());
-        allergies.put("Peanut", memberEntity.getAllergy().isPeanut());
-        allergies.put("Soybean", memberEntity.getAllergy().isSoybean());
-        allergies.put("Wheat", memberEntity.getAllergy().isWheat());
-        allergies.put("Mackerel", memberEntity.getAllergy().isMackerel());
-        allergies.put("Crab", memberEntity.getAllergy().isCrab());
-        allergies.put("Shrimp", memberEntity.getAllergy().isShrimp());
-        allergies.put("Pork", memberEntity.getAllergy().isPork());
-        allergies.put("Peach", memberEntity.getAllergy().isPeach());
-        allergies.put("Tomato", memberEntity.getAllergy().isTomato());
-        allergies.put("Walnuts", memberEntity.getAllergy().isWalnuts());
-        allergies.put("Chicken", memberEntity.getAllergy().isChicken());
-        allergies.put("Beef", memberEntity.getAllergy().isBeef());
-        allergies.put("Squid", memberEntity.getAllergy().isSquid());
-        allergies.put("Shellfish", memberEntity.getAllergy().isShellfish());
-        allergies.put("Pine Nut", memberEntity.getAllergy().isPineNut());
 
-        // 알러지 정보를 MemberDTO에 설정
-        memberDTO.setAllergies(allergies);
     // 필요한 필드만 선택적으로 포함
         return memberDTO;
 }
