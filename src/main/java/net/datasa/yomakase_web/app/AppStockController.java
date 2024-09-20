@@ -54,4 +54,43 @@ public class AppStockController {
         }
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getStockForApp(
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            // 로그로 토큰 출력
+            log.info("Received token: {}", token);
+
+            // 토큰을 사용한 사용자 정보 추출
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
+                log.info("JWT Token (parsed): {}", jwtToken);
+
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken); // JWT에서 사용자 식별자 추출
+                log.info("Extracted memberNum from token: {}", memberNumFromToken);
+
+                // 스톡 데이터 가져오기
+                List<Map<String, Object>> stockList = stockService.getStockForMember(memberNumFromToken); // 앱 사용자 처리
+                log.info("Fetched stock list for memberNum: {}", memberNumFromToken);
+
+                // 데이터가 없을 경우
+                if (stockList.isEmpty()) {
+                    return new ResponseEntity<>("스톡 데이터가 없습니다.", HttpStatus.NO_CONTENT);
+                }
+
+                return new ResponseEntity<>(stockList, HttpStatus.OK);
+            } else {
+                log.warn("No or invalid token provided.");
+                return new ResponseEntity<>("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (JwtException e) {
+            log.error("JWT 인증 실패: {}", e.getMessage());
+            return new ResponseEntity<>("JWT 토큰이 유효하지 않습니다: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            log.error("스톡 데이터 가져오기 실패: {}", e.getMessage());
+            return new ResponseEntity<>("스톡 데이터를 가져오는 데 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

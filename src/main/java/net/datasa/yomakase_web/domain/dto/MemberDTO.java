@@ -27,7 +27,7 @@ public class MemberDTO {
     private char gender;
 
 //    @JsonProperty("birth_date")
-    private LocalDate birthdate;
+    private LocalDate birthDate;
 
 //    @JsonProperty("height")
     private Integer height;  // 키

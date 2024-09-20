@@ -41,7 +41,7 @@ public class MemberService {
                 .pw(passwordEncoder.encode(memberDTO.getPassword()))
                 .name(memberDTO.getNickname())
                 .gen(memberDTO.getGender())
-                .birthDate(memberDTO.getBirthdate())
+                .birthDate(memberDTO.getBirthDate())
                 .userRole(memberDTO.getUserRole() != null ? memberDTO.getUserRole() : "ROLE_USER")
                 .enabled(true)
                 .build();
@@ -138,7 +138,7 @@ public class MemberService {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setEmail(memberEntity.getId());
         memberDTO.setNickname(memberEntity.getName());
-        memberDTO.setBirthdate(memberEntity.getBirthDate());
+        memberDTO.setBirthDate(memberEntity.getBirthDate());
         memberDTO.setGender(memberEntity.getGen());
         memberDTO.setEggs(memberEntity.getAllergy().isEggs());
         memberDTO.setMilk(memberEntity.getAllergy().isMilk());
@@ -161,28 +161,7 @@ public class MemberService {
         memberDTO.setHeight(memberEntity.getBodyInfo().getHeight());
         memberDTO.setWeight(memberEntity.getBodyInfo().getWeight());
 
-        Map<String, Boolean> allergies = new HashMap<>();
-        allergies.put("Eggs", memberEntity.getAllergy().isEggs());
-        allergies.put("Milk", memberEntity.getAllergy().isMilk());
-        allergies.put("Buckwheat", memberEntity.getAllergy().isBuckwheat());
-        allergies.put("Peanut", memberEntity.getAllergy().isPeanut());
-        allergies.put("Soybean", memberEntity.getAllergy().isSoybean());
-        allergies.put("Wheat", memberEntity.getAllergy().isWheat());
-        allergies.put("Mackerel", memberEntity.getAllergy().isMackerel());
-        allergies.put("Crab", memberEntity.getAllergy().isCrab());
-        allergies.put("Shrimp", memberEntity.getAllergy().isShrimp());
-        allergies.put("Pork", memberEntity.getAllergy().isPork());
-        allergies.put("Peach", memberEntity.getAllergy().isPeach());
-        allergies.put("Tomato", memberEntity.getAllergy().isTomato());
-        allergies.put("Walnuts", memberEntity.getAllergy().isWalnuts());
-        allergies.put("Chicken", memberEntity.getAllergy().isChicken());
-        allergies.put("Beef", memberEntity.getAllergy().isBeef());
-        allergies.put("Squid", memberEntity.getAllergy().isSquid());
-        allergies.put("Shellfish", memberEntity.getAllergy().isShellfish());
-        allergies.put("Pine Nut", memberEntity.getAllergy().isPineNut());
 
-        // 알러지 정보를 MemberDTO에 설정
-        memberDTO.setAllergies(allergies);
     // 필요한 필드만 선택적으로 포함
         return memberDTO;
 }
@@ -199,7 +178,7 @@ public class MemberService {
 
         // 성별과 생년월일 업데이트
         entity.setGen(memberDTO.getGender());
-        entity.setBirthDate(memberDTO.getBirthdate());
+        entity.setBirthDate(memberDTO.getBirthDate());
 
         // 회원 정보를 업데이트
         memberRepository.save(entity);
