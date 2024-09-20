@@ -47,17 +47,37 @@ public class CalendarController {
         calendarService.dietSave(calDTO, user);
     }
 
-    //날짜, 사용자 인증정보로 DB에 저장된 식단을 찾는 메소드
+    /**
+     * 날짜, 사용자 인증정보로 DB에 저장된 식단을 찾는 메소드
+     * @param selectedDay
+     * @param user
+     * @return
+     */
     @PostMapping("dietList")
     public CalendarDTO dietListSelect(@RequestParam("selectedDay") String selectedDay,
                                       @AuthenticationPrincipal AuthenticatedUser user){
-        log.debug("식단 확인: {},{}", selectedDay, user.getUsername());
+        //log.debug("식단 확인: {},{}", selectedDay, user.getUsername());
 
         LocalDate date = LocalDate.parse(selectedDay, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         CalendarDTO calDTO = new CalendarDTO();
         calDTO.setInputDate(date);
         calDTO.setId(user.getUsername());
+        log.debug("식단 확인 DTO : {}", calDTO);  //CalendarDTO(id=beta@yomakase.test, memberNum=0, inputDate=2024-09-01, bName=null, lName=null, dName=null, totalKcal=0, tooMuch=null, lack=null, recom=null, score=0)
         calDTO = calendarService.dietListSelect(calDTO);
+        return calDTO;
+    }
+
+    @PostMapping("nutrientList")
+    public CalendarDTO nutrientListSelect(@RequestParam("selectedDay") String selectedDay,
+                                          @AuthenticationPrincipal AuthenticatedUser user){
+        log.debug("영양소 확인: {},{}", selectedDay, user.getUsername());
+
+        LocalDate date = LocalDate.parse(selectedDay, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        CalendarDTO calDTO = new CalendarDTO();
+        calDTO.setInputDate(date);
+        calDTO.setId(user.getUsername());
+        calDTO = calendarService.nutrientListSelect(calDTO);
+
         return calDTO;
     }
 

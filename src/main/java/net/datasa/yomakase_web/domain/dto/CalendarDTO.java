@@ -19,4 +19,10 @@ public class CalendarDTO {
     private String bName;
     private String lName;
     private String dName;
+
+    private int totalKcal;
+    private String tooMuch;
+    private String lack;
+    private String recom;
+    private int score;
 }

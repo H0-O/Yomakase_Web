@@ -112,17 +112,22 @@ public class CalendarService {
         MemberEntity memberEntity = memberRepository.findById(calDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Member info not found"));
 
+        //log.debug("이메일로 멤버엔티티를 잘 찾아왔는가: {}", memberEntity);
+
         // calendar 테이블의 복합키(프라이머리키)
         CalendarId calId = new CalendarId();
         calId.setInputDate(calDTO.getInputDate());
         calId.setMemberNum(memberEntity.getMemberNum());
 
-        log.debug("캘린더복합키 조회: {}", calId);      //CalendarId(inputDate=2024-09-27, memberNum=1)
+        //log.debug("캘린더복합키 조회: {}", calId);      //CalendarId(inputDate=2024-09-27, memberNum=1)
+
         // calendarRepository에서 복합키로 CalendarEntity 찾기
         CalendarEntity calEntity = calendarRepository.findById(calId)
                 .orElseThrow(() -> new EntityNotFoundException("Calendar info not found"));
 
-        // log.debug("식단 조회 서비스 : {}", calEntity.toString());
+       // CalendarEntity calEntity = calendarRepository.findByInputDateAndMemberNum(calId.getInputDate(), calId.getMemberNum());
+
+         log.debug("식단 조회 서비스 : {}", calEntity);
         // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환
         calDTO.setInputDate(calEntity.getInputDate());
         calDTO.setMemberNum(calEntity.getMemberNum());
@@ -133,4 +138,33 @@ public class CalendarService {
         return calDTO;
     }
 
+    //영양소 조회 메서드
+    public CalendarDTO nutrientListSelect(CalendarDTO calDTO){
+        // id를 통해 memberNum 조회
+        MemberEntity memberEntity = memberRepository.findById(calDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Member info not found"));
+
+        // calendar 테이블의 복합키(프라이머리키)
+        CalendarId calId = new CalendarId();
+        calId.setInputDate(calDTO.getInputDate());
+        calId.setMemberNum(memberEntity.getMemberNum());
+
+        log.debug("영양소 조회용 캘린더 복합키 : {}", calId);
+
+        // calendarRepository에서 복합키로 CalendarEntity 찾기
+        CalendarEntity calEntity = calendarRepository.findById(calId)
+                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found : nutrient select part"));
+
+        log.debug("영양소 조회 서비스 : {}", calEntity);
+        // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환
+        calDTO.setInputDate(calEntity.getInputDate());
+        calDTO.setMemberNum(calEntity.getMemberNum());
+        calDTO.setTotalKcal(calEntity.getTotalKcal());
+        calDTO.setTooMuch(calEntity.getTooMuch());
+        calDTO.setLack(calEntity.getLack());
+        calDTO.setRecom(calEntity.getRecom());
+        calDTO.setScore(calEntity.getScore());
+
+        return calDTO;
+    }
 }
