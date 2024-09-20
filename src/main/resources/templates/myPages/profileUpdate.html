@@ -24,9 +24,9 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요">
             </div>
             <div class="form-group">
-                <label for="birthdate">생년월일</label>
+                <label for="birthDate">생년월일</label>
                 <!-- 사용자의 생년월일을 표시하고 수정할 수 있는 필드 -->
-                <input type="date" id="birthdate" name="birthdate" th:value="${member.birthdate}">
+                <input type="date" id="birthDate" name="birthdate" th:value="${member.birthdate}">
             </div>
             <div class="form-group">
                 <label for="gender">성별</label>
@@ -509,7 +509,7 @@
                     nickname: document.getElementById('nickname').value,
                     password: document.getElementById('password').value,
                     confirmPassword: document.getElementById('confirmPassword').value,
-                    birthdate: document.getElementById('birthdate').value,
+                    birthdate: document.getElementById('birthDate').value,
                     gender: document.getElementById('gender').value,
                     height: document.getElementById('height').value,
                     weight: document.getElementById('weight').value,
