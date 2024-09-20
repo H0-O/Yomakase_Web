@@ -62,18 +62,41 @@ public class StockService {
         }
     }
 
+//    /**
+//     * 재고 데이터를 테이블에 출력
+//     */
+//    public List<StockDTO> getAllStocks() {
+//        // DB에서 모든 재고 데이터를 가져옵니다.
+//        List<StockEntity> stocks = stockRepository.findAll();
+//
+//        // 가져온 StockEntity 데이터를 StockDTO 형태로 변환합니다.
+//        return stocks.stream()
+//                .map(stock -> StockDTO.builder()
+//                        .ingredientName(stock.getIngredientName())
+//                        .memberNum(stock.getMemberNum())
+//                        .isHaving(stock.isHaving())
+//                        .useByDate(stock.getUseByDate())
+//                        .updateDate(stock.getUpdateDate())
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
+
     /**
-     * 재고 데이터를 테이블에 출력
+     * 특정 회원(memberNum)의 재고 데이터를 테이블에 출력
      */
-    public List<StockDTO> getAllStocks() {
-        // DB에서 모든 재고 데이터를 가져옵니다.
-        List<StockEntity> stocks = stockRepository.findAll();
+    public List<StockDTO> getStocksByMember(int memberNum) {
+        // DB에서 해당 회원(memberNum)의 재고 데이터를 가져옵니다.
+        List<StockEntity> stocks = stockRepository.findByMemberNum(memberNum);
 
         // 가져온 StockEntity 데이터를 StockDTO 형태로 변환합니다.
         return stocks.stream()
-                .map(stock -> StockDTO.builder().ingredientName(stock.getIngredientName())
-                        .memberNum(stock.getMemberNum()).isHaving(stock.isHaving()).useByDate(stock.getUseByDate())
-                        .updateDate(stock.getUpdateDate()).build())
+                .map(stock -> StockDTO.builder()
+                        .ingredientName(stock.getIngredientName())
+                        .memberNum(stock.getMemberNum())
+                        .isHaving(stock.isHaving())
+                        .useByDate(stock.getUseByDate())
+                        .updateDate(stock.getUpdateDate())
+                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -120,10 +143,16 @@ public class StockService {
         return imageFileNames.get(index); // 예를 들어 '3.png'와 같은 파일명
     }
 
-    public void updateUseByDate(String ingredientName, int memberNum, LocalDate useByDate) {
+    /**
+     * 해당되는 재고를 선택하고 날짜 업데이트하기
+     * @param ingredientName 식재료 이름
+     * @param memberNum 회원 일련번호
+     * @param useByDate 업데이트 날짜
+     */
+    public void updateStockDate(String ingredientName, int memberNum, LocalDate useByDate) {
         // 재고 항목을 찾습니다.
         StockEntity stockEntity = stockRepository.findByIngredientNameAndMemberNum(ingredientName, memberNum)
-                .orElseThrow(() -> new RuntimeException("재고 항목을 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("재고 항목을 찾을 수 없습니다. ingredientName: " + ingredientName + ", memberNum: " + memberNum));
 
         // found stockEntity의 useByDate 업데이트
         stockEntity.setUseByDate(useByDate);
@@ -135,4 +164,5 @@ public class StockService {
     public List<String> getAllIngredientNames() {
         return stockRepository.findAllIngredientNames();
     }
+
 }

@@ -20,4 +20,5 @@ public interface StockRepository extends JpaRepository<StockEntity, MemberStock>
 
     Optional<StockEntity> findByIngredientNameAndMemberNum(String ingredientName, Integer memberNum);
 
+    List<StockEntity> findByMemberNum(int memberNum);
 }

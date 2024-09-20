@@ -8,12 +8,14 @@ import net.datasa.yomakase_web.service.StockService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,9 +40,11 @@ public class StockRestController {
 	private final StockRepository stockRepository;
 
 	@PostMapping("/stockData")
-	public List<StockDTO> getStocks() {
+	public List<StockDTO> getStocks(@RequestParam("memberNum") int memberNum) {
 		// DB에서 데이터 가져오기
-		return stockService.getAllStocks();
+		// return stockService.getAllStocks();
+		// 로그인한 회원의 memberNum을 기준으로 데이터를 가져옴
+		return stockService.getStocksByMember(memberNum);
 	}
 
 	/**
@@ -60,16 +64,29 @@ public class StockRestController {
 	}
 
 	@PostMapping("/stockDate")
-	public ResponseEntity<String> updateUseByDate(@RequestBody StockDTO stockDTO) {
+	public Map<String, Object> updateStockDate(@RequestBody StockDTO stockDTO) {
+		Map<String, Object> response = new HashMap<>();
 		try {
-			// LocalDate 타입이므로 직접 사용
-			LocalDate useByDate = stockDTO.getUseByDate();
-
-			stockService.updateUseByDate(stockDTO.getIngredientName(), stockDTO.getMemberNum(), useByDate);
-			return ResponseEntity.ok("업데이트 성공");
+			stockService.updateStockDate(stockDTO.getIngredientName(), stockDTO.getMemberNum(), stockDTO.getUseByDate());
+			response.put("success", true);
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("업데이트 실패: " + e.getMessage());
+			response.put("success", false);
+			response.put("message", "날짜 업데이트에 실패했습니다.");
 		}
+		return response;
 	}
+//	public ResponseEntity<String> updateUseByDate(@RequestBody StockDTO stockDTO) {
+//		System.out.println("받은 데이터: " + stockDTO); // 로그 추가
+//		try {
+//			// LocalDate 타입이므로 직접 사용
+//			LocalDate useByDate = stockDTO.getUseByDate();
+//
+//			stockService.updateUseByDate(stockDTO.getIngredientName(), stockDTO.getMemberNum(), useByDate);
+//			return ResponseEntity.ok("업데이트 성공");
+//		} catch (Exception e) {
+//			e.printStackTrace(); // 예외 스택 추적을 콘솔에 출력
+//			return ResponseEntity.status(500).body("업데이트 실패: " + e.getMessage());
+//		}
+//	}
 
 }
