@@ -14,11 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +49,7 @@ public class StockService {
             log.info("Saving ingredient: {}, Expiration Date: {}", ingredientName, expirationDate);
 
             LocalDate currentDate = LocalDate.now();
-            LocalDate useByDate = currentDate.plus(Integer.parseInt(expirationDate), ChronoUnit.DAYS);
+            LocalDate useByDate = currentDate.plusDays(Integer.parseInt(expirationDate));
 
             StockEntity stockEntity = StockEntity.builder()
                     .ingredientName(ingredientName)
@@ -60,6 +60,59 @@ public class StockService {
 
             stockRepository.save(stockEntity);
         }
+    }
+    public List<Map<String, Object>> getStockForMember(Object identifier) {
+        Integer memberNum = null;
+
+        if (identifier instanceof Integer) {
+            // 앱에서 온 요청: memberNum이 Integer로 전달됨
+            memberNum = (Integer) identifier;
+        } else if (identifier instanceof String) {
+            // 이메일(아이디)를 사용해 memberNum을 조회
+            MemberEntity member = memberRepository.findById((String) identifier)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            memberNum = member.getMemberNum();
+        }
+
+        // memberNum을 사용하여 스톡 데이터 조회
+        List<StockEntity> stockEntities = stockRepository.findByMemberNumAndIsHavingTrue(memberNum);
+
+        // StockEntity를 Map 형식으로 변환
+        List<Map<String, Object>> stockList = new ArrayList<>();
+
+        // 현재 날짜/시간 가져오기
+        LocalDateTime now = LocalDateTime.now();
+
+        for (StockEntity stockEntity : stockEntities) {
+            Map<String, Object> stockMap = new HashMap<>();
+            stockMap.put("ingredientName", stockEntity.getIngredientName());
+
+            // expirationDate를 계산 (업데이트 날짜와 현재 시간의 차이)
+            LocalDateTime updateDate = stockEntity.getUpdateDate();
+            long daysBetween = Duration.between(updateDate, now).toDays();
+
+            stockMap.put("expirationDate", daysBetween); // 남은 일수(또는 경과 일수)를 저장
+
+            stockList.add(stockMap);
+        }
+
+        return stockList;
+    }
+    public List<String> getAllIngredientNamesForMember(Object identifier) {
+        Integer memberNum = null;
+
+        if (identifier instanceof Integer) {
+            // 앱에서 온 요청: memberNum이 Integer로 전달됨
+            memberNum = (Integer) identifier;
+        } else if (identifier instanceof String) {
+            // 이메일(아이디)를 사용해 memberNum을 조회
+            MemberEntity member = memberRepository.findById((String) identifier)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            memberNum = member.getMemberNum();
+        }
+
+        // memberNum과 isHaving이 true인 ingredient_name 가져오기
+        return stockRepository.findAllIngredientNamesByMemberNumAndIsHavingTrue(memberNum);
     }
 
 //    /**
@@ -160,9 +213,4 @@ public class StockService {
         // 업데이트된 엔티티 저장
         stockRepository.save(stockEntity);
     }
-
-    public List<String> getAllIngredientNames() {
-        return stockRepository.findAllIngredientNames();
-    }
-
 }
