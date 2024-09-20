@@ -408,6 +408,9 @@
         </div>
     </section>
     <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
+    <script th:inline="javascript">
+        var memberAllergies = /*[[${allergy}]]*/ [];
+    </script>
     <script>
         // 날짜 수정 ajax
         document.getElementById('submitDate').addEventListener('click', function() {
@@ -682,6 +685,45 @@
                 }
             });
         }); // 수정 모달창 끝
+        // 레시피 추천 버튼 클릭 시
+        document.getElementById('RecipeModalBtn').addEventListener('click', function() {
+            // 테이블의 모든 행(tr)을 선택
+            const rows = document.querySelectorAll("#materialsTable tbody tr");
+
+            // 재료 이름들을 저장할 배열
+            let ingredientNames = [];
+
+            // 각 행을 순회하며 첫 번째 셀(td)의 텍스트(재료 이름)를 배열에 추가
+            rows.forEach(function(row) {
+                const ingredientName = row.querySelector("td:first-child").textContent.trim();
+                ingredientNames.push(ingredientName);
+            });
+
+            // 알러지 정보 중 true인 것만 추출
+            const allergies = Object.entries(memberAllergies)
+                .filter(([key, value]) => value === true)  // 값이 true인 항목만 필터링
+                .map(([key]) => key);  // 필터링된 항목의 키(알러지 이름)만 추출
+
+            // 이후 이 데이터를 Python FastAPI 서버로 전송하거나 다른 작업에 사용
+            const requestData = {
+                allergies: allergies,  // true인 알러지 정보
+                ingredients: ingredientNames  // 수집한 재료 이름 목록
+            };
+            console.log(requestData)
+
+            // 예시로 서버에 데이터를 전송하는 코드 (fetch 사용)
+            fetch('http://localhost:8000/recipe-recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch((error) => console.error('Error:', error));
+        });
+
 
         // 레시피 추천 모달
         const RecipeModal = document.getElementById("RecipeModal");
@@ -725,4 +767,5 @@
             }
         }); // 레시피 모달창 끝
     </script>
+
 </div>

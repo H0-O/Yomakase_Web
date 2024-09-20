@@ -27,13 +27,10 @@ public class StockController {
     @PostMapping("/save")
     public ResponseEntity<String> saveStock(@RequestBody List<Map<String, String>> ingredients) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();            // 인증된 사용자가 있는지 확인
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return new ResponseEntity<>("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED);
-            }
+            // Spring Security에서 인증된 사용자 정보 가져오기
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            String username = authentication.getName(); // 사용자 이름(이메일) 가져오기
-            stockService.saveStock(ingredients, username);
+            stockService.saveStock(ingredients, email);
             return new ResponseEntity<>("저장되었습니다!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("저장에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,10 +40,16 @@ public class StockController {
     @GetMapping("/existing-ingredients")
     public ResponseEntity<List<String>> getExistingIngredients() {
         try {
-            List<String> ingredients = stockService.getAllIngredientNames();
+            // Spring Security에서 인증된 사용자 정보 가져오기
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+            // 해당 사용자의 ingredient_name 목록 가져오기
+            List<String> ingredients = stockService.getAllIngredientNamesForMember(email);
+
             return new ResponseEntity<>(ingredients, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
