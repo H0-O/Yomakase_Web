@@ -321,10 +321,9 @@
     <!-- 나의 냉장고 -->
     <section class="resume-section" id="myRefrigerator">
         <div class="resume-section-content" id="myRefrigeratorContent">
-            <!-- <h2 class="mb-5">나의 냉장고</h2> -->
             <div class="refrigerator-wrapper">
                 <div class="refrigerator-photo">
-                    <!-- 추천 메뉴 모달창 버튼 -->
+                    <!-- 레시피 모달창 버튼 -->
                     <button id="RecipeModalBtn" class="refriBtn">요리법 추천</button>
                     <br>
                     <div class="refrigerator-container" id="refrigerator-container">
@@ -335,7 +334,8 @@
                     </div>
                 </div>
                 <br>
-                <div class="table-container">
+                <!-- 데이터 테이블 영역 -->
+                <div class="table-container" id="tableContainer" style="display: none;">
                     <div class="table-wrapper">
                         <table id="materialsTable">
                             <thead>
@@ -344,10 +344,14 @@
                             </tr>
                             </thead>
                             <tbody id="list">
-                            <!-- 식재료 테이블 -->
+                            <!-- 식재료 테이블 데이터 -->
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <!-- 데이터가 없을 때 보여줄 페이지 -->
+                <div id="noDataMessage" style="display: none;">
+                    <p>현재 저장된 재료가 없습니다.</p>
                 </div>
                 <!-- 식재료 삭제 모달 페이지 -->
                 <div id="delModal" class="modal-overlay">
@@ -455,14 +459,14 @@
                 }
             });
 
-            // ESC 키를 누르면 모달 닫기
-            $(document).on('keyup', function (e) {
-                if (e.key === "Escape") { // ESC 키를 확인
-                    if (isDateModalOn()) { // 모달이 열려 있는지 확인
-                        dateModalOff(); // 모달 닫기
-                    }
-                }
-            });
+            // // ESC 키를 누르면 모달 닫기 - 작동안됨 기능고치기
+            // $(document).on('keyup', function (e) {
+            //     if (e.key === "Escape") { // ESC 키를 확인
+            //         if (isDateModalOn()) { // 모달이 열려 있는지 확인
+            //             dateModalOff(); // 모달 닫기
+            //         }
+            //     }
+            // });
 
             // 확인 버튼 클릭 시 날짜 업데이트
             $('#submitDate').click(function () {
@@ -509,9 +513,10 @@
         function calculateDday(dateString) {
             // 현재 날짜
             const today = new Date();
-
+            today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 0으로 설정
             // useByDate를 Date 객체로 변환
             const useByDate = new Date(dateString);
+            useByDate.setHours(0, 0, 0, 0); // 소비기한 날짜의 시간도 0으로 설정
 
             // 남은 일수 계산
             const timeDiff = useByDate - today;
@@ -546,30 +551,53 @@
                 dataType : "json",
                 success : function(list) {
                     console.log(list); // 데이터 형식 확인
-                    // 소비기한을 기준으로 오름차순 정렬
-                    list.sort(function(a, b) {
-                        return new Date(a.useByDate) - new Date(b.useByDate);
-                    });
-                    let txt = `
-					<table>
-					`;
-                    $(list).each(function(index, object) {
-                        const today = new Date();
-                        const useByDate = new Date(object.useByDate);
-                        const timeDiff = useByDate - today;
-                        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-                        const dDayText = calculateDday(object.useByDate);
-                        const dDayClass = getDdayClass(daysLeft);
-                        txt += `
-					<tr>
-						<td>${object.ingredientName}</td>
-						<td class="${dDayClass}">${dDayText}</td>
-						<td><button class="refriBtn" data-ingredient-name="${object.ingredientName}" data-member-num="${object.memberNum}">수정</button></td>
-					</tr>
-					`;
-                    });
-                    txt += `</table>`;
+
+                    // 테이블이 담길 변수
+                    let txt = ``;
+
+                    // 데이터가 있는지 확인
+                    if (list.length > 0) {
+                        // 소비기한을 기준으로 오름차순 정렬
+                        list.sort(function (a, b) {
+                            return new Date(a.useByDate) - new Date(b.useByDate);
+                        });
+
+                        // 테이블 시작
+                        txt += `<table>`;
+
+                        $(list).each(function (index, object) {
+                            const today = new Date();
+                            const useByDate = new Date(object.useByDate);
+                            const timeDiff = useByDate - today;
+                            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                            const dDayText = calculateDday(object.useByDate);
+                            const dDayClass = getDdayClass(daysLeft);
+
+                            // 테이블 행 추가
+                            txt += `
+                            <tr>
+                                <td>${object.ingredientName}</td>
+                                <td class="${dDayClass}">${dDayText}</td>
+                                <td><button class="refriBtn" data-ingredient-name="${object.ingredientName}" data-member-num="${object.memberNum}">수정</button></td>
+                            </tr>`;
+                        });
+                        // 테이블 끝
+                        txt += `</table>`;
+                    } else {
+                        // 데이터가 없을 때 표시할 메시지
+                        txt = `<p>현재 저장된 재료가 없습니다.</p>`;
+                    }
+                    // 데이터를 테이블 영역에 삽입
                     $("#list").html(txt);
+
+                    // 데이터가 있을 때는 테이블을 표시하고 없을 때는 메시지 표시
+                    if (list.length > 0) {
+                        $("#tableContainer").show();  // 테이블 표시
+                        $("#noDataMessage").hide();   // 데이터 없을 때 메시지 숨김
+                    } else {
+                        $("#tableContainer").hide();  // 테이블 숨김
+                        $("#noDataMessage").show();   // 데이터 없을 때 메시지 표시
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX 요청 실패:", status, error); // 에러 메시지 확인
@@ -577,7 +605,7 @@
                     alert("출력 실패");
                 }
             });
-        }); // stock 출력문 끝
+        }); // stock 테이블 출력문 끝
 
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/rest/stockImg')  // 컨트롤러 경로에 맞추어 요청
@@ -585,60 +613,71 @@
                 .then(stockItems => {
                     const container = document.getElementById('ingredients-container');
 
-                    // 컨테이너의 크기
-                    const containerWidth = container.offsetWidth;
-                    const containerHeight = container.offsetHeight;
+                    // 테이블의 내용을 초기화
+                    const listElement = document.getElementById('list');
+                    listElement.innerHTML = ''; // 이전 내용 제거
 
-                    // 그리드의 행과 열 수
-                    const rows = 3;
-                    const cols = 3;
+                    if (stockItems.length === 0) {
+                        // 데이터가 없을 경우 메시지 표시
+                        const noDataMessage = document.createElement('tr');
+                        noDataMessage.innerHTML = '<td colspan="3">등록된 식재료가 없습니다.</td>'; // 모든 열을 차지하도록 설정
+                        listElement.appendChild(noDataMessage);
+                    } else {
+                        // 컨테이너의 크기
+                        const containerWidth = container.offsetWidth;
+                        const containerHeight = container.offsetHeight;
 
-                    // 각 아이템의 크기 (가로 및 세로)
-                    const itemWidth = containerWidth / cols;
-                    const itemHeight = containerHeight / rows;
+                        // 그리드의 행과 열 수
+                        const rows = 3;
+                        const cols = 3;
 
-                    // 간격 조정 값 (픽셀 단위)
-                    const colGap = -15;  // 간격을 줄이기 위한 값 (조정 가능)
-                    const rowGap = -85;
+                        // 각 아이템의 크기 (가로 및 세로)
+                        const itemWidth = containerWidth / cols;
+                        const itemHeight = containerHeight / rows;
 
-                    stockItems.forEach((item, index) => {
-                        const ingredientDiv = document.createElement('div');
-                        ingredientDiv.className = 'ingredient';
+                        // 간격 조정 값 (픽셀 단위)
+                        const colGap = -15;  // 간격을 줄이기 위한 값 (조정 가능)
+                        const rowGap = -85;
 
-                        // JSON 데이터의 필드에 맞게 수정
-                        const img = document.createElement('img');
-                        img.src = `/img/${item.image}`; // 서버에서 반환된 이미지 파일명과 경로 사용
-                        img.alt = item.name; // 서버에서 반환된 재료 이름
-                        img.className = 'del-modal'; // 클릭 이벤트를 위한 클래스
+                        stockItems.forEach((item, index) => {
+                            const ingredientDiv = document.createElement('div');
+                            ingredientDiv.className = 'ingredient';
 
-                        img.addEventListener('click', () => {
-                            delModalOn(); // 클릭 시 모달 열기
+                            // JSON 데이터의 필드에 맞게 수정
+                            const img = document.createElement('img');
+                            img.src = `/img/${item.image}`; // 서버에서 반환된 이미지 파일명과 경로 사용
+                            img.alt = item.name; // 서버에서 반환된 재료 이름
+                            img.className = 'del-modal'; // 클릭 이벤트를 위한 클래스
+
+                            img.addEventListener('click', () => {
+                                delModalOn(); // 클릭 시 모달 열기
+                            });
+
+                            const text = document.createElement('div');
+                            text.className = 'ingredient-text';
+                            text.textContent = item.name;  // 재료 이름 텍스트로 사용
+
+                            ingredientDiv.appendChild(img);
+                            ingredientDiv.appendChild(text);
+
+                            // 위치를 설정 (3x3 그리드에 맞게 배치)
+                            const rowIndex = Math.floor(index / cols);
+                            const colIndex = index % cols;
+
+                            // 간격을 고려하여 위치 조정
+                            ingredientDiv.style.position = 'absolute'; // absolute 위치 설정 필요
+                            ingredientDiv.style.top = `${rowIndex * (itemHeight + rowGap)}px`; // y축 위치
+                            ingredientDiv.style.left = `${colIndex * (itemWidth + colGap)}px`; // x축 위치
+
+                            // 삭제 버튼 클릭 이벤트 추가
+                            ingredientDiv.addEventListener('click', () => showIngredientName(item.name));
+
+                            container.appendChild(ingredientDiv);
                         });
-
-                        const text = document.createElement('div');
-                        text.className = 'ingredient-text';
-                        text.textContent = item.name;  // 재료 이름 텍스트로 사용
-
-                        ingredientDiv.appendChild(img);
-                        ingredientDiv.appendChild(text);
-
-                        // 위치를 설정 (3x3 그리드에 맞게 배치)
-                        const rowIndex = Math.floor(index / cols);
-                        const colIndex = index % cols;
-
-                        // 간격을 고려하여 위치 조정
-                        ingredientDiv.style.position = 'absolute'; // absolute 위치 설정 필요
-                        ingredientDiv.style.top = `${rowIndex * (itemHeight + rowGap)}px`; // y축 위치
-                        ingredientDiv.style.left = `${colIndex * (itemWidth + colGap)}px`; // x축 위치
-
-                        // 삭제 버튼 클릭 이벤트 추가
-                        ingredientDiv.addEventListener('click', () => showIngredientName(item.name));
-
-                        container.appendChild(ingredientDiv);
-                    });
+                    }
                 })
                 .catch(error => console.error('Error:', error));
-        }); // 재료 사진 출력문 끝
+        }); // stock 이미지 출력문 끝
 
         // 재료 삭제 모달
         const delModal = document.getElementById('delModal');
@@ -752,67 +791,6 @@
         //     });
         // }); // 수정 모달창 끝
 
-        // // 날짜 수정 모달
-        // document.addEventListener("DOMContentLoaded", () => {
-        //     const dateModal = document.getElementById("dateModal");
-        //     const dateInput = document.getElementById("date"); // ID를 'date'로 변경
-        //     const submitDate = document.getElementById("submitDate");
-        //     const closeDate = dateModal.querySelector(".close-area");
-        //     const list = document.getElementById("list");
-        //
-        //     // 모달을 보이게 함
-        //     function dateModalOn() {
-        //         dateModal.style.display = "flex";
-        //     }
-        //
-        //     // 모달이 열려 있는지 확인
-        //     function isDateModalOn() {
-        //         return dateModal.style.display === "flex";
-        //     }
-        //
-        //     // 모달을 숨김
-        //     function dateModalOff() {
-        //         dateModal.style.display = "none";
-        //     }
-        //
-        //     // 특정 버튼을 누르면 모달창이 켜지게 하기
-        //     list.addEventListener("click", (event) => {
-        //         if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn')) {
-        //             dateModalOn();
-        //         }
-        //     });
-        //
-        //     // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-        //     closeDate.addEventListener("click", () => {
-        //         dateModalOff();
-        //     });
-        //
-        //     // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-        //     dateModal.addEventListener("click", (e) => {
-        //         if (e.target === dateModal) {
-        //             dateModalOff();
-        //         }
-        //     });
-        //
-        //     // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-        //     window.addEventListener("keyup", (e) => {
-        //         if (isDateModalOn() && e.key === "Escape") {
-        //             dateModalOff();
-        //         }
-        //     });
-        //
-        //     // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
-        //     submitDate.addEventListener("click", () => {
-        //         const selectedDate = dateInput.value;
-        //         if (selectedDate) {
-        //             console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
-        //             dateModal.style.display = 'none'; // 모달 닫기
-        //         } else {
-        //             alert('날짜를 선택해주세요.');
-        //         }
-        //     });
-        // }); // 수정 모달창 끝
-        //
         // 레시피 추천 버튼 클릭 시
         document.getElementById('RecipeModalBtn').addEventListener('click', function() {
             // 테이블의 모든 행(tr)을 선택

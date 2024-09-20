@@ -123,7 +123,7 @@ public class StockService {
 
         // 가져온 StockEntity 중에서 isHaving 값이 1인 경우만 DTO로 변환하여 반환합니다.
         return stocks.stream()
-                .filter(stock -> stock.isHaving())  // isHaving이 true인 경우만 필터링
+                .filter(stock -> stock.isHaving())  // isHaving이 true(1)인 경우만 필터링
                 .map(stock -> StockDTO.builder()
                         .ingredientName(stock.getIngredientName())
                         .memberNum(stock.getMemberNum())
@@ -142,36 +142,8 @@ public class StockService {
             "food-containerY.png"
     );
 
-//    /**
-//     * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정한다.
-//     *
-//     * @param memberNum 로그인한 회원의 memberNum
-//     * @return 재고 아이템의 리스트를 포함한 맵 리스트
-//     */
-//    public List<Map<String, String>> getTop9StockItems(int memberNum) {
-//        Pageable pageable = PageRequest.of(0, 9); // 첫 페이지, 9개 항목
-//
-//        // memberNum에 맞는 재고 아이템을 조회
-//        List<StockEntity> stocks = stockRepository.findTop9ByOrderByUseByDateAsc(memberNum, pageable);
-//
-//        // 이미지의 기본 경로
-//        String imagePathBase = "img/";  // 실제로 저장된 이미지 경로를 설정
-//
-//        // List<StockEntity>를 List<Map>으로 변환하며 랜덤 이미지 경로를 설정
-//        return stocks.stream()
-//                .map(stock -> {
-//                    // 랜덤으로 이미지 파일명 선택
-//                    String imageFileName = getRandomImageFileName();
-//                    return Map.of(
-//                            "name", stock.getIngredientName(),
-//                            "image", imageFileName // 이미지 파일명 반환
-//                    );
-//                })
-//                .collect(Collectors.toList());
-//    }
-
     /**
-     * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정한다.
+     * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정
      *
      * @param memberNum 로그인한 회원의 memberNum
      * @return 재고 아이템의 리스트를 포함한 맵 리스트
@@ -180,13 +152,15 @@ public class StockService {
         Pageable pageable = PageRequest.of(0, 9); // 첫 페이지, 9개 항목
 
         // memberNum에 맞는 재고 아이템을 조회
-        List<StockEntity> stocks = stockRepository.findTop9ByMemberNumAndOrderByUseByDateAsc(memberNum, pageable);
+        // isHaving이 true(1)인 경우만 필터링
+        List<StockEntity> stocks = stockRepository.findTop9ByMemberNumAndIsHavingTrueOrderByUseByDateAsc(memberNum, pageable);
 
         // 이미지의 기본 경로
         String imagePathBase = "img/";  // 실제로 저장된 이미지 경로를 설정
 
         // List<StockEntity>를 List<Map>으로 변환하며 랜덤 이미지 경로를 설정
         return stocks.stream()
+                .filter(stock -> stock.isHaving())  // isHaving이 true(1)인 경우만 필터링
                 .map(stock -> {
                     // 랜덤으로 이미지 파일명 선택
                     String imageFileName = getRandomImageFileName();
@@ -199,7 +173,7 @@ public class StockService {
     }
 
     /**
-     * 이미지 파일명 리스트에서 랜덤으로 하나를 선택한다.
+     * 이미지 파일명 리스트에서 랜덤으로 하나를 선택
      *
      * @return 랜덤 이미지 파일명
      */
@@ -209,7 +183,7 @@ public class StockService {
     }
 
     /**
-     * 해당되는 재고를 선택하고 날짜 업데이트하기
+     * 해당되는 재고를 선택하고 날짜 업데이트
      * @param ingredientName 식재료 이름
      * @param memberNum 회원 일련번호
      * @param useByDate 업데이트 날짜

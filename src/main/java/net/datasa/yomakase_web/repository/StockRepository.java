@@ -17,16 +17,18 @@ public interface StockRepository extends JpaRepository<StockEntity, MemberStock>
     // memberNum과 isHaving이 true인 ingredient_name만 조회
     @Query("SELECT s.ingredientName FROM StockEntity s WHERE s.memberNum = :memberNum AND s.isHaving = true")
     List<String> findAllIngredientNamesByMemberNumAndIsHavingTrue(@Param("memberNum") Integer memberNum);
+
     // memberNum과 isHaving이 true인 StockEntity 리스트 조회
     List<StockEntity> findByMemberNumAndIsHavingTrue(Integer memberNum);
 
-//    @Query("SELECT s FROM StockEntity s ORDER BY s.useByDate ASC")
-//    List<StockEntity> findTop9ByOrderByUseByDateAsc(int memberNum, Pageable pageable);
+    // memberNum을 기준으로 상위 9개, isHaving 값이 true인 경우, 오름차순으로 출력
+    @Query("SELECT s FROM StockEntity s WHERE s.memberNum = ?1 AND s.isHaving = true ORDER BY s.useByDate ASC")
+    List<StockEntity> findTop9ByMemberNumAndIsHavingTrueOrderByUseByDateAsc(int memberNum, Pageable pageable);
 
+    // ingredientName과 memberNum을 기준으로 재고 데이터 조회
     Optional<StockEntity> findByIngredientNameAndMemberNum(String ingredientName, Integer memberNum);
 
+    // memberNum을 기준으로 재고 데이터 조회
     List<StockEntity> findByMemberNum(int memberNum);
 
-    @Query("SELECT s FROM StockEntity s ORDER BY s.useByDate ASC")
-    List<StockEntity> findTop9ByMemberNumAndOrderByUseByDateAsc(int memberNum, Pageable pageable);
 }

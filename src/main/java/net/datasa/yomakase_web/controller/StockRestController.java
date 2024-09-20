@@ -33,6 +33,10 @@ public class StockRestController {
 	private final StockRepository stockRepository;
 	private final AuthenticatedUserDetailsService userService; // 사용자 정보를 얻기 위한 서비스
 
+	/**
+	 * 특정 회원(memberNum)의 재고 데이터를 가져와서 출력한다.
+	 * @return 회원번호와 일치하는 재고 데이터
+	 */
 	@PostMapping("/stockData")
 	public List<StockDTO> getStocks() {
 		// 현재 로그인한 사용자의 정보를 SecurityContext에서 가져오기
