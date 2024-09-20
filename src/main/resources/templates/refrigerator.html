@@ -261,6 +261,10 @@
             padding-left: 20px;
         }
 
+        #delModal .button-container {
+            margin: auto;
+        }
+
         #delModal .refriBtn {
             margin: 10px;
             padding: 10px;
@@ -451,11 +455,6 @@
                 }
             });
 
-            // // 바깥 영역을 클릭하면 모달 닫기
-            // $('.modal-overlay').click(function () {
-            //     dateModalOff();
-            // });
-
             // ESC 키를 누르면 모달 닫기
             $(document).on('keyup', function (e) {
                 if (e.key === "Escape") { // ESC 키를 확인
@@ -492,9 +491,10 @@
                     .then(data => {
                         if (data.success) {
                             alert('날짜가 성공적으로 업데이트되었습니다.');
-                            // 모달 닫기
-                            dateModalOff();
-                            // 테이블 업데이트 (필요 시 새로고침하거나 테이블만 업데이트)
+
+                            dateModalOff(); // 모달 닫기
+
+                            location.reload(); // 페이지 새로고침
                         } else {
                             alert('업데이트에 실패했습니다.');
                         }
@@ -542,7 +542,7 @@
         $(document).ready(function() {
             $.ajax({
                 url : "/rest/stockData",
-                type : "post",
+                type : "POST",
                 dataType : "json",
                 success : function(list) {
                     console.log(list); // 데이터 형식 확인
@@ -573,6 +573,7 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX 요청 실패:", status, error); // 에러 메시지 확인
+                    console.error("응답 내용:", xhr.responseText); // 추가된 부분
                     alert("출력 실패");
                 }
             });
@@ -750,66 +751,68 @@
         //         }
         //     });
         // }); // 수정 모달창 끝
-        // 날짜 수정 모달
-        document.addEventListener("DOMContentLoaded", () => {
-            const dateModal = document.getElementById("dateModal");
-            const dateInput = document.getElementById("date"); // ID를 'date'로 변경
-            const submitDate = document.getElementById("submitDate");
-            const closeDate = dateModal.querySelector(".close-area");
-            const list = document.getElementById("list");
 
-            // 모달을 보이게 함
-            function dateModalOn() {
-                dateModal.style.display = "flex";
-            }
-
-            // 모달이 열려 있는지 확인
-            function isDateModalOn() {
-                return dateModal.style.display === "flex";
-            }
-
-            // 모달을 숨김
-            function dateModalOff() {
-                dateModal.style.display = "none";
-            }
-
-            // 특정 버튼을 누르면 모달창이 켜지게 하기
-            list.addEventListener("click", (event) => {
-                if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn')) {
-                    dateModalOn();
-                }
-            });
-
-            // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-            closeDate.addEventListener("click", () => {
-                dateModalOff();
-            });
-
-            // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-            dateModal.addEventListener("click", (e) => {
-                if (e.target === dateModal) {
-                    dateModalOff();
-                }
-            });
-
-            // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-            window.addEventListener("keyup", (e) => {
-                if (isDateModalOn() && e.key === "Escape") {
-                    dateModalOff();
-                }
-            });
-
-            // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
-            submitDate.addEventListener("click", () => {
-                const selectedDate = dateInput.value;
-                if (selectedDate) {
-                    console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
-                    dateModal.style.display = 'none'; // 모달 닫기
-                } else {
-                    alert('날짜를 선택해주세요.');
-                }
-            });
-        }); // 수정 모달창 끝
+        // // 날짜 수정 모달
+        // document.addEventListener("DOMContentLoaded", () => {
+        //     const dateModal = document.getElementById("dateModal");
+        //     const dateInput = document.getElementById("date"); // ID를 'date'로 변경
+        //     const submitDate = document.getElementById("submitDate");
+        //     const closeDate = dateModal.querySelector(".close-area");
+        //     const list = document.getElementById("list");
+        //
+        //     // 모달을 보이게 함
+        //     function dateModalOn() {
+        //         dateModal.style.display = "flex";
+        //     }
+        //
+        //     // 모달이 열려 있는지 확인
+        //     function isDateModalOn() {
+        //         return dateModal.style.display === "flex";
+        //     }
+        //
+        //     // 모달을 숨김
+        //     function dateModalOff() {
+        //         dateModal.style.display = "none";
+        //     }
+        //
+        //     // 특정 버튼을 누르면 모달창이 켜지게 하기
+        //     list.addEventListener("click", (event) => {
+        //         if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn')) {
+        //             dateModalOn();
+        //         }
+        //     });
+        //
+        //     // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
+        //     closeDate.addEventListener("click", () => {
+        //         dateModalOff();
+        //     });
+        //
+        //     // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
+        //     dateModal.addEventListener("click", (e) => {
+        //         if (e.target === dateModal) {
+        //             dateModalOff();
+        //         }
+        //     });
+        //
+        //     // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
+        //     window.addEventListener("keyup", (e) => {
+        //         if (isDateModalOn() && e.key === "Escape") {
+        //             dateModalOff();
+        //         }
+        //     });
+        //
+        //     // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
+        //     submitDate.addEventListener("click", () => {
+        //         const selectedDate = dateInput.value;
+        //         if (selectedDate) {
+        //             console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
+        //             dateModal.style.display = 'none'; // 모달 닫기
+        //         } else {
+        //             alert('날짜를 선택해주세요.');
+        //         }
+        //     });
+        // }); // 수정 모달창 끝
+        //
         // 레시피 추천 버튼 클릭 시
         document.getElementById('RecipeModalBtn').addEventListener('click', function() {
             // 테이블의 모든 행(tr)을 선택

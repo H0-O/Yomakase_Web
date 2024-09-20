@@ -9,15 +9,12 @@ import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.StockRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,6 +58,7 @@ public class StockService {
             stockRepository.save(stockEntity);
         }
     }
+
     public List<Map<String, Object>> getStockForMember(Object identifier) {
         Integer memberNum = null;
 
@@ -114,88 +112,18 @@ public class StockService {
         // memberNum과 isHaving이 true인 ingredient_name 가져오기
         return stockRepository.findAllIngredientNamesByMemberNumAndIsHavingTrue(memberNum);
     }
-    public List<Map<String, Object>> getStockForMember(Object identifier) {
-        Integer memberNum = null;
-
-        if (identifier instanceof Integer) {
-            // 앱에서 온 요청: memberNum이 Integer로 전달됨
-            memberNum = (Integer) identifier;
-        } else if (identifier instanceof String) {
-            // 이메일(아이디)를 사용해 memberNum을 조회
-            MemberEntity member = memberRepository.findById((String) identifier)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            memberNum = member.getMemberNum();
-        }
-
-        // memberNum을 사용하여 스톡 데이터 조회
-        List<StockEntity> stockEntities = stockRepository.findByMemberNumAndIsHavingTrue(memberNum);
-
-        // StockEntity를 Map 형식으로 변환
-        List<Map<String, Object>> stockList = new ArrayList<>();
-
-        // 현재 날짜/시간 가져오기
-        LocalDateTime now = LocalDateTime.now();
-
-        for (StockEntity stockEntity : stockEntities) {
-            Map<String, Object> stockMap = new HashMap<>();
-            stockMap.put("ingredientName", stockEntity.getIngredientName());
-
-            // expirationDate를 계산 (업데이트 날짜와 현재 시간의 차이)
-            LocalDateTime updateDate = stockEntity.getUpdateDate();
-            long daysBetween = Duration.between(updateDate, now).toDays();
-
-            stockMap.put("expirationDate", daysBetween); // 남은 일수(또는 경과 일수)를 저장
-
-            stockList.add(stockMap);
-        }
-
-        return stockList;
-    }
-    public List<String> getAllIngredientNamesForMember(Object identifier) {
-        Integer memberNum = null;
-
-        if (identifier instanceof Integer) {
-            // 앱에서 온 요청: memberNum이 Integer로 전달됨
-            memberNum = (Integer) identifier;
-        } else if (identifier instanceof String) {
-            // 이메일(아이디)를 사용해 memberNum을 조회
-            MemberEntity member = memberRepository.findById((String) identifier)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            memberNum = member.getMemberNum();
-        }
-
-        // memberNum과 isHaving이 true인 ingredient_name 가져오기
-        return stockRepository.findAllIngredientNamesByMemberNumAndIsHavingTrue(memberNum);
-    }
-
-//    /**
-//     * 재고 데이터를 테이블에 출력
-//     */
-//    public List<StockDTO> getAllStocks() {
-//        // DB에서 모든 재고 데이터를 가져옵니다.
-//        List<StockEntity> stocks = stockRepository.findAll();
-//
-//        // 가져온 StockEntity 데이터를 StockDTO 형태로 변환합니다.
-//        return stocks.stream()
-//                .map(stock -> StockDTO.builder()
-//                        .ingredientName(stock.getIngredientName())
-//                        .memberNum(stock.getMemberNum())
-//                        .isHaving(stock.isHaving())
-//                        .useByDate(stock.getUseByDate())
-//                        .updateDate(stock.getUpdateDate())
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
 
     /**
      * 특정 회원(memberNum)의 재고 데이터를 테이블에 출력
+     * isHaving 값이 0인 경우는 제외
      */
     public List<StockDTO> getStocksByMember(int memberNum) {
         // DB에서 해당 회원(memberNum)의 재고 데이터를 가져옵니다.
         List<StockEntity> stocks = stockRepository.findByMemberNum(memberNum);
 
-        // 가져온 StockEntity 데이터를 StockDTO 형태로 변환합니다.
+        // 가져온 StockEntity 중에서 isHaving 값이 1인 경우만 DTO로 변환하여 반환합니다.
         return stocks.stream()
+                .filter(stock -> stock.isHaving())  // isHaving이 true인 경우만 필터링
                 .map(stock -> StockDTO.builder()
                         .ingredientName(stock.getIngredientName())
                         .memberNum(stock.getMemberNum())
@@ -206,7 +134,6 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
-
     // 이미지 파일명 리스트
     private final List<String> imageFileNames = List.of(
             "food-containerB.png",
@@ -215,14 +142,45 @@ public class StockService {
             "food-containerY.png"
     );
 
+//    /**
+//     * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정한다.
+//     *
+//     * @param memberNum 로그인한 회원의 memberNum
+//     * @return 재고 아이템의 리스트를 포함한 맵 리스트
+//     */
+//    public List<Map<String, String>> getTop9StockItems(int memberNum) {
+//        Pageable pageable = PageRequest.of(0, 9); // 첫 페이지, 9개 항목
+//
+//        // memberNum에 맞는 재고 아이템을 조회
+//        List<StockEntity> stocks = stockRepository.findTop9ByOrderByUseByDateAsc(memberNum, pageable);
+//
+//        // 이미지의 기본 경로
+//        String imagePathBase = "img/";  // 실제로 저장된 이미지 경로를 설정
+//
+//        // List<StockEntity>를 List<Map>으로 변환하며 랜덤 이미지 경로를 설정
+//        return stocks.stream()
+//                .map(stock -> {
+//                    // 랜덤으로 이미지 파일명 선택
+//                    String imageFileName = getRandomImageFileName();
+//                    return Map.of(
+//                            "name", stock.getIngredientName(),
+//                            "image", imageFileName // 이미지 파일명 반환
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//    }
+
     /**
      * 소비 기한이 임박한 순서로 상위 9개 재고 아이템을 가져오고 랜덤으로 이미지 경로를 설정한다.
      *
+     * @param memberNum 로그인한 회원의 memberNum
      * @return 재고 아이템의 리스트를 포함한 맵 리스트
      */
-    public List<Map<String, String>> getTop9StockItems() {
+    public List<Map<String, String>> getTop9StockItems(int memberNum) {
         Pageable pageable = PageRequest.of(0, 9); // 첫 페이지, 9개 항목
-        List<StockEntity> stocks = stockRepository.findTop9ByOrderByUseByDateAsc(pageable);
+
+        // memberNum에 맞는 재고 아이템을 조회
+        List<StockEntity> stocks = stockRepository.findTop9ByMemberNumAndOrderByUseByDateAsc(memberNum, pageable);
 
         // 이미지의 기본 경로
         String imagePathBase = "img/";  // 실제로 저장된 이미지 경로를 설정
@@ -247,7 +205,7 @@ public class StockService {
      */
     private String getRandomImageFileName() {
         int index = random.nextInt(imageFileNames.size());
-        return imageFileNames.get(index); // 예를 들어 '3.png'와 같은 파일명
+        return imageFileNames.get(index); // 랜덤 이미지 파일명 반환
     }
 
     /**
