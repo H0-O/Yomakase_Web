@@ -1,0 +1,59 @@
+package net.datasa.yomakase_web.service;
+
+import net.datasa.yomakase_web.repository.HistoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.*;
+
+@Service
+public class HistoryService {
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    public Map<String, Object> getWeeklyHistory() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusDays(7);
+        return getHistoryData(startDate, endDate);
+    }
+
+    public Map<String, Object> getMonthlyHistory() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusMonths(1);
+        return getHistoryData(startDate, endDate);
+    }
+
+    public Map<String, Object> getYearlyHistory() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusYears(1);
+        return getHistoryData(startDate, endDate);
+    }
+
+    private Map<String, Object> getHistoryData(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> data = historyRepository.countByIngredientAndType(startDate, endDate);
+        Map<String, Long> consumptionData = new HashMap<>();
+        Map<String, Long> discardData = new HashMap<>();
+        Set<String> ingredients = new HashSet<>();
+
+        for (Object[] row : data) {
+            String ingredient = (String) row[0];
+            String type = (String) row[1];
+            Long count = (Long) row[2];
+            ingredients.add(ingredient);
+
+            if ("c".equals(type)) {
+                consumptionData.put(ingredient, count);
+            } else if ("b".equals(type)) {
+                discardData.put(ingredient, count);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("ingredients", new ArrayList<>(ingredients));
+        result.put("consumptionData", consumptionData);
+        result.put("discardData", discardData);
+        return result;
+    }
+}

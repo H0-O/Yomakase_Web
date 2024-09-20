@@ -4,19 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class CalendarDTO {
-    private String id;
+public class HistoryDTO {
+    private String ingredientName;
     private int memberNum;
-    private LocalDate inputDate;
-    private String bName;
-    private String lName;
-    private String dName;
+    private LocalDate date;
+    private String type; // 'c' 소비, 'b' 버림
 }

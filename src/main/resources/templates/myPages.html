@@ -33,10 +33,6 @@
         .mypagesContent {
             display: none;
         }
-
-        #defaultContent {
-            display: block;
-        }
         /* My Pages CSS End */
 
     </style>
@@ -79,7 +75,7 @@
 
             <!-- 소비 기록 -->
             <div id="record" class="mypagesContent">
-                <div th:replace="myPages/record :: recordFragment"></div>
+                <div th:replace="myPages/historyChart :: recordFragment"></div>
             </div>
 
             <!-- 회원정보수정 -->

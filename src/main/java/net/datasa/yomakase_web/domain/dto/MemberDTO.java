@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Data
 @Builder
@@ -26,7 +27,7 @@ public class MemberDTO {
     private char gender;
 
 //    @JsonProperty("birth_date")
-    private LocalDate birthdate;
+    private LocalDate birthDate;
 
 //    @JsonProperty("height")
     private Integer height;  // 키
@@ -94,4 +95,6 @@ public class MemberDTO {
 
 //    @JsonProperty("user_role")
     private String userRole; // 유저 권한
+
+    private Map<String, Boolean> allergies; // 알러지 정보를 담을 필드
 }

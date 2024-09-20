@@ -6,6 +6,7 @@
                 opacity: 0;
                 transform: translate3d(0, -100%, 0);
             }
+
             to {
                 opacity: 1;
                 transform: translateZ(0);
@@ -21,7 +22,7 @@
         }
 
         #logo-image {
-            max-width: 50%;
+            max-width: 45%;
             height: auto;
         }
 
@@ -36,8 +37,8 @@
             opacity: 0;
             animation: smoothAppear 1s forwards;
             animation-delay: 0.5s;
-            margin: 15px 0;
-            font-size: 2.4rem;
+            margin: 10px 0;
+            font-size: 2.3rem;
             font-weight: bold;
             color: #81c405;
             text-align: center;
@@ -47,23 +48,34 @@
             opacity: 0;
             animation: smoothAppear 1s forwards;
             animation-delay: 1s;
-            margin: 15px 0;
-            font-size: 1.5rem;
+            margin: 10px 0;
+            font-size: 1.4rem;
             color: #282c34;
             text-align: center;
         }
 
-        /* 버튼 스타일 */
+        /* 버튼 컨테이너 스타일: 가로로 배치하고 중앙 정렬 */
         .button-container {
             display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 10px;
+            flex-direction: row; /* 가로 방향으로 배치 */
+            justify-content: center; /* 중앙 정렬 */
+            gap: 10px; /* 버튼 사이 간격 */
+            margin-top: 20px; /* 위쪽 여백 추가 */
+        }
+
+        #logoutBtn {
+            padding: 5px 10px; /* 버튼 크기 줄이기 */
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* 폰트 크기 줄이기 */
         }
 
         .btn {
             padding: 10px 20px;
-            margin: 10px;
+            margin: 0; /* 버튼 주변 여백 제거 */
             background-color: #81c405;
             color: white;
             border: none;
@@ -86,19 +98,20 @@
             </div>
 
             <div class="button-container">
-                <!-- 회원가입 버튼: GET 요청으로 'signupForm' 컨트롤러 호출 -->
-                <div sec:authorize="not isAuthenticated()">
+                <!-- 회원가입과 로그인 버튼: GET 요청으로 각각의 컨트롤러 호출 -->
+                <div sec:authorize="not isAuthenticated()" style="display: flex; gap: 10px;">
+                    <!-- 회원가입 버튼 -->
                     <form action="signupForm" method="get">
                         <button id="signupBtn" class="btn">회원가입</button>
                     </form>
-
-                    <!-- 로그인 버튼: GET 요청으로 'loginForm' 컨트롤러 호출 -->
+                    <!-- 로그인 버튼 -->
                     <form action="loginForm" method="get">
                         <button id="loginBtn" class="btn">로그인</button>
                     </form>
                 </div>
                 <!-- 로그인 상태일 때: 로그아웃 버튼 표시 -->
                 <div sec:authorize="isAuthenticated()">
+                    <!-- 로그아웃 버튼 -->
                     <form action="logout" method="post">
                         <button id="logoutBtn" class="btn">로그아웃</button>
                     </form>
@@ -107,4 +120,4 @@
         </div>
     </div>
 </div>
-<html>
+</html>

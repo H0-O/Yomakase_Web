@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function(){
     //달력 중앙 '2024년 9월' 부분
     let headDate = document.getElementById('head-date');
 
+    let dietList = document.getElementById('diet-list');
     //Calendar 객체 생성자 함수 정의
     function Calendar(selector, options) {
         this.options = options;
@@ -22,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
 // input 요소가 있는 <td> 클릭 시 이벤트 전파를 방지
-    let dietModalTable = document.getElementById('diet-modal-table');
-    dietModalTable.addEventListener('click', function (event) {
-        event.stopPropagation();
-    });
+    /*   let dietModalTable = document.getElementById('diet-modal-table');
+       dietModalTable.addEventListener('click', function (event) {
+           event.stopPropagation();
+       });*/
 
     /**
      * 달력을 계속 새로 그리는 함수
@@ -52,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function(){
             days[daysLen].addEventListener('dblclick', function(){ that.doubleClickDay(this)});
             days[daysLen].addEventListener('mouseover', function(){ that.nutrientScore(this)});
         }
-       /* for (let i = 0; i < days.length; i++) {
-            days[i].addEventListener('click', function() { that.clickDay(this) });
-            days[i].addEventListener('dblclick', function() { that.doubleClickDay(this) });
-            days[i].addEventListener('mouseover', function() { that.nutrientScore(this) });
-        }
-*/
+        /* for (let i = 0; i < days.length; i++) {
+             days[i].addEventListener('click', function() { that.clickDay(this) });
+             days[i].addEventListener('dblclick', function() { that.doubleClickDay(this) });
+             days[i].addEventListener('mouseover', function() { that.nutrientScore(this) });
+         }
+ */
 
         Calendar.prototype.doubleClickDay = function(td){
             modalOn();  // 모달 처리 함수는 따로 정의해야 함
@@ -73,22 +74,21 @@ document.addEventListener('DOMContentLoaded', function(){
      * @param e 사용자가 클릭해서 선택한 날짜(일)
      */
     Calendar.prototype.drawHeader = function(e) {
-                 var headDay = document.getElementsByClassName('head-day'),
-                     headMonth = document.getElementsByClassName('head-month');
+        var headDay = document.getElementsByClassName('head-day'),
+            headMonth = document.getElementsByClassName('head-month');
 
-                 e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
-                 headMonth[0].innerHTML = `${monthTag[month]}월`;
-                 headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
+        e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
+        headMonth[0].innerHTML = `${monthTag[month]}월`;
+        headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
 
-                 let clickedDietDay = document.getElementById('clickedDietDay');
+        let clickedDietDay = document.getElementById('clickedDietDay');
 
-                 let formattedDate = `${year}-${monthTag[month]}-${e}`;
-                 console.log(formattedDate);
-                 clickedDietDay.value = formattedDate;
-                 clickedDietDay.innerHTML = clickedDietDay.value;
-                 //console.log(clickedDietDay.value);
-                 //document.getElementsByClassName('clickedDay').innerHTML = clickedDay;
-
+        let formattedDate = `${year}-${monthTag[month]}-${e}`;
+        //console.log(formattedDate); //2024-08-31 선택한 날짜로 잘 나옴
+        clickedDietDay.value = formattedDate;
+        clickedDietDay.innerHTML = clickedDietDay.value;
+        //console.log(clickedDietDay.value);
+        //document.getElementsByClassName('clickedDay').innerHTML = clickedDay;
 
     }; //drawHeader 함수 end
 
@@ -134,11 +134,44 @@ document.addEventListener('DOMContentLoaded', function(){
               selected[0].className = "";
           }
           o.className = "selected";*/
+
         selectedDay = new Date(year, month, o.innerHTML);      //new Date(연, 월 ,일);
+        /*if (!this.isSameDay(selectedDay, o.innerHTML)) {
+            this.dietView(o);
+        }*/
+        // console.log("clickDay함수에서 설정한 seletedDay : ", selectedDay);
+        this.dietView(selectedDay);
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
 
+
     };  //clickDay 함수 end
+
+
+    // 저장된 식단 확인
+    Calendar.prototype.dietView = function(o){
+        $.ajax({
+            url : '/cal/dietList',
+            type : 'post',
+            data : {selectedDay: o.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
+            dataType : 'json',
+            success : function(calDTO){
+                dietList.style.display = 'block';
+                document.getElementById('diet-list-msg').style.display = 'none';
+                //console.log(calDTO); //{"id":"alpha@yomakase.test","memberNum":1,"inputDate":"2024-08-02","dname":"손말이고기","lname":"부대찌개","bname":"맥심 커피"}
+                let listBName = dietList.getElementsByTagName('td')[1];
+                let listLName = dietList.getElementsByTagName('td')[3];
+                let listDName = dietList.getElementsByTagName('td')[5];
+                listBName.innerText = calDTO.bname;
+                listLName.innerText = calDTO.lname;
+                listDName.innerText = calDTO.dname;
+            },
+            error : function (){
+                dietList.style.display = 'none';
+                document.getElementById('diet-list-msg').style.display = 'block';
+            }
+        })
+    }
 
 
 

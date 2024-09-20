@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -39,7 +41,7 @@ public class MemberService {
                 .pw(passwordEncoder.encode(memberDTO.getPassword()))
                 .name(memberDTO.getNickname())
                 .gen(memberDTO.getGender())
-                .birthDate(memberDTO.getBirthdate())
+                .birthDate(memberDTO.getBirthDate())
                 .userRole(memberDTO.getUserRole() != null ? memberDTO.getUserRole() : "ROLE_USER")
                 .enabled(true)
                 .build();
@@ -136,7 +138,7 @@ public class MemberService {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setEmail(memberEntity.getId());
         memberDTO.setNickname(memberEntity.getName());
-        memberDTO.setBirthdate(memberEntity.getBirthDate());
+        memberDTO.setBirthDate(memberEntity.getBirthDate());
         memberDTO.setGender(memberEntity.getGen());
         memberDTO.setEggs(memberEntity.getAllergy().isEggs());
         memberDTO.setMilk(memberEntity.getAllergy().isMilk());
@@ -159,6 +161,7 @@ public class MemberService {
         memberDTO.setHeight(memberEntity.getBodyInfo().getHeight());
         memberDTO.setWeight(memberEntity.getBodyInfo().getWeight());
 
+
     // 필요한 필드만 선택적으로 포함
         return memberDTO;
 }
@@ -175,7 +178,7 @@ public class MemberService {
 
         // 성별과 생년월일 업데이트
         entity.setGen(memberDTO.getGender());
-        entity.setBirthDate(memberDTO.getBirthdate());
+        entity.setBirthDate(memberDTO.getBirthDate());
 
         // 회원 정보를 업데이트
         memberRepository.save(entity);

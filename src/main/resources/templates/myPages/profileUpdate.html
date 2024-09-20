@@ -24,9 +24,9 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요">
             </div>
             <div class="form-group">
-                <label for="birthdate">생년월일</label>
+                <label for="birthDate">생년월일</label>
                 <!-- 사용자의 생년월일을 표시하고 수정할 수 있는 필드 -->
-                <input type="date" id="birthdate" name="birthdate" th:value="${member.birthdate}">
+                <input type="date" id="birthDate" name="birthDate" th:value="${member.birthDate}">
             </div>
             <div class="form-group">
                 <label for="gender">성별</label>
@@ -40,7 +40,7 @@
             <!-- 성별 정보를 hidden 필드에 저장하여 제출할 때 사용 -->
             <input type="hidden" id="gender" name="gender" th:value="${member.gender}">
             <!-- 다음 버튼을 클릭하면 두 번째 화면으로 넘어감 -->
-            <button type="button" id="next-btn" class="btn">다음</button>
+            <button type="button" id="next-btn" class="boxbtn">다음</button>
         </div>
 
         <!-- 두 번째 화면 -->
@@ -125,9 +125,9 @@
             <input type="hidden" id="shellfish" name="shellfish" th:value="${member.isShellfish()}">
             <input type="hidden" id="pineNut" name="pineNut" th:value="${member.isPineNut()}">
             <!-- 이전 버튼 -->
-            <button type="button" id="back-btn" class="btn">이전</button>
+            <button type="button" id="back-btn" class="boxbtn">이전</button>
             <!-- 제출 버튼 -->
-            <button type="submit" id="submit-btn" class="btn">제출</button>
+            <button type="submit" id="submit-btn" class="boxbtn">제출</button>
 
             <!-- 모달창 -->
             <div id="success-modal" class="modal" style="display:none;">
@@ -333,7 +333,7 @@
             cursor: pointer;
         }
 
-        .btn {
+        .boxbtn {
             display: block;
             margin: 20px auto 0 auto;
             padding: 5px 15px;
@@ -509,7 +509,7 @@
                     nickname: document.getElementById('nickname').value,
                     password: document.getElementById('password').value,
                     confirmPassword: document.getElementById('confirmPassword').value,
-                    birthdate: document.getElementById('birthdate').value,
+                    birthDate: document.getElementById('birthDate').value,
                     gender: document.getElementById('gender').value,
                     height: document.getElementById('height').value,
                     weight: document.getElementById('weight').value,

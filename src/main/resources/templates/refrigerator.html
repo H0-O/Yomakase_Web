@@ -750,6 +750,105 @@
         //         }
         //     });
         // }); // 수정 모달창 끝
+        // 날짜 수정 모달
+        document.addEventListener("DOMContentLoaded", () => {
+            const dateModal = document.getElementById("dateModal");
+            const dateInput = document.getElementById("date"); // ID를 'date'로 변경
+            const submitDate = document.getElementById("submitDate");
+            const closeDate = dateModal.querySelector(".close-area");
+            const list = document.getElementById("list");
+
+            // 모달을 보이게 함
+            function dateModalOn() {
+                dateModal.style.display = "flex";
+            }
+
+            // 모달이 열려 있는지 확인
+            function isDateModalOn() {
+                return dateModal.style.display === "flex";
+            }
+
+            // 모달을 숨김
+            function dateModalOff() {
+                dateModal.style.display = "none";
+            }
+
+            // 특정 버튼을 누르면 모달창이 켜지게 하기
+            list.addEventListener("click", (event) => {
+                if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn')) {
+                    dateModalOn();
+                }
+            });
+
+            // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
+            closeDate.addEventListener("click", () => {
+                dateModalOff();
+            });
+
+            // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
+            dateModal.addEventListener("click", (e) => {
+                if (e.target === dateModal) {
+                    dateModalOff();
+                }
+            });
+
+            // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
+            window.addEventListener("keyup", (e) => {
+                if (isDateModalOn() && e.key === "Escape") {
+                    dateModalOff();
+                }
+            });
+
+            // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
+            submitDate.addEventListener("click", () => {
+                const selectedDate = dateInput.value;
+                if (selectedDate) {
+                    console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
+                    dateModal.style.display = 'none'; // 모달 닫기
+                } else {
+                    alert('날짜를 선택해주세요.');
+                }
+            });
+        }); // 수정 모달창 끝
+        // 레시피 추천 버튼 클릭 시
+        document.getElementById('RecipeModalBtn').addEventListener('click', function() {
+            // 테이블의 모든 행(tr)을 선택
+            const rows = document.querySelectorAll("#materialsTable tbody tr");
+
+            // 재료 이름들을 저장할 배열
+            let ingredientNames = [];
+
+            // 각 행을 순회하며 첫 번째 셀(td)의 텍스트(재료 이름)를 배열에 추가
+            rows.forEach(function(row) {
+                const ingredientName = row.querySelector("td:first-child").textContent.trim();
+                ingredientNames.push(ingredientName);
+            });
+
+            // 알러지 정보 중 true인 것만 추출
+            const allergies = Object.entries(memberAllergies)
+                .filter(([key, value]) => value === true)  // 값이 true인 항목만 필터링
+                .map(([key]) => key);  // 필터링된 항목의 키(알러지 이름)만 추출
+
+            // 이후 이 데이터를 Python FastAPI 서버로 전송하거나 다른 작업에 사용
+            const requestData = {
+                allergies: allergies,  // true인 알러지 정보
+                ingredients: ingredientNames  // 수집한 재료 이름 목록
+            };
+            console.log(requestData)
+
+            // 예시로 서버에 데이터를 전송하는 코드 (fetch 사용)
+            fetch('http://localhost:8000/recipe-recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch((error) => console.error('Error:', error));
+        });
+
 
         // 레시피 추천 모달
         const RecipeModal = document.getElementById("RecipeModal");
@@ -793,4 +892,5 @@
             }
         }); // 레시피 모달창 끝
     </script>
+
 </div>
