@@ -69,7 +69,4 @@ public class AuthenticatedUser implements UserDetails {
         return id;
     }
 
-    public Integer getMemberNum() {
-    return memberNum;
-    }
 }
