@@ -143,7 +143,7 @@ public class AppCalendarController {
     }
     // 특정 달의 식단 데이터를 가져오는 GET 요청 처리
     @GetMapping(value = "/diet/month/{yearMonth}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Map<String, List<Map<String, String>>>> getDietForMonth(
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> getDietForMonth(
             @PathVariable("yearMonth") String yearMonth,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
@@ -164,7 +164,7 @@ public class AppCalendarController {
                 YearMonth inputYearMonth = YearMonth.parse(yearMonth, formatter);
 
                 // 특정 달에 해당하는 모든 식단 데이터를 조회
-                Map<String, List<Map<String, String>>> dietData = calendarService.getDietForMonth(inputYearMonth, memberNumFromToken);
+                Map<String, List<Map<String, Object>>> dietData = calendarService.getDietForMonth(inputYearMonth, memberNumFromToken);
 
                 if (dietData != null) {
                     log.info("Diet data found for memberNum {}: {}", memberNumFromToken, dietData);

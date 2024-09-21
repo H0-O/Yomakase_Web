@@ -78,7 +78,7 @@ public class CalendarService {
             return null;  // 해당 날짜에 대한 데이터가 없는 경우 null 반환
         }
     }
-    public Map<String, List<Map<String, String>>> getDietForMonth(YearMonth yearMonth, Integer memberNum) {
+    public Map<String, List<Map<String, Object>>> getDietForMonth(YearMonth yearMonth, Integer memberNum) {
         // YearMonth의 첫 번째 날과 마지막 날을 구합니다.
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
@@ -87,16 +87,17 @@ public class CalendarService {
         List<CalendarEntity> calendarEntities = calendarRepository.findAllByMemberNumAndInputDateBetween(memberNum, startDate, endDate);
 
         // 각 날짜별로 데이터를 Map에 넣습니다.
-        Map<String, List<Map<String, String>>> dietData = new HashMap<>();
+        Map<String, List<Map<String, Object>>> dietData = new HashMap<>(); // 수정된 타입
 
         for (CalendarEntity entity : calendarEntities) {
             String date = entity.getInputDate().toString(); // 날짜를 String으로 변환
 
             // 하루의 식단 데이터를 Map으로 만듭니다.
-            Map<String, String> dailyDiet = new HashMap<>();
+            Map<String, Object> dailyDiet = new HashMap<>(); // 수정된 타입
             dailyDiet.put("breakfast", entity.getBName());
             dailyDiet.put("lunch", entity.getLName());
             dailyDiet.put("dinner", entity.getDName());
+            dailyDiet.put("score", entity.getScore()); // 점수는 Integer로 저장됨
 
             // 해당 날짜에 이미 데이터가 있으면 리스트에 추가, 없으면 새 리스트 생성
             dietData.computeIfAbsent(date, k -> new ArrayList<>()).add(dailyDiet);
@@ -104,6 +105,7 @@ public class CalendarService {
 
         return dietData;
     }
+
 
 
 
