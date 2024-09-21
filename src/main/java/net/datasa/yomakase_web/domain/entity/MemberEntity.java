@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "member")
@@ -50,4 +52,7 @@ public class MemberEntity {
     public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavedRecipeEntity> savedRecipes = new ArrayList<>();  // 연관된 레시피들
 }
