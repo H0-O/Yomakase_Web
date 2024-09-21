@@ -838,6 +838,8 @@
 
         // 레시피 추천 버튼 클릭 시
         document.getElementById('RecipeModalBtn').addEventListener('click', function() {
+            console.log("요리법 추천 버튼 클릭됨"); // 로그 추가
+
             // 테이블의 모든 행(tr)을 선택
             const rows = document.querySelectorAll("#materialsTable tbody tr");
 
@@ -850,28 +852,38 @@
                 ingredientNames.push(ingredientName);
             });
 
-            // 알러지 정보 중 true인 것만 추출
-            const allergies = Object.entries(memberAllergies)
-                .filter(([key, value]) => value === true)  // 값이 true인 항목만 필터링
-                .map(([key]) => key);  // 필터링된 항목의 키(알러지 이름)만 추출
+            console.log("수집된 재료 목록:", ingredientNames); // 로그 추가
 
-            // 이후 이 데이터를 Python FastAPI 서버로 전송하거나 다른 작업에 사용
+            // 알러지 정보는 직접 설정해주거나 서버에서 받아오도록 합니다.
+            const allergies = []; // 알러지 정보를 여기에 추가
+            console.log("알레르기 정보:", allergies); // 로그 추가
+
+            // 이후 이 데이터를 Spring Boot 서버로 전송
             const requestData = {
-                allergies: allergies,  // true인 알러지 정보
-                ingredients: ingredientNames  // 수집한 재료 이름 목록
+                allergies: allergies,
+                ingredients: ingredientNames
             };
-            console.log(requestData)
 
-            // 서버에 데이터를 전송하는 코드 (fetch 사용)
-            fetch('http://localhost:8000/recipe-recommend', {
+            // Spring Boot 서버에 POST 요청
+            fetch('http://localhost:7777/recipe/recommend', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(requestData),
+                body: JSON.stringify(requestData)
             })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("서버 응답 상태 코드:", response.status); // 로그 추가
+
+                    // 응답이 비어있거나 상태 코드가 200이 아닌 경우 예외 처리
+                    if (!response.ok) {
+                        throw new Error(`서버 응답 오류: ${response.statusText}`);
+                    }
+
+                    return response.json(); // JSON으로 응답 처리
+                })
                 .then(data => {
+                    console.log("서버 응답 JSON 데이터:", data); // 로그 추가
                     if (data.recipe && data.youtube_video) {
                         // 받은 데이터로 모달을 업데이트
                         openModal(data.recipe, data.youtube_video);
@@ -881,7 +893,7 @@
                     }
                 })
                 .catch((error) => {
-                    console.error('Error fetching recipe:', error);
+                    console.error('Error fetching recipe:', error); // 에러 로그 추가
                     alert('서버와의 통신 중 오류가 발생했습니다.');
                 });
         });

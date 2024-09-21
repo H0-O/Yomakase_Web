@@ -1,12 +1,9 @@
 import subprocess
 import sys
-import requests
-import os
 
 # 패키지가 설치되지 않았을 경우 설치하는 함수
 def install_package(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
 
 # 필요한 패키지 목록
 required_packages = ["openai", "python-dotenv", "fastapi", "requests", "uvicorn", "python-multipart"]
@@ -29,6 +26,7 @@ from openai import OpenAI
 import time
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
 # FastAPI 앱 생성
 app = FastAPI()
 
@@ -48,10 +46,10 @@ load_dotenv()
 clova_api_url = os.getenv("CLOVA_API_URL")
 clova_secret_key = os.getenv("CLOVA_OCR_SECRET_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
-# .env 파일에서 YouTube API 키 로드
 youtube_api_key = os.getenv("YOUTUBE_API_KEY")
 
 def call_clova_ocr(image_file):
+    print("CLOVA OCR 호출 시작")
     request_json = {
         'images': [{'format': 'jpg', 'name': 'receipt'}],
         'requestId': str(uuid.uuid4()),
@@ -66,13 +64,14 @@ def call_clova_ocr(image_file):
 
     if response.status_code == 200:
         ocr_result = response.json()
+        print("OCR 결과:", ocr_result)  # 로그 추가
         return ''.join([field['inferText'] for field in ocr_result['images'][0]['fields']])
     else:
+        print(f"Error: {response.status_code}")  # 오류 로그 추가
         raise Exception(f"Error: {response.status_code}")
 
-
 def call_openai_food_and_expiration(text):
-    # 첫 번째 OpenAI 호출: 식품 아이템 추출
+    print("OpenAI 호출 시작 - 식품 및 소비기한 추출")
     client = OpenAI(api_key=openai_api_key)
     ocr_response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",
@@ -84,11 +83,12 @@ def call_openai_food_and_expiration(text):
     )
 
     food_items = list(map(lambda x: x.replace('-', '').strip(), ocr_response.choices[0].message.content.splitlines()))
+    print("추출된 식품 목록:", food_items)  # 로그 추가
 
-    # 두 번째 OpenAI 호출: 각 식품에 대한 소비기한 추출
+    # 소비기한 추출
     if food_items:
         food_items_str = ', '.join(food_items)
-        print(food_items_str)
+        print("소비기한 추출 대상:", food_items_str)  # 로그 추가
         expiration_response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             messages=[
@@ -98,74 +98,25 @@ def call_openai_food_and_expiration(text):
             ]
         )
 
-        # 두 번째 OpenAI 응답에서 소비기한 추출 및 유효성 검사
         expiration_dates_raw = expiration_response.choices[0].message.content.replace('\n', ',')
+        print("추출된 소비기한:", expiration_dates_raw)  # 로그 추가
         expiration_dates = [int(x.strip()) if x.strip().isdigit() else 0 for x in expiration_dates_raw.split(',')]
 
-        # 식품 이름과 소비기한을 딕셔너리로 결합
+        # 결과 결합
         result = dict(zip(food_items, expiration_dates))
+        print("최종 결과:", result)  # 로그 추가
     else:
         result = {}
+        print("추출된 식품이 없습니다.")  # 로그 추가
 
     return result
 
-# 유튜브 검색
-def search_youtube_video(food_name):
-    search_url = "https://www.googleapis.com/youtube/v3/search"
-    params = {
-        "part": "snippet",
-        "q": food_name,
-        "key": youtube_api_key,
-        "type": "video",
-        "maxResults": 1,
-        "order": "viewCount"  # 인기 순으로 정렬
-    }
-    response = requests.get(search_url, params=params)
-    if response.status_code == 200:
-        video_data = response.json()
-        if video_data["items"]:
-            video_id = video_data["items"][0]["id"]["videoId"]
-            video_title = video_data["items"][0]["snippet"]["title"]
-            video_url = f"https://www.youtube.com/watch?v={video_id}"
-            return {"title": video_title, "url": video_url}
-        else:
-            return {"title": "관련 영상을 찾을 수 없습니다.", "url": ""}
-    else:
-        raise Exception(f"Error: {response.status_code}")
-
 @app.post("/ocr/")
 async def upload_file(file: UploadFile = File(...)):
-    # OCR 처리
+    print("파일 업로드 시작")  # 로그 추가
     ocr_text = call_clova_ocr(file.file)
-    # ocr_text = """로딩 중 \영수증 미지참시 교환/환불 불가
-    # 정상상품에 한함, 30일 이내(신선 7일)
-    # 교환/환불 구매점에서 가능(결제카드지참)
-    # [구 매]2017-06-02 21:13 POS: 1021-5338
-    # 상품명 단가 수량 금 액
-    # 01* 노브랜드 굿밀크우 1,680 1 1,680
-    # 02 스마트알뜰양복커버 2,590 1 2,590
-    # 03 농심 포스틱 84g 1,120 1 1,120
-    # 04 농심 올리브짜파게 3,850 1 3,850
-    # 05* 산딸기 500g/박스 6,980 1 6,980
-    # 06 (G)서핑여워터슈NY 19,800 1 19,800
-    # 07 대여용부직포쇼핑백 500 1 500
-    # 08* 호주곡물오이스터블 14,720 1 14,720
-    # 09 오뚜기 콤비네이션 5,980 1 5,980
-    # 10 꼬깔콘허니버터132G 1,580 1 1,580
-    # 11 CJ미니드레싱골라담 3,980 1 3,980
-    # 12 청정원허브맛솔트( 1,980 1 1,980
-    # 13* 태국미니아스파라거 4,580 1 4,580
-    # 14 롯데 수박바젤리 56 980 2 1,960
-    # 15 바리스타 쇼콜라 32 2,250 1 2,250
-    # (*) 면세 물품 27,960
-    # 과세 물품 41,445
-    # , 부 가 세 4,145
-    # 합 계 73,550
-    # 결제대상금액 73,550"""
-
     combined_result = call_openai_food_and_expiration(ocr_text)
-    print(combined_result)
-
+    print("OCR 및 OpenAI 결과:", combined_result)  # 로그 추가
     return combined_result
 
 class RecipeRequest(BaseModel):
@@ -173,7 +124,7 @@ class RecipeRequest(BaseModel):
     ingredients: list
 
 def call_openai_for_recommend(allergies, ingredients):
-    # OpenAI API 호출을 위한 프롬프트 작성
+    print("OpenAI 호출 시작 - 요리법 추천")  # 로그 추가
     recommend_prompt = f"""
         사용자는 다음과 같은 음식 알레르기가 있습니다: {', '.join(allergies)}.
         사용 가능한 재료는 다음과 같습니다: {', '.join(ingredients)}.
@@ -203,34 +154,82 @@ def call_openai_for_recommend(allergies, ingredients):
 
     # OpenAI의 응답 받기
     recipe_recommendation = response.choices[0].message.content
-
+    print("추천된 요리법:", recipe_recommendation)  # 로그 추가
     return recipe_recommendation
 
+from fastapi import FastAPI, HTTPException
+import logging
+
+# FastAPI 앱 생성
+app = FastAPI()
+
+# 로거 설정
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 @app.post("/recipe-recommend/")
 async def recipe_recommend(request: RecipeRequest):
-    allergies = request.allergies
-    ingredients = request.ingredients
-
-    # OpenAI를 통해 요리법 추천 받기
-    recipe_result = call_openai_for_recommend(allergies, ingredients)
-
-    # JSON 형태의 요리법에서 요리 이름 추출
     try:
-        recipe_json = json.loads(recipe_result)
-        food_name = recipe_json.get("food_name", "")
+        logger.debug("요리법 추천 요청 수신: %s", request.dict())
+
+        # 요리법 추천 호출
+        recipe_result = call_openai_for_recommend(request.allergies, request.ingredients)
+        logger.debug("추천된 요리법 결과: %s", recipe_result)
+
+        # JSON 문자열을 파싱하여 Python 객체로 변환
+        try:
+            recipe_result = json.loads(recipe_result)
+        except json.JSONDecodeError as e:
+            logger.error("추천된 요리 JSON 형식이 올바르지 않습니다: %s", str(e))
+            raise HTTPException(status_code=400, detail="추천된 요리 JSON 형식이 올바르지 않습니다.")
+
+        # JSON 객체에서 요리 이름 추출
+        food_name = recipe_result.get("food_name", "")
         if not food_name:
-            return {"error": "추천된 요리 이름이 없습니다."}
-    except json.JSONDecodeError:
-        return {"error": "추천된 요리 JSON 형식이 올바르지 않습니다."}
+            logger.error("추천된 요리 이름이 없습니다.")
+            raise HTTPException(status_code=400, detail="추천된 요리 이름이 없습니다.")
 
-    # YouTube에서 요리 이름으로 영상 검색
-    video_info = search_youtube_video(food_name)
+        # YouTube에서 요리 이름으로 영상 검색
+        video_info = search_youtube_video(food_name)
+        logger.debug("유튜브 검색 결과: %s", video_info)
 
-    # YouTube 영상 URL을 embed 형태로 변환
-    video_info["url"] = video_info["url"].replace("watch?v=", "embed/")
+        return {
+            "recipe": recipe_result,
+            "youtube_video": video_info
+        }
 
-    return {
-        "recipe": recipe_json,
-        "youtube_video": video_info
+    except HTTPException as http_err:
+        logger.error("HTTP 오류 발생: %s", http_err.detail)
+        raise http_err
+
+    except Exception as e:
+        logger.error("서버 내부 오류 발생: %s", str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+def search_youtube_video(food_name):
+    print("YouTube 검색 시작:", food_name)  # 로그 추가
+    search_url = "https://www.googleapis.com/youtube/v3/search"
+    params = {
+        "part": "snippet",
+        "q": food_name,
+        "key": youtube_api_key,
+        "type": "video",
+        "maxResults": 1,
+        "order": "viewCount"  # 인기 순으로 정렬
     }
+    response = requests.get(search_url, params=params)
+    if response.status_code == 200:
+        video_data = response.json()
+        print("YouTube 검색 응답:", video_data)  # 로그 추가
+        if video_data["items"]:
+            video_id = video_data["items"][0]["id"]["videoId"]
+            video_title = video_data["items"][0]["snippet"]["title"]
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+            print("검색된 영상:", video_title, video_url)  # 로그 추가
+            return {"title": video_title, "url": video_url}
+        else:
+            print("관련 영상을 찾을 수 없습니다.")  # 로그 추가
+            return {"title": "관련 영상을 찾을 수 없습니다.", "url": ""}
+    else:
+        print(f"Error: {response.status_code}")  # 오류 로그 추가
+        raise Exception(f"Error: {response.status_code}")
