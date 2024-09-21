@@ -60,35 +60,34 @@ function calBackgroundChange() {
 // 영양소 모달 관련 자바스크립트
 let nutrientModal = document.getElementById("nutrient-modal");
 
-function modalNutrientOn() {
-    nutrientModal.style.display = "flex";
-}
-
-function isModalNutrientOn() {
-    return nutrientModal.style.display === "flex";
-}
-
-function modalNutrientOff() {
-    nutrientModal.style.display = "none";
-}
-
-// 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-const closeNutrientBtn = nutrientModal.querySelector(".close-btn");
-closeNutrientBtn.addEventListener("click", e => {
-    modalNutrientOff();
-});
-
-// 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-nutrientModal.addEventListener("click", e => {
-    const evTarget = e.target;
-    if (evTarget.classList.contains("modal-overlay")) {
-        modalNutrientOff();
+    function modalNutrientOn() {
+        nutrientModal.style.display = "flex";
     }
-});
 
-// 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-window.addEventListener("keyup", e => {
-    if (isModalNutrientOn() && e.key === "Escape") {
-        modalNutrientOff();
+    function isModalNutrientOn() {
+        return nutrientModal.style.display === "flex";
     }
-});
+
+    function modalNutrientOff() {
+        nutrientModal.style.display = "none";
+
+    }
+
+
+   /* // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
+    nutrientModal.addEventListener("click", e => {
+        const evTarget = e.target;
+        if (evTarget.classList.contains("modal-overlay")) {
+            modalNutrientOff();
+        }
+    });
+
+    // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
+    window.addEventListener("keyup", e => {
+        if (isModalNutrientOn() && e.key === "Escape") {
+            modalNutrientOff();
+        }
+    })*/
+
+
+

@@ -44,7 +44,7 @@ public class CalendarController {
         calDTO.setInputDate(date);
 
         log.debug("식단 저장 배열: {},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.dietSave(calDTO, user);
+        calendarService.mealSave(calDTO, user);
     }
 
     /**
@@ -77,6 +77,20 @@ public class CalendarController {
         calDTO.setInputDate(date);
         calDTO.setId(user.getUsername());
         calDTO = calendarService.nutrientListSelect(calDTO);
+
+        return calDTO;
+    }
+
+
+    @PostMapping("nutrientScore")
+    public CalendarDTO nutrientListScore(@RequestParam("mouseoverDay") String mouseoverDay,
+                                          @AuthenticationPrincipal AuthenticatedUser user){
+
+        LocalDate date = LocalDate.parse(mouseoverDay, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        CalendarDTO calDTO = new CalendarDTO();
+        calDTO.setInputDate(date);
+        calDTO.setId(user.getUsername());
+        calDTO = calendarService.nutrientListScore(calDTO);
 
         return calDTO;
     }

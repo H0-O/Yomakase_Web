@@ -135,34 +135,35 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         // MemberEntity를 memberDTO로 변환
-        MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setEmail(memberEntity.getId());
-        memberDTO.setNickname(memberEntity.getName());
-        memberDTO.setBirthDate(memberEntity.getBirthDate());
-        memberDTO.setGender(memberEntity.getGen());
-        memberDTO.setEggs(memberEntity.getAllergy().isEggs());
-        memberDTO.setMilk(memberEntity.getAllergy().isMilk());
-        memberDTO.setBuckwheat(memberEntity.getAllergy().isBuckwheat());
-        memberDTO.setPeanut(memberEntity.getAllergy().isPeanut());
-        memberDTO.setSoybean(memberEntity.getAllergy().isSoybean());
-        memberDTO.setWheat(memberEntity.getAllergy().isWheat());
-        memberDTO.setMackerel(memberEntity.getAllergy().isMackerel());
-        memberDTO.setCrab(memberEntity.getAllergy().isCrab());
-        memberDTO.setShrimp(memberEntity.getAllergy().isShrimp());
-        memberDTO.setPork(memberEntity.getAllergy().isPork());
-        memberDTO.setPeach(memberEntity.getAllergy().isPeach());
-        memberDTO.setTomato(memberEntity.getAllergy().isTomato());
-        memberDTO.setWalnuts(memberEntity.getAllergy().isWalnuts());
-        memberDTO.setChicken(memberEntity.getAllergy().isChicken());
-        memberDTO.setBeef(memberEntity.getAllergy().isBeef());
-        memberDTO.setSquid(memberEntity.getAllergy().isSquid());
-        memberDTO.setShellfish(memberEntity.getAllergy().isShellfish());
-        memberDTO.setPineNut(memberEntity.getAllergy().isPineNut());
-        memberDTO.setHeight(memberEntity.getBodyInfo().getHeight());
-        memberDTO.setWeight(memberEntity.getBodyInfo().getWeight());
+        MemberDTO memberDTO = MemberDTO.builder()
+                .memberNum(memberEntity.getMemberNum())
+                .email(memberEntity.getId())
+                .nickname(memberEntity.getName())
+                .birthDate(memberEntity.getBirthDate())
+                .gender(memberEntity.getGen())
+                .eggs(memberEntity.getAllergy().isEggs())
+                .milk(memberEntity.getAllergy().isMilk())
+                .buckwheat(memberEntity.getAllergy().isBuckwheat())
+                .peanut(memberEntity.getAllergy().isPeanut())
+                .soybean(memberEntity.getAllergy().isSoybean())
+                .wheat(memberEntity.getAllergy().isWheat())
+                .mackerel(memberEntity.getAllergy().isMackerel())
+                .crab(memberEntity.getAllergy().isCrab())
+                .shrimp(memberEntity.getAllergy().isShrimp())
+                .pork(memberEntity.getAllergy().isPork())
+                .peach(memberEntity.getAllergy().isPeach())
+                .tomato(memberEntity.getAllergy().isTomato())
+                .walnuts(memberEntity.getAllergy().isWalnuts())
+                .chicken(memberEntity.getAllergy().isChicken())
+                .beef(memberEntity.getAllergy().isBeef())
+                .squid(memberEntity.getAllergy().isSquid())
+                .shellfish(memberEntity.getAllergy().isShellfish())
+                .pineNut(memberEntity.getAllergy().isPineNut())
+                .height(memberEntity.getBodyInfo().getHeight())
+                .weight(memberEntity.getBodyInfo().getWeight())
+                .build();
 
-
-    // 필요한 필드만 선택적으로 포함
+        // 필요한 필드만 선택적으로 포함
         return memberDTO;
 }
 
@@ -213,5 +214,4 @@ public class MemberService {
         allergy.setPineNut(memberDTO.isPineNut());
         allergyRepository.save(allergy);
     }
-
 }

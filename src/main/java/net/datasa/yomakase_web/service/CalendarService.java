@@ -34,7 +34,7 @@ public class CalendarService {
      * @param calDTO    입력날짜, 아침, 점심, 저녁 메뉴 이름
      * @param identifier     사용자 인증 정보
      */
-    public void dietSave(CalendarDTO calDTO, Object identifier) {
+    public void mealSave(CalendarDTO calDTO, Object identifier) {
         Integer memberNum = null;
 
         // identifier가 Integer일 경우: 앱에서 전달된 memberNum 처리
@@ -51,28 +51,34 @@ public class CalendarService {
         CalendarEntity calEntity = new CalendarEntity();
         calEntity.setInputDate(calDTO.getInputDate());
         calEntity.setMemberNum(memberNum);  // 사용자 memberNum 설정
-        calEntity.setBName(calDTO.getBName());  // 아침 데이터 설정
-        calEntity.setLName(calDTO.getLName());  // 점심 데이터 설정
-        calEntity.setDName(calDTO.getDName());  // 저녁 데이터 설정
-        //사용자의 id를 가지고 memberNum을 가져오는 부분 필요
-        //MemberEntity memberEntity =  memberRepository.findById(user.getUsername()).orElseThrow(null);
+        calEntity.setBName(calDTO.getBName());
+        calEntity.setLName(calDTO.getLName());
+        calEntity.setDName(calDTO.getDName());
+        calEntity.setTooMuch(calDTO.getTooMuch());
+        calEntity.setLack(calDTO.getLack());
+        calEntity.setRecom(calDTO.getRecom());
+        calEntity.setBKcal(calDTO.getBKcal());
+        calEntity.setLKcal(calDTO.getLKcal());
+        calEntity.setDKcal(calDTO.getDKcal());
+        calEntity.setTotalKcal(calDTO.getTotalKcal());
+        calEntity.setScore(calDTO.getScore());
 
         calendarRepository.save(calEntity);
     }
 
-    public Map<String, String> getDietForDate(LocalDate date, Integer memberNum) {
+    public Map<String, String> getMealForDate(LocalDate date, Integer memberNum) {
         CalendarEntity calendarEntity = calendarRepository.findByInputDateAndMemberNum(date, memberNum);
         if (calendarEntity != null) {
-            Map<String, String> dietData = new HashMap<>();
-            dietData.put("breakfast", calendarEntity.getBName());
-            dietData.put("lunch", calendarEntity.getLName());
-            dietData.put("dinner", calendarEntity.getDName());
-            return dietData;
+            Map<String, String> mealData = new HashMap<>();
+            mealData.put("breakfast", calendarEntity.getBName());
+            mealData.put("lunch", calendarEntity.getLName());
+            mealData.put("dinner", calendarEntity.getDName());
+            return mealData;
         } else {
             return null;  // 해당 날짜에 대한 데이터가 없는 경우 null 반환
         }
     }
-    public Map<String, List<Map<String, String>>> getDietForMonth(YearMonth yearMonth, Integer memberNum) {
+    public Map<String, List<Map<String, Object>>> getMealForMonth(YearMonth yearMonth, Integer memberNum) {
         // YearMonth의 첫 번째 날과 마지막 날을 구합니다.
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
@@ -81,23 +87,25 @@ public class CalendarService {
         List<CalendarEntity> calendarEntities = calendarRepository.findAllByMemberNumAndInputDateBetween(memberNum, startDate, endDate);
 
         // 각 날짜별로 데이터를 Map에 넣습니다.
-        Map<String, List<Map<String, String>>> dietData = new HashMap<>();
+        Map<String, List<Map<String, Object>>> mealData = new HashMap<>(); // 수정된 타입
 
         for (CalendarEntity entity : calendarEntities) {
             String date = entity.getInputDate().toString(); // 날짜를 String으로 변환
 
             // 하루의 식단 데이터를 Map으로 만듭니다.
-            Map<String, String> dailyDiet = new HashMap<>();
-            dailyDiet.put("breakfast", entity.getBName());
-            dailyDiet.put("lunch", entity.getLName());
-            dailyDiet.put("dinner", entity.getDName());
+            Map<String, Object> dailyMeal = new HashMap<>(); // 수정된 타입
+            dailyMeal.put("breakfast", entity.getBName());
+            dailyMeal.put("lunch", entity.getLName());
+            dailyMeal.put("dinner", entity.getDName());
+            dailyMeal.put("score", entity.getScore()); // 점수는 Integer로 저장됨
 
             // 해당 날짜에 이미 데이터가 있으면 리스트에 추가, 없으면 새 리스트 생성
-            dietData.computeIfAbsent(date, k -> new ArrayList<>()).add(dailyDiet);
+            mealData.computeIfAbsent(date, k -> new ArrayList<>()).add(dailyMeal);
         }
 
-        return dietData;
+        return mealData;
     }
+
 
 
 
@@ -123,7 +131,7 @@ public class CalendarService {
 
         // calendarRepository에서 복합키로 CalendarEntity 찾기
         CalendarEntity calEntity = calendarRepository.findById(calId)
-                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found : 사용자가 아직 식단을 입력하지 않은 날짜를 클릭함"));
 
        // CalendarEntity calEntity = calendarRepository.findByInputDateAndMemberNum(calId.getInputDate(), calId.getMemberNum());
 
@@ -167,4 +175,28 @@ public class CalendarService {
 
         return calDTO;
     }
+
+
+    //식단점수 조회 메서드
+    public CalendarDTO nutrientListScore(CalendarDTO calDTO){
+        // id를 통해 memberNum 조회
+        MemberEntity memberEntity = memberRepository.findById(calDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Member info not found"));
+
+        // calendar 테이블의 복합키(프라이머리키)
+        CalendarId calId = new CalendarId();
+        calId.setInputDate(calDTO.getInputDate());
+        calId.setMemberNum(memberEntity.getMemberNum());
+
+        // calendarRepository에서 복합키로 CalendarEntity 찾기
+        CalendarEntity calEntity = calendarRepository.findById(calId)
+                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found : nutrient select part"));
+
+        log.debug("영양소 조회 서비스 : {}", calEntity);
+        // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환
+        calDTO.setScore(calEntity.getScore());
+
+        return calDTO;
+    }
 }
+
