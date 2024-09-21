@@ -1,4 +1,5 @@
 <div th:fragment="refrigerator">
+    <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
     <style>
         .refrigerator-photo {
             position: relative; /* 상대 위치로 자식 요소를 절대 위치로 배치할 수 있게 함 */
@@ -382,35 +383,79 @@
                     </div>
                 </div>
                 <!-- 레시피 모달 페이지 -->
-                <div id="RecipeModal" class="modal-overlay">
+                <div id="RecipeModal" class="modal-overlay" style="display: none;">
                     <div class="modal-window">
                         <div class="title">
-                            <h2>추천메뉴</h2>
-                            <button class="refriBtn">레시피 저장</button>
+                            <h2>추천 메뉴: <span id="food-name"></span></h2>
+                            <button class="btn" onclick="saveRecipe()">레시피 저장</button>
                         </div>
-                        <div class="close-area">X</div>
+                        <div class="close-area" onclick="closeModal()">X</div>
                         <div class="content">
                             <span>식재료명</span>
-                            <button class="refriBtn">구매</button>
-                            <pre>
-                                        레시피 나열
-                                        .
-                                        .
-                                        .
-                                    </pre>
+                            <button class="btn">구매</button>
+                            <pre id="recipe-details">
+                            <!-- 레시피 나열 -->
+                            </pre>
                             <p>동영상 링크 첨부</p>
-                            <iframe width="560" height="315"
-                                    src="https://www.youtube.com/embed/sx0Z-NU74a4?si=S6eXIKsvxv5wzlDz"
+                            <iframe id="recipe-video" width="560" height="315"
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
+                <script>
+                    // 모달 열기 함수
+                    function openModal(recipe, video) {
+                        document.getElementById('food-name').innerText = recipe.food_name;
+                        document.getElementById('recipe-details').innerText = recipe.recipe;
+                        document.getElementById('recipe-video').src = video.url.replace("watch?v=", "embed/");
+                        document.getElementById('RecipeModal').style.display = 'block';
+                    }
+
+                    // 모달 닫기 함수
+                    function closeModal() {
+                        document.getElementById('RecipeModal').style.display = 'none';
+                    }
+
+                    // 레시피 저장 버튼 클릭 시 호출될 함수
+                    async function saveRecipe() {
+                        const memberNum = 1; // 실제 로그인된 사용자의 번호를 사용해야 합니다.
+                        const foodName = document.getElementById('food-name').innerText;
+                        const recipeDetails = document.getElementById('recipe-details').innerText;
+                        const recipeUrl = document.getElementById('recipe-video').src;
+
+                        try {
+                            const response = await fetch('/api/recipes/save', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: new URLSearchParams({
+                                    memberNum: memberNum,
+                                    foodName: foodName,
+                                    recipeUrl: recipeUrl,
+                                    savedRecipe: recipeDetails
+                                })
+                            });
+
+                            if (response.ok) {
+                                alert('레시피가 저장되었습니다.');
+                                closeModal();
+                            } else {
+                                alert('레시피 저장에 실패했습니다.');
+                            }
+                        } catch (error) {
+                            console.error('Error saving recipe:', error);
+                            alert('레시피 저장 중 오류가 발생했습니다.');
+                        }
+                    }
+
+                </script>
             </div>
         </div>
     </section>
-    <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
+
     <script>
         // 날짜 수정 ajax
         $(document).ready(function () {
@@ -817,7 +862,7 @@
             };
             console.log(requestData)
 
-            // 예시로 서버에 데이터를 전송하는 코드 (fetch 사용)
+            // 서버에 데이터를 전송하는 코드 (fetch 사용)
             fetch('http://localhost:8000/recipe-recommend', {
                 method: 'POST',
                 headers: {
@@ -826,10 +871,20 @@
                 body: JSON.stringify(requestData),
             })
                 .then(response => response.json())
-                .then(data => console.log('Success:', data))
-                .catch((error) => console.error('Error:', error));
+                .then(data => {
+                    if (data.recipe && data.youtube_video) {
+                        // 받은 데이터로 모달을 업데이트
+                        openModal(data.recipe, data.youtube_video);
+                    } else {
+                        console.error('Expected data structure is missing:', data);
+                        alert('레시피를 불러오지 못했습니다.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching recipe:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                });
         });
-
 
         // 레시피 추천 모달
         const RecipeModal = document.getElementById("RecipeModal");
