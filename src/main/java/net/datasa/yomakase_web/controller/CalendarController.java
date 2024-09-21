@@ -44,7 +44,7 @@ public class CalendarController {
         calDTO.setInputDate(date);
 
         log.debug("식단 저장 배열: {},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.dietSave(calDTO, user);
+        calendarService.mealSave(calDTO, user);
     }
 
     //날짜, 사용자 인증정보로 DB에 저장된 식단을 찾는 메소드

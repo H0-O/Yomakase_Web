@@ -25,17 +25,17 @@ public class AppCalendarController {
     private final JwtTokenProvider jwtTokenProvider;  // JWT를 통한 인증 처리
 
     @PostMapping("/nutrition/result")
-    public ResponseEntity<String> dietInputMethod(
-            @RequestBody Map<String, Object> dietData,
+    public ResponseEntity<String> mealInputMethod(
+            @RequestBody Map<String, Object> mealData,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
             // 로그로 토큰과 데이터 출력
             log.info("Received token: {}", token);
-            log.info("Received diet data: {}", dietData);
+            log.info("Received meal data: {}", mealData);
 
             // 이 부분에서 전달된 데이터 확인
-            if (dietData != null) {
-                log.info("Data fields received: {}", dietData.keySet());  // 어떤 키들이 전송되었는지 확인
+            if (mealData != null) {
+                log.info("Data fields received: {}", mealData.keySet());  // 어떤 키들이 전송되었는지 확인
             }
 
             // 데이터를 제대로 받았는지 확인한 뒤 처리
@@ -47,25 +47,25 @@ public class AppCalendarController {
                 log.info("Extracted memberNum from token: {}", memberNumFromToken);
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy년 MM월 dd일");
-                LocalDate inputDate = LocalDate.parse((String) dietData.get("date"), formatter);  // 'date' 필드를 파싱
-                log.info("Received input_date: {}", dietData.get("date"));
+                LocalDate inputDate = LocalDate.parse((String) mealData.get("date"), formatter);  // 'date' 필드를 파싱
+                log.info("Received input_date: {}", mealData.get("date"));
 
                 // 기대하는 필드 확인
 
-                String breakfast = (String) dietData.get("breakfast");
-                String lunch = (String) dietData.get("lunch");
-                String dinner = (String) dietData.get("dinner");
+                String breakfast = (String) mealData.get("breakfast");
+                String lunch = (String) mealData.get("lunch");
+                String dinner = (String) mealData.get("dinner");
 
-                Map<String, Object> kalMap = (Map<String, Object>) dietData.get("kal");
+                Map<String, Object> kalMap = (Map<String, Object>) mealData.get("kal");
                 int breakfastCalories = (int) kalMap.get("b");
                 int lunchCalories = (int) kalMap.get("l");
                 int dinnerCalories = (int) kalMap.get("d");
                 int totalCalories = (int) kalMap.get("t");
 
-                List<String> overNutrients = (List<String>) dietData.get("over");
-                List<String> lackNutrients = (List<String>) dietData.get("lack");
-                String recommendation = (String) dietData.get("rec");
-                int score = (int) dietData.get("score");
+                List<String> overNutrients = (List<String>) mealData.get("over");
+                List<String> lackNutrients = (List<String>) mealData.get("lack");
+                String recommendation = (String) mealData.get("rec");
+                int score = (int) mealData.get("score");
 
                 // CalendarDTO에 데이터를 설정
                 CalendarDTO calDTO = new CalendarDTO();
@@ -85,8 +85,8 @@ public class AppCalendarController {
                 calDTO.setScore(score);
 
                 // 데이터 저장 처리
-                calendarService.dietSave(calDTO, memberNumFromToken);
-                log.info("Diet saved successfully for memberNum: {}", memberNumFromToken);
+                calendarService.mealSave(calDTO, memberNumFromToken);
+                log.info("Meal saved successfully for memberNum: {}", memberNumFromToken);
 
                 return new ResponseEntity<>("식단이 저장되었습니다!", HttpStatus.OK);
             } else {
@@ -101,8 +101,8 @@ public class AppCalendarController {
 
 
     // 특정 날짜의 식단 데이터를 가져오는 GET 요청 처리
-    @GetMapping("/diet/{date}")
-    public ResponseEntity<Map<String, String>> getDietForDate(
+    @GetMapping("/meal/{date}")
+    public ResponseEntity<Map<String, String>> getMealForDate(
             @PathVariable("date") String date,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
@@ -123,13 +123,13 @@ public class AppCalendarController {
                 LocalDate inputDate = LocalDate.parse(date, formatter);
 
                 // 특정 날짜에 해당하는 식단 데이터를 조회
-                Map<String, String> dietData = calendarService.getDietForDate(inputDate, memberNumFromToken);
+                Map<String, String> mealData = calendarService.getMealForDate(inputDate, memberNumFromToken);
 
-                if (dietData != null) {
-                    log.debug("Diet data found for memberNum {}: {}", memberNumFromToken, dietData);
-                    return new ResponseEntity<>(dietData, HttpStatus.OK);
+                if (mealData != null) {
+                    log.debug("meal data found for memberNum {}: {}", memberNumFromToken, mealData);
+                    return new ResponseEntity<>(mealData, HttpStatus.OK);
                 } else {
-                    log.warn("No diet data found for the given date.");
+                    log.warn("No meal data found for the given date.");
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             } else {
@@ -137,13 +137,13 @@ public class AppCalendarController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
-            log.error("Error fetching diet data: {}", e.getMessage());
+            log.error("Error fetching meal data: {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     // 특정 달의 식단 데이터를 가져오는 GET 요청 처리
-    @GetMapping(value = "/diet/month/{yearMonth}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Map<String, List<Map<String, Object>>>> getDietForMonth(
+    @GetMapping(value = "/meal/month/{yearMonth}", produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> getMealForMonth(
             @PathVariable("yearMonth") String yearMonth,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
@@ -164,13 +164,13 @@ public class AppCalendarController {
                 YearMonth inputYearMonth = YearMonth.parse(yearMonth, formatter);
 
                 // 특정 달에 해당하는 모든 식단 데이터를 조회
-                Map<String, List<Map<String, Object>>> dietData = calendarService.getDietForMonth(inputYearMonth, memberNumFromToken);
+                Map<String, List<Map<String, Object>>> mealData = calendarService.getMealForMonth(inputYearMonth, memberNumFromToken);
 
-                if (dietData != null) {
-                    log.info("Diet data found for memberNum {}: {}", memberNumFromToken, dietData);
-                    return new ResponseEntity<>(dietData, HttpStatus.OK);
+                if (mealData != null) {
+                    log.info("Meal data found for memberNum {}: {}", memberNumFromToken, mealData);
+                    return new ResponseEntity<>(mealData, HttpStatus.OK);
                 } else {
-                    log.warn("No diet data found for the given month.");
+                    log.warn("No meal data found for the given month.");
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             } else {
@@ -178,7 +178,7 @@ public class AppCalendarController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
-            log.error("Error fetching diet data: {}", e.getMessage());
+            log.error("Error fetching meal data: {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

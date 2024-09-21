@@ -34,7 +34,7 @@ public class CalendarService {
      * @param calDTO    입력날짜, 아침, 점심, 저녁 메뉴 이름
      * @param identifier     사용자 인증 정보
      */
-    public void dietSave(CalendarDTO calDTO, Object identifier) {
+    public void mealSave(CalendarDTO calDTO, Object identifier) {
         Integer memberNum = null;
 
         // identifier가 Integer일 경우: 앱에서 전달된 memberNum 처리
@@ -66,19 +66,19 @@ public class CalendarService {
         calendarRepository.save(calEntity);
     }
 
-    public Map<String, String> getDietForDate(LocalDate date, Integer memberNum) {
+    public Map<String, String> getMealForDate(LocalDate date, Integer memberNum) {
         CalendarEntity calendarEntity = calendarRepository.findByInputDateAndMemberNum(date, memberNum);
         if (calendarEntity != null) {
-            Map<String, String> dietData = new HashMap<>();
-            dietData.put("breakfast", calendarEntity.getBName());
-            dietData.put("lunch", calendarEntity.getLName());
-            dietData.put("dinner", calendarEntity.getDName());
-            return dietData;
+            Map<String, String> mealData = new HashMap<>();
+            mealData.put("breakfast", calendarEntity.getBName());
+            mealData.put("lunch", calendarEntity.getLName());
+            mealData.put("dinner", calendarEntity.getDName());
+            return mealData;
         } else {
             return null;  // 해당 날짜에 대한 데이터가 없는 경우 null 반환
         }
     }
-    public Map<String, List<Map<String, Object>>> getDietForMonth(YearMonth yearMonth, Integer memberNum) {
+    public Map<String, List<Map<String, Object>>> getMealForMonth(YearMonth yearMonth, Integer memberNum) {
         // YearMonth의 첫 번째 날과 마지막 날을 구합니다.
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
@@ -87,23 +87,23 @@ public class CalendarService {
         List<CalendarEntity> calendarEntities = calendarRepository.findAllByMemberNumAndInputDateBetween(memberNum, startDate, endDate);
 
         // 각 날짜별로 데이터를 Map에 넣습니다.
-        Map<String, List<Map<String, Object>>> dietData = new HashMap<>(); // 수정된 타입
+        Map<String, List<Map<String, Object>>> mealData = new HashMap<>(); // 수정된 타입
 
         for (CalendarEntity entity : calendarEntities) {
             String date = entity.getInputDate().toString(); // 날짜를 String으로 변환
 
             // 하루의 식단 데이터를 Map으로 만듭니다.
-            Map<String, Object> dailyDiet = new HashMap<>(); // 수정된 타입
-            dailyDiet.put("breakfast", entity.getBName());
-            dailyDiet.put("lunch", entity.getLName());
-            dailyDiet.put("dinner", entity.getDName());
-            dailyDiet.put("score", entity.getScore()); // 점수는 Integer로 저장됨
+            Map<String, Object> dailyMeal = new HashMap<>(); // 수정된 타입
+            dailyMeal.put("breakfast", entity.getBName());
+            dailyMeal.put("lunch", entity.getLName());
+            dailyMeal.put("dinner", entity.getDName());
+            dailyMeal.put("score", entity.getScore()); // 점수는 Integer로 저장됨
 
             // 해당 날짜에 이미 데이터가 있으면 리스트에 추가, 없으면 새 리스트 생성
-            dietData.computeIfAbsent(date, k -> new ArrayList<>()).add(dailyDiet);
+            mealData.computeIfAbsent(date, k -> new ArrayList<>()).add(dailyMeal);
         }
 
-        return dietData;
+        return mealData;
     }
 
 
