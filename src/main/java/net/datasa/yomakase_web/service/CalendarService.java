@@ -51,11 +51,17 @@ public class CalendarService {
         CalendarEntity calEntity = new CalendarEntity();
         calEntity.setInputDate(calDTO.getInputDate());
         calEntity.setMemberNum(memberNum);  // 사용자 memberNum 설정
-        calEntity.setBName(calDTO.getBName());  // 아침 데이터 설정
-        calEntity.setLName(calDTO.getLName());  // 점심 데이터 설정
-        calEntity.setDName(calDTO.getDName());  // 저녁 데이터 설정
-        //사용자의 id를 가지고 memberNum을 가져오는 부분 필요
-        //MemberEntity memberEntity =  memberRepository.findById(user.getUsername()).orElseThrow(null);
+        calEntity.setBName(calDTO.getBName());
+        calEntity.setLName(calDTO.getLName());
+        calEntity.setDName(calDTO.getDName());
+        calEntity.setTooMuch(calDTO.getTooMuch());
+        calEntity.setLack(calDTO.getLack());
+        calEntity.setRecom(calDTO.getRecom());
+        calEntity.setBKcal(calDTO.getBKcal());
+        calEntity.setLKcal(calDTO.getLKcal());
+        calEntity.setDKcal(calDTO.getDKcal());
+        calEntity.setTotalKcal(calDTO.getTotalKcal());
+        calEntity.setScore(calDTO.getScore());
 
         calendarRepository.save(calEntity);
     }

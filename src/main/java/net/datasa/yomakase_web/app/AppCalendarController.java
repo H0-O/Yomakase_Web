@@ -24,36 +24,68 @@ public class AppCalendarController {
     private final CalendarService calendarService;  // CalendarService는 식단 데이터 저장 로직을 담당
     private final JwtTokenProvider jwtTokenProvider;  // JWT를 통한 인증 처리
 
-    @PostMapping("/diet")
+    @PostMapping("/nutrition/result")
     public ResponseEntity<String> dietInputMethod(
-            @RequestBody Map<String, String> dietData,
+            @RequestBody Map<String, Object> dietData,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
             // 로그로 토큰과 데이터 출력
             log.info("Received token: {}", token);
             log.info("Received diet data: {}", dietData);
 
-            // 토큰을 사용한 사용자 정보 추출
+            // 이 부분에서 전달된 데이터 확인
+            if (dietData != null) {
+                log.info("Data fields received: {}", dietData.keySet());  // 어떤 키들이 전송되었는지 확인
+            }
+
+            // 데이터를 제대로 받았는지 확인한 뒤 처리
             if (token != null && token.startsWith("Bearer ")) {
-                String jwtToken = token.substring(7);  // 'Bearer ' 이후의 실제 JWT 부분만 추출
+                String jwtToken = token.substring(7);
                 log.info("JWT Token (parsed): {}", jwtToken);
 
-                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);  // JWT에서 사용자 식별자 추출
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);
                 log.info("Extracted memberNum from token: {}", memberNumFromToken);
 
-                // DateTimeFormatter를 사용하여 "24년 09월 04일" 문자열을 LocalDate로 변환
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy년 MM월 dd일");
-                LocalDate inputDate = LocalDate.parse(dietData.get("date"), formatter);  // 'date' 키로 날짜 받음
+                LocalDate inputDate = LocalDate.parse((String) dietData.get("date"), formatter);  // 'date' 필드를 파싱
+                log.info("Received input_date: {}", dietData.get("date"));
+
+                // 기대하는 필드 확인
+
+                String breakfast = (String) dietData.get("breakfast");
+                String lunch = (String) dietData.get("lunch");
+                String dinner = (String) dietData.get("dinner");
+
+                Map<String, Object> kalMap = (Map<String, Object>) dietData.get("kal");
+                int breakfastCalories = (int) kalMap.get("b");
+                int lunchCalories = (int) kalMap.get("l");
+                int dinnerCalories = (int) kalMap.get("d");
+                int totalCalories = (int) kalMap.get("t");
+
+                List<String> overNutrients = (List<String>) dietData.get("over");
+                List<String> lackNutrients = (List<String>) dietData.get("lack");
+                String recommendation = (String) dietData.get("rec");
+                int score = (int) dietData.get("score");
 
                 // CalendarDTO에 데이터를 설정
                 CalendarDTO calDTO = new CalendarDTO();
-                calDTO.setBName(dietData.get("breakfast"));  // 'breakfast' 키로 아침 데이터를 받음
-                calDTO.setLName(dietData.get("lunch"));  // 'lunch' 키로 점심 데이터를 받음
-                calDTO.setDName(dietData.get("dinner"));  // 'dinner' 키로 저녁 데이터를 받음
                 calDTO.setInputDate(inputDate);
+                calDTO.setBName(breakfast);
+                calDTO.setLName(lunch);
+                calDTO.setDName(dinner);
+
+                calDTO.setBKcal(breakfastCalories);
+                calDTO.setLKcal(lunchCalories);
+                calDTO.setDKcal(dinnerCalories);
+                calDTO.setTotalKcal(totalCalories);
+
+                calDTO.setTooMuch(String.join(",", overNutrients));
+                calDTO.setLack(String.join(",", lackNutrients));
+                calDTO.setRecom(recommendation);
+                calDTO.setScore(score);
 
                 // 데이터 저장 처리
-                calendarService.dietSave(calDTO, memberNumFromToken);  // CalendarService의 dietSave 메서드 호출
+                calendarService.dietSave(calDTO, memberNumFromToken);
                 log.info("Diet saved successfully for memberNum: {}", memberNumFromToken);
 
                 return new ResponseEntity<>("식단이 저장되었습니다!", HttpStatus.OK);
@@ -67,6 +99,7 @@ public class AppCalendarController {
         }
     }
 
+
     // 특정 날짜의 식단 데이터를 가져오는 GET 요청 처리
     @GetMapping("/diet/{date}")
     public ResponseEntity<Map<String, String>> getDietForDate(
@@ -74,16 +107,16 @@ public class AppCalendarController {
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
             // 토큰과 날짜 로그
-            log.info("Received token: {}", token);
-            log.info("Requested date: {}", date);
+            log.debug("받은 token: {}", token);
+            log.debug("받은 date: {}", date);
 
             // 토큰을 사용한 사용자 정보 추출
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7);
-                log.info("JWT Token (parsed): {}", jwtToken);
+                log.debug("JWT 토큰 (parsed): {}", jwtToken);
 
                 Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);
-                log.info("Extracted memberNum from token: {}", memberNumFromToken);
+                log.debug("Extracted memberNum from token: {}", memberNumFromToken);
 
                 // DateTimeFormatter를 사용하여 "24년 09월 04일" 형식의 문자열을 LocalDate로 변환
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy년 MM월 dd일");
@@ -93,7 +126,7 @@ public class AppCalendarController {
                 Map<String, String> dietData = calendarService.getDietForDate(inputDate, memberNumFromToken);
 
                 if (dietData != null) {
-                    log.info("Diet data found for memberNum {}: {}", memberNumFromToken, dietData);
+                    log.debug("Diet data found for memberNum {}: {}", memberNumFromToken, dietData);
                     return new ResponseEntity<>(dietData, HttpStatus.OK);
                 } else {
                     log.warn("No diet data found for the given date.");

@@ -1,6 +1,7 @@
 package net.datasa.yomakase_web.app;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.dto.MemberDTO;
 import net.datasa.yomakase_web.domain.entity.MemberEntity;
 import net.datasa.yomakase_web.security.JwtTokenProvider;
@@ -16,6 +17,7 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -60,6 +62,15 @@ public class AuthController {
 
     @GetMapping("/bodyInfo")
     public ResponseEntity<Map<String, Object>> getBodyInfo(@RequestHeader("Authorization") String token) {
+
+        // 토큰에서 'Bearer ' 부분을 제거하고 로깅
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);  // 'Bearer ' 이후의 실제 JWT 부분만 추출
+        } else {
+            log.warn("Invalid token format: {}", token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         String userEmail = jwtTokenProvider.getUsernameFromToken(token);
         MemberDTO member = memberService.getUserByEmail(userEmail);
 
@@ -73,6 +84,8 @@ public class AuthController {
         response.put("weight", member.getWeight());   // 몸무게
         response.put("age", age);                     // 나이 (계산된 값)
         response.put("gender", member.getGender());   // 성별
+
+        log.debug("데이터 확인 : {}", response);
 
         return ResponseEntity.ok(response);
     }
