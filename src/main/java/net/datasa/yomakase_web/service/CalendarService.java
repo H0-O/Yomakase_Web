@@ -105,6 +105,25 @@ public class CalendarService {
 
         return mealData;
     }
+    public Map<String, String> getNutritionForDate(LocalDate date, Integer memberNum) {
+        // 데이터베이스에서 해당 날짜와 사용자 번호로 영양소 데이터를 조회
+        CalendarEntity calendarEntity = calendarRepository.findByInputDateAndMemberNum(date, memberNum);
+
+        if (calendarEntity != null) {
+            // 조회된 데이터를 Map에 담아 반환
+            Map<String, String> nutritionData = new HashMap<>();
+            nutritionData.put("totalCalories", String.valueOf(calendarEntity.getTotalKcal()));
+            nutritionData.put("tooMuch", calendarEntity.getTooMuch());
+            nutritionData.put("lack", calendarEntity.getLack());
+            nutritionData.put("recommend", calendarEntity.getRecom());
+            nutritionData.put("score", String.valueOf(calendarEntity.getScore()));
+
+            return nutritionData;
+        } else {
+            // 해당 날짜에 대한 데이터가 없는 경우 null 반환
+            return null;
+        }
+    }
 
 
 

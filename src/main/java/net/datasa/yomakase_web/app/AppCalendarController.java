@@ -183,5 +183,44 @@ public class AppCalendarController {
         }
     }
 
+    @GetMapping("/nutrition/{date}")
+    public ResponseEntity<Map<String, String>> getNutritionForDate(
+            @PathVariable("date") String date,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            // 토큰과 날짜 로그
+            log.debug("Received token: {}", token);
+            log.debug("Received date: {}", date);
 
+            // 토큰을 사용한 사용자 정보 추출
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7);
+                log.debug("Parsed JWT token: {}", jwtToken);
+
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);
+                log.debug("Extracted memberNum from token: {}", memberNumFromToken);
+
+                // DateTimeFormatter를 사용하여 "24년 09월 04일" 형식의 문자열을 LocalDate로 변환
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy년 MM월 dd일");
+                LocalDate inputDate = LocalDate.parse(date, formatter);
+
+                // 특정 날짜에 해당하는 영양소 데이터를 조회
+                Map<String, String> nutritionData = calendarService.getNutritionForDate(inputDate, memberNumFromToken);
+
+                if (nutritionData != null) {
+                    log.debug("Nutrition data found for memberNum {}: {}", memberNumFromToken, nutritionData);
+                    return new ResponseEntity<>(nutritionData, HttpStatus.OK);
+                } else {
+                    log.warn("No nutrition data found for the given date.");
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } else {
+                log.warn("No or invalid token provided.");
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            log.error("Error fetching nutrition data: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

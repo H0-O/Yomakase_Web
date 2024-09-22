@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.service.StockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,17 +24,18 @@ public class StockController {
     private final StockService stockService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveStock(@RequestBody List<Map<String, String>> ingredients) {
+    public ResponseEntity<String> saveStock(@RequestBody Map<String, String> ingredients) {
         try {
             // Spring Security에서 인증된 사용자 정보 가져오기
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
+            // stockService에 Map<String, String>과 이메일 전달
             stockService.saveStock(ingredients, email);
             return new ResponseEntity<>("저장되었습니다!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("저장에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/existing-ingredients")
     public ResponseEntity<List<String>> getExistingIngredients() {

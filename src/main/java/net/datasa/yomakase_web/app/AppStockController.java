@@ -22,12 +22,12 @@ public class AppStockController {
 
     @PostMapping("/save")
     public ResponseEntity<String> saveStockForApp(
-            @RequestBody List<Map<String, String>> ingredients,
+            @RequestBody Map<String, String> ingredients, // Map<String, String>으로 변경
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
             // 로그로 토큰과 데이터 출력
             log.info("Received token: {}", token);
-            log.info("Received ingredients: {}", ingredients);
+            log.info("Received ingredients: {}", ingredients); // 수정된 데이터 타입
 
             // 토큰을 사용한 사용자 정보 추출
             if (token != null && token.startsWith("Bearer ")) {
@@ -53,6 +53,7 @@ public class AppStockController {
             return new ResponseEntity<>("저장에 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getStockForApp(

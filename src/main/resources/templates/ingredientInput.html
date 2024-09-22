@@ -357,23 +357,23 @@
             ingredientsList.scrollTop = 0;
         });
 
-        // 저장하기 버튼을 누르면 입력된 재료들(name이 ingredients[]인 input에 입력된 재료들) 서버로 보냄
         document.getElementById('save-button').addEventListener('click', function () {
             // ingredients와 expiration 값을 각각 추출
             const ingredientInputs = document.querySelectorAll('input[name="ingredients[]"]');
             const expirationInputs = document.querySelectorAll('input[name="expiration[]"]');
 
-            const data = [];
+            const data = {}; // 데이터를 Map 형식으로 변환 (key-value 쌍)
 
-            // 각각의 재료 이름과 소비기한을 data 배열에 추가
+            // 각각의 재료 이름과 소비기한을 data 객체에 추가
             ingredientInputs.forEach((ingredientInput, index) => {
                 const expirationValue = expirationInputs[index].value;  // 해당 인덱스의 소비기한을 가져옴
 
-                data.push({
-                    ingredientName: ingredientInput.value,
-                    expirationDate: expirationValue
-                });
+                // 재료명과 소비기한을 key-value 쌍으로 저장 (Map 형식)
+                if (ingredientInput.value && expirationValue) { // 값이 비어있지 않은 경우에만 추가
+                    data[ingredientInput.value] = expirationValue;
+                }
             });
+
             console.log("Sending data:", data); // 서버로 전송하기 전 데이터 확인용 로그
 
             // 서버로 데이터 전송
@@ -385,15 +385,22 @@
                 body: JSON.stringify(data) // JSON 형식으로 변환하여 보냄
             })
                 .then(response => {
+                    console.log("Response status:", response.status); // 응답 상태 로그
                     if (response.ok) {
                         alert('저장되었습니다!');
                         location.reload(); // 페이지 새로고침
                     } else {
-                        alert('저장에 실패했습니다.');
+                        return response.text().then(errorMessage => {
+                            console.error("Error message:", errorMessage); // 에러 메시지 로그
+                            alert('저장에 실패했습니다.');
+                        });
                     }
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+
+
 
 
         // 영수증 사진 파일 업로드 시 영수증 일러스트가 업로드된 영수증 사진으로 변경

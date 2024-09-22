@@ -28,7 +28,7 @@ public class StockService {
     private final Random random = new Random();
 
     @Transactional
-    public void saveStock(List<Map<String, String>> ingredients, Object identifier) {
+    public void saveStock(Map<String, String> ingredients, Object identifier) {
         Integer memberNum = null;
 
         if (identifier instanceof Integer) {
@@ -40,14 +40,19 @@ public class StockService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
             memberNum = member.getMemberNum();
         }
-        for (Map<String, String> ingredient : ingredients) {
-            String ingredientName = ingredient.get("ingredientName");
-            String expirationDate = ingredient.get("expirationDate");
+
+        // ingredients는 Map<String, String> 형식
+        for (Map.Entry<String, String> entry : ingredients.entrySet()) {
+            String ingredientName = entry.getKey();  // key는 재료명
+            String expirationDate = entry.getValue();  // value는 소비기한일수
+
             log.info("Saving ingredient: {}, Expiration Date: {}", ingredientName, expirationDate);
 
+            // 소비기한일수를 LocalDate로 변환
             LocalDate currentDate = LocalDate.now();
             LocalDate useByDate = currentDate.plusDays(Integer.parseInt(expirationDate));
 
+            // StockEntity 생성 후 데이터 저장
             StockEntity stockEntity = StockEntity.builder()
                     .ingredientName(ingredientName)
                     .isHaving(true)
@@ -58,6 +63,7 @@ public class StockService {
             stockRepository.save(stockEntity);
         }
     }
+
 
     public List<Map<String, Object>> getStockForMember(Object identifier) {
         Integer memberNum = null;
