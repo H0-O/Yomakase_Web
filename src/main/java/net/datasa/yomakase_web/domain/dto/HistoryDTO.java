@@ -12,8 +12,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoryDTO {
-    private String ingredientName;
-    private int memberNum;
-    private LocalDate date;
-    private String type; // 'c' 소비, 'b' 버림
+    private Integer historyId; // 자동 증가하는 기본 키
+    private String ingredientName; // 재료 이름
+    private Integer memberNum; // 회원 번호
+    private LocalDate date; // 날짜
+    private String type; // 'c' -> 소비, 'b' -> 버림
 }

@@ -3,12 +3,15 @@ package net.datasa.yomakase_web.app;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.datasa.yomakase_web.domain.dto.HistoryDTO;
 import net.datasa.yomakase_web.security.JwtTokenProvider;
+import net.datasa.yomakase_web.service.HistoryService;
 import net.datasa.yomakase_web.service.StockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AppStockController {
     private final StockService stockService;
+    private final HistoryService historyService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/save")
@@ -73,6 +77,7 @@ public class AppStockController {
                 // 스톡 데이터 가져오기
                 List<Map<String, Object>> stockList = stockService.getStockForMember(memberNumFromToken); // 앱 사용자 처리
                 log.info("Fetched stock list for memberNum: {}", memberNumFromToken);
+                log.debug("Fetched stock list: {}", stockList);
 
                 // 데이터가 없을 경우
                 if (stockList.isEmpty()) {
@@ -90,6 +95,37 @@ public class AppStockController {
         } catch (Exception e) {
             log.error("스톡 데이터 가져오기 실패: {}", e.getMessage());
             return new ResponseEntity<>("스톡 데이터를 가져오는 데 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/history")
+    public ResponseEntity<String> saveHistoryForApp(
+            @RequestBody Map<String, String> historyData,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            log.info("Received token: {}", token);
+            log.info("Received historyData: {}", historyData);
+
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7);
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);
+                log.info("Extracted memberNum from token: {}", memberNumFromToken);
+
+                // DTO 생성 및 서비스로 위임
+                historyService.saveHistory(historyData, memberNumFromToken);
+                stockService.updateStockIsHaving(historyData.get("ingredientName"), memberNumFromToken);
+
+                return new ResponseEntity<>("소비 또는 버림이 성공적으로 기록되었습니다.", HttpStatus.OK);
+            } else {
+                log.warn("No or invalid token provided.");
+                return new ResponseEntity<>("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (JwtException e) {
+            log.error("JWT 인증 실패: {}", e.getMessage());
+            return new ResponseEntity<>("JWT 토큰이 유효하지 않습니다: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            log.error("앱 저장 실패: {}", e.getMessage());
+            return new ResponseEntity<>("저장에 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

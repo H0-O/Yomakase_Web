@@ -391,12 +391,13 @@
                         </div>
                         <div class="close-area" onclick="closeModal()">X</div>
                         <div class="content">
-                            <span>식재료명</span>
-                            <button class="btn">구매</button>
-                            <pre id="recipe-details">
-                            <!-- 레시피 나열 -->
-                            </pre>
-                            <p>동영상 링크 첨부</p>
+                            <h3>레시피</h3>
+                            <pre id="recipe-details"></pre> <!-- 레시피 내용 표시 -->
+
+                            <h3>추가 설명</h3>
+                            <p id="recipe-comment"></p> <!-- 레시피 설명 -->
+
+                            <h3>관련 동영상</h3>
                             <iframe id="recipe-video" width="560" height="315"
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -407,9 +408,15 @@
                 <script>
                     // 모달 열기 함수
                     function openModal(recipe, video) {
+                        // 레시피 데이터 출력
                         document.getElementById('food-name').innerText = recipe.food_name;
                         document.getElementById('recipe-details').innerText = recipe.recipe;
+                        document.getElementById('recipe-comment').innerText = recipe.comment;
+
+                        // 유튜브 동영상 링크 출력
                         document.getElementById('recipe-video').src = video.url.replace("watch?v=", "embed/");
+
+                        // 모달을 화면에 보이게 함
                         document.getElementById('RecipeModal').style.display = 'block';
                     }
 
@@ -455,7 +462,9 @@
             </div>
         </div>
     </section>
-
+    <script th:inline="javascript">
+        var memberAllergies = /*[[${allergy}]]*/ [];
+    </script>
     <script>
         // 날짜 수정 ajax
         $(document).ready(function () {
@@ -504,14 +513,6 @@
                 }
             });
 
-            // // ESC 키를 누르면 모달 닫기 - 작동안됨 기능고치기
-            // $(document).on('keyup', function (e) {
-            //     if (e.key === "Escape") { // ESC 키를 확인
-            //         if (isDateModalOn()) { // 모달이 열려 있는지 확인
-            //             dateModalOff(); // 모달 닫기
-            //         }
-            //     }
-            // });
 
             // 확인 버튼 클릭 시 날짜 업데이트
             $('#submitDate').click(function () {
@@ -765,138 +766,45 @@
             }
         }); // 삭제 모달창 끝
 
-        // // 날짜 수정 모달
-        // document.addEventListener("DOMContentLoaded", () => {
-        //     const dateModal = document.getElementById("dateModal");
-        //     const dateInput = document.getElementById("date"); // ID를 'date'로 변경
-        //     const submitDate = document.getElementById("submitDate");
-        //     const closeDate = dateModal.querySelector(".close-area");
-        //     const list = document.getElementById("list");
-        //
-        //     // 모달을 보이게 함
-        //     function dateModalOn(ingredientName, memberNum) {
-        //         console.log('모달 데이터 설정:', ingredientName, memberNum); // 추가된 로그
-        //         document.getElementById('ingredientName').value = ingredientName;
-        //         document.getElementById('memberNum').value = memberNum;
-        //         dateModal.style.display = "flex";
-        //     }
-        //
-        //     // 모달이 열려 있는지 확인
-        //     function isDateModalOn() {
-        //         return dateModal.style.display === "flex";
-        //     }
-        //
-        //     // 모달을 숨김
-        //     function dateModalOff() {
-        //         dateModal.style.display = "none";
-        //     }
-        //
-        //     // 특정 버튼을 누르면 모달창이 켜지게 하기
-        //     list.addEventListener("click", (event) => {
-        //         if (event.target.tagName === 'BUTTON' && event.target.classList.contains('refriBtn')) {
-        //
-        //             const ingredientName = $(this).data('ingredient-name');
-        //             const memberNum = $(this).data('member-num');
-        //
-        //             console.log('ingredientName:', ingredientName);
-        //             console.log('memberNum:', memberNum);
-        //
-        //             dateModalOn(ingredientName, memberNum);
-        //         }
-        //     });
-        //
-        //     // 모달창의 클로즈(x) 버튼을 누르면 모달창이 꺼지게 하기
-        //     closeDate.addEventListener("click", () => {
-        //         dateModalOff();
-        //     });
-        //
-        //     // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
-        //     dateModal.addEventListener("click", (e) => {
-        //         if (e.target === dateModal) {
-        //             dateModalOff();
-        //         }
-        //     });
-        //
-        //     // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-        //     window.addEventListener("keyup", (e) => {
-        //         if (isDateModalOn() && e.key === "Escape") {
-        //             dateModalOff();
-        //         }
-        //     });
-        //
-        //     // 날짜 선택 모달의 확인 버튼 클릭 시 날짜 처리
-        //     submitDate.addEventListener("click", () => {
-        //         const selectedDate = dateInput.value;
-        //         if (selectedDate) {
-        //             console.log('Selected Date:', selectedDate); // 선택된 날짜를 콘솔에 출력
-        //             dateModal.style.display = 'none'; // 모달 닫기
-        //         } else {
-        //             alert('날짜를 선택해주세요.');
-        //         }
-        //     });
-        // }); // 수정 모달창 끝
 
-        // 레시피 추천 버튼 클릭 시
+        // 레시피 추천 버튼 클릭 시 서버에 요청을 보내고 데이터를 받아 모달에 출력
         document.getElementById('RecipeModalBtn').addEventListener('click', function() {
-            console.log("요리법 추천 버튼 클릭됨"); // 로그 추가
-
-            // 테이블의 모든 행(tr)을 선택
             const rows = document.querySelectorAll("#materialsTable tbody tr");
-
-            // 재료 이름들을 저장할 배열
             let ingredientNames = [];
 
-            // 각 행을 순회하며 첫 번째 셀(td)의 텍스트(재료 이름)를 배열에 추가
             rows.forEach(function(row) {
                 const ingredientName = row.querySelector("td:first-child").textContent.trim();
                 ingredientNames.push(ingredientName);
             });
 
-            console.log("수집된 재료 목록:", ingredientNames); // 로그 추가
+            const allergies = Object.entries(memberAllergies.allergies)
+                .filter(([key, value]) => value === true)
+                .map(([key]) => key);
 
-            // 알러지 정보는 직접 설정해주거나 서버에서 받아오도록 합니다.
-            const allergies = []; // 알러지 정보를 여기에 추가
-            console.log("알레르기 정보:", allergies); // 로그 추가
-
-            // 이후 이 데이터를 Spring Boot 서버로 전송
             const requestData = {
                 allergies: allergies,
                 ingredients: ingredientNames
             };
 
-            // Spring Boot 서버에 POST 요청
-            fetch('http://localhost:7777/recipe/recommend', {
+            // 서버에 요청을 보내고 데이터를 받아와서 모달에 출력
+            fetch('http://localhost:8000/recipe-recommend', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(requestData)
+                body: JSON.stringify(requestData),
             })
-                .then(response => {
-                    console.log("서버 응답 상태 코드:", response.status); // 로그 추가
-
-                    // 응답이 비어있거나 상태 코드가 200이 아닌 경우 예외 처리
-                    if (!response.ok) {
-                        throw new Error(`서버 응답 오류: ${response.statusText}`);
-                    }
-
-                    return response.json(); // JSON으로 응답 처리
-                })
+                .then(response => response.json())
                 .then(data => {
-                    console.log("서버 응답 JSON 데이터:", data); // 로그 추가
-                    if (data.recipe && data.youtube_video) {
-                        // 받은 데이터로 모달을 업데이트
-                        openModal(data.recipe, data.youtube_video);
-                    } else {
-                        console.error('Expected data structure is missing:', data);
-                        alert('레시피를 불러오지 못했습니다.');
-                    }
+                    console.log('Received data:', data);
+                    // 받은 데이터를 openModal 함수에 전달
+                    openModal(data.recipe, data.youtube);
                 })
                 .catch((error) => {
-                    console.error('Error fetching recipe:', error); // 에러 로그 추가
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                    console.error('Error:', error);
                 });
         });
+
 
         // 레시피 추천 모달
         const RecipeModal = document.getElementById("RecipeModal");
@@ -933,12 +841,6 @@
             }
         });
 
-        // 모달창이 켜진 상태에서 ESC 버튼을 누르면 모달창이 꺼지게 하기
-        window.addEventListener("keyup", (e) => {
-            if (isRecipeModalOn() && e.key === "Escape") {
-                RecipeModalOff();
-            }
-        }); // 레시피 모달창 끝
     </script>
 
 </div>

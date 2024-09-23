@@ -115,13 +115,15 @@ CREATE TABLE `cal` (
 select * from `cal`;
 
 CREATE TABLE `history` (
+                           `history_id` int NOT NULL AUTO_INCREMENT, -- 자동 증가하는 기본 키
                            `ingredient_name` varchar(700) NOT NULL,
                            `member_num` int NOT NULL,
-                           `date` date NOT NULL, -- 복합키에 포함되는 date 컬럼
+                           `date` date NOT NULL, -- 날짜
                            `type` varchar(10) NOT NULL CHECK (`type` IN ('c', 'b')), -- c : 소비, b : 버림
-                           PRIMARY KEY (`ingredient_name`, `member_num`, `date`), -- 복합키에 date 추가
-                           FOREIGN KEY (`ingredient_name`, `member_num`) REFERENCES `stock`(`ingredient_name`, `member_num`) ON DELETE CASCADE
+                           PRIMARY KEY (`history_id`),
+                           FOREIGN KEY (`ingredient_name`, `member_num`) REFERENCES `stock`(`ingredient_name`, `member_num`) ON DELETE CASCADE -- 외래 키 제약 조건
 );
+
 
 select * from `history`;
 

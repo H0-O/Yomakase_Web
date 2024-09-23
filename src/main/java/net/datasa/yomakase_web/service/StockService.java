@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,12 @@ public class StockService {
             stockRepository.save(stockEntity);
         }
     }
-
+    @Transactional
+    public void updateStockIsHaving(String ingredientName, Integer memberNum) {
+        // 재료명과 회원 번호를 이용하여 Stock 테이블의 isHaving 필드를 0으로 업데이트
+        stockRepository.updateIsHavingByIngredientAndMember(ingredientName, memberNum, 0);
+        log.info("Stock의 isHaving 필드가 0으로 업데이트되었습니다. 재료: {}, 회원 번호: {}", ingredientName, memberNum);
+    }
 
     public List<Map<String, Object>> getStockForMember(Object identifier) {
         Integer memberNum = null;
@@ -79,29 +85,24 @@ public class StockService {
         }
 
         // memberNum을 사용하여 스톡 데이터 조회
-        List<StockEntity> stockEntities = stockRepository.findByMemberNumAndIsHavingTrue(memberNum);
+        List<StockEntity> stockEntities = stockRepository.findByMemberNumAndIsHavingTrueOrderByUseByDateAsc(memberNum);
 
         // StockEntity를 Map 형식으로 변환
         List<Map<String, Object>> stockList = new ArrayList<>();
-
-        // 현재 날짜/시간 가져오기
-        LocalDateTime now = LocalDateTime.now();
 
         for (StockEntity stockEntity : stockEntities) {
             Map<String, Object> stockMap = new HashMap<>();
             stockMap.put("ingredientName", stockEntity.getIngredientName());
 
-            // expirationDate를 계산 (업데이트 날짜와 현재 시간의 차이)
-            LocalDateTime updateDate = stockEntity.getUpdateDate();
-            long daysBetween = Duration.between(updateDate, now).toDays();
-
-            stockMap.put("expirationDate", daysBetween); // 남은 일수(또는 경과 일수)를 저장
+            // UseByDate(소비 기한일)를 그대로 저장
+            stockMap.put("useByDate", stockEntity.getUseByDate()); // LocalDate 그대로 전달
 
             stockList.add(stockMap);
         }
 
         return stockList;
     }
+
     public List<String> getAllIngredientNamesForMember(Object identifier) {
         Integer memberNum = null;
 
