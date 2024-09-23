@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -139,8 +136,6 @@ public class CalendarService {
         MemberEntity memberEntity = memberRepository.findById(calDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Member info not found"));
 
-        //log.debug("이메일로 멤버엔티티를 잘 찾아왔는가: {}", memberEntity);
-
         // calendar 테이블의 복합키(프라이머리키)
         CalendarId calId = new CalendarId();
         calId.setInputDate(calDTO.getInputDate());
@@ -150,11 +145,10 @@ public class CalendarService {
 
         // calendarRepository에서 복합키로 CalendarEntity 찾기
         CalendarEntity calEntity = calendarRepository.findById(calId)
-                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found : 사용자가 아직 식단을 입력하지 않은 날짜를 클릭함"));
+                .orElseThrow(() ->  new EntityNotFoundException("CalendarEntity not found : diet select"));
 
-       // CalendarEntity calEntity = calendarRepository.findByInputDateAndMemberNum(calId.getInputDate(), calId.getMemberNum());
+        //log.debug("식단 조회 서비스 : {}", calEntity);
 
-         log.debug("식단 조회 서비스 : {}", calEntity);
         // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환
         calDTO.setInputDate(calEntity.getInputDate());
         calDTO.setMemberNum(calEntity.getMemberNum());
@@ -209,7 +203,7 @@ public class CalendarService {
 
         // calendarRepository에서 복합키로 CalendarEntity 찾기
         CalendarEntity calEntity = calendarRepository.findById(calId)
-                .orElseThrow(() -> new EntityNotFoundException("Calendar info not found : nutrient select part"));
+                .orElseThrow(() -> new EntityNotFoundException("Calendar Entity not found : nutrient select part"));
 
         log.debug("영양소 조회 서비스 : {}", calEntity);
         // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환
