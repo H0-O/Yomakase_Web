@@ -82,11 +82,11 @@
 
                         <h3>관련 동영상</h3>
                         <div class="responsive-video-container">
-
                             <iframe id="recipe-video" width="560" height="315"
                                     title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
                         </div>
                     </div>
                 </div>
@@ -348,16 +348,49 @@
                         alert('레시피를 가져오는 중 문제가 발생했습니다.');
                     });
             });
-
             function openRecipeModal(recipe, video) {
                 $('#food-name').text(recipe.food_name);
                 $('#recipe-details').text(recipe.recipe);
                 $('#recipe-comment').text(recipe.comment);
-                console.log('YouTube URL:', video.url);
 
-                $('#recipe-video').attr('src', video.url.replace("watch?v=", "embed/"));
+                // 이전에 "관련 영상이 없습니다" 문구가 있다면 제거
+                $('#no-video-message').remove();
+
+                // 비동기적으로 동영상 URL 설정 처리
+                if (video.url && video.url.trim() !== "") {
+                    // YouTube URL 변환
+                    let youtubeUrl = video.url;
+                    if (youtubeUrl.includes("watch?v=")) {
+                        youtubeUrl = youtubeUrl.replace("watch?v=", "embed/");
+                    }
+
+                    console.log("변환된 YouTube URL:", youtubeUrl);
+
+                    // iframe에 동영상 URL 설정
+                    $('#recipe-video').hide(); // 일단 숨김 처리하여 완료되면 보여주기
+
+                    // YouTube URL을 비동기적으로 설정하여 로드 처리
+                    setTimeout(function () {
+                        $('#recipe-video').attr('src', youtubeUrl); // src만 설정
+                        $('#recipe-video').show(); // iframe을 다시 보여줌
+                    }, 100); // 약간의 지연 후에 표시 (100ms)
+
+                } else {
+                    // 동영상 URL이 없을 경우, iframe을 숨기고 src를 초기화
+                    $('#recipe-video').hide();
+                    $('#recipe-video').attr('src', ''); // src 초기화
+                    $('#recipe-details').after('<p id="no-video-message" style="color:red;">관련 영상이 없습니다</p>');
+                }
+
+                // 모달을 화면에 표시
                 toggleModalVisibility('RecipeModal', true);
             }
+
+
+
+
+
+
 
             // 소비/버림 버튼을 가진 삭제 모달 표시 함수
             function showDeleteModal(ingredientName) {
@@ -411,7 +444,42 @@
                 const ingredientName = $(this).data('ingredient-name');
                 handleConsumeOrDiscard(ingredientName, 'b'); // 'b'는 버림을 의미
             });
+
+
+
         });
+        // 레시피 저장 버튼 클릭 시 서버로 데이터 전송
+        function saveRecipe() {
+            // 레시피 모달에서 데이터를 추출
+            const recipeData = {
+                food_name: $('#food-name').text(),
+                recipe: $('#recipe-details').text(),
+                recipe_url: $('#recipe-video').attr('src')
+            };
+
+            console.log('Saving recipe:', recipeData);
+
+            // 서버로 레시피 데이터를 POST 요청으로 전송
+            fetch('/recipes/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(recipeData)
+            })
+                .then(response => response.text())  // 응답을 텍스트로 처리
+                .then(data => {
+                    if (data === '레시피가 성공적으로 저장되었습니다.') {
+                        alert(data);  // 서버에서 전달한 메시지를 그대로 출력
+                    } else {
+                        alert('레시피 저장에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                });
+        }
     </script>
 
 </div>
