@@ -129,5 +129,51 @@ public class AppStockController {
         }
     }
 
+    @PostMapping("/updateUseByDate")
+    public ResponseEntity<String> updateUseByDate(
+            @RequestBody Map<String, String> requestData,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            log.info("Received token: {}", token);
+            log.info("Received requestData: {}", requestData);
+
+            // 토큰을 사용한 사용자 정보 추출
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
+                log.info("JWT Token (parsed): {}", jwtToken);
+
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken); // JWT에서 사용자 식별자 추출
+                log.info("Extracted memberNum from token: {}", memberNumFromToken);
+
+                // requestData에서 값 추출
+                String ingredientName = requestData.get("ingredientName");
+                String newUseByDateStr = requestData.get("newUseByDate");
+
+                if (ingredientName == null || newUseByDateStr == null) {
+                    return new ResponseEntity<>("재료명 또는 새로운 소비기한이 누락되었습니다.", HttpStatus.BAD_REQUEST);
+                }
+
+                // newUseByDateStr을 LocalDate로 변환
+                LocalDate newUseByDate = LocalDate.parse(newUseByDateStr);
+
+                // 서비스 메서드 호출하여 소비기한 업데이트
+                stockService.updateStockDate(ingredientName, memberNumFromToken, newUseByDate);
+
+                return new ResponseEntity<>("소비기한이 성공적으로 업데이트되었습니다.", HttpStatus.OK);
+            } else {
+                log.warn("No or invalid token provided.");
+                return new ResponseEntity<>("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (JwtException e) {
+            log.error("JWT 인증 실패: {}", e.getMessage());
+            return new ResponseEntity<>("JWT 토큰이 유효하지 않습니다: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (RuntimeException e) {
+            log.error("재고 항목 업데이트 실패: {}", e.getMessage());
+            return new ResponseEntity<>("재고 항목 업데이트에 실패했습니다: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("소비기한 업데이트 실패: {}", e.getMessage());
+            return new ResponseEntity<>("소비기한 업데이트에 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
