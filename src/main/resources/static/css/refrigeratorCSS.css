@@ -214,12 +214,6 @@
     max-height: 600px;
 }
 
-#RecipeModal .modal-window {
-    width: 800px;
-    height: 600px;
-    overflow: auto;
-}
-
 #delModal .modal-window {
     width: 260px;
     height: 140px;
@@ -234,7 +228,7 @@
     height: 150px;
 }
 
-#RecipeModal .close-area, #delModal .close-area, #dateModal .close-area {
+.close-area, #delModal .close-area, #dateModal .close-area {
     display: inline;
     float: right;
     padding-right: 10px;
@@ -292,18 +286,73 @@
     margin: auto;
 }
 
-#RecipeModal .title {
-    padding-left: 10px;
-    display: inline;
-    color: black;
+#RecipeModal .modal-window {
+    width: 1000px;
+    height: 700px; /* 모달 창 높이 확장 */
+    max-height: 90vh; /* 화면의 최대 90% 높이까지 확장 가능 */
+    overflow-y: auto; /* 세로 스크롤 가능 */
 }
 
-#RecipeModal .title h2 {
-    display: inline;
+/* 레시피 추천 모달 */
+.modal-window {
+    position: relative;
+    width: 800px;
+    height: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 자식 요소들을 가운데 정렬 */
 }
 
-#RecipeModal .content {
-    margin-top: 20px;
-    padding: 0px 10px;
-    color: black;
+/* 오른쪽 상단 고정 닫기 버튼 */
+.modal-window img {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
 }
+
+.modal-window img:hover {
+    transform: scale(1.1);
+}
+
+/* 제목 스타일 */
+.modal-window h2, .modal-window h3 {
+    color: #FFB524;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* 버튼 스타일 - 가운데 정렬 */
+.title {
+    display: flex;
+    justify-content: center; /* 버튼을 가운데 정렬 */
+    width: 100%;
+    margin: 10px 0; /* 위아래 여백 */
+}
+
+/* <p> 태그 스타일 */
+.modal-window p {
+    color: #333; /* 텍스트 색상: 어두운 회색 */
+    font-size: 20px; /* 텍스트 크기 */
+    line-height: 1.6; /* 줄 간격 */
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 15px; /* 아래쪽 여백 */
+    padding: 10px; /* 텍스트 주변 간격 */
+    background-color: #f9f9f9; /* 읽기 쉽게 배경색 추가 */
+    border-radius: 5px; /* 부드러운 모서리 */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05); /* 안쪽 그림자 */
+    font-weight: bold;
+}
+
+
