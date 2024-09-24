@@ -218,6 +218,12 @@
             function toggleModalVisibility(modalId, isVisible) {
                 const modal = document.getElementById(modalId);
                 modal.style.display = isVisible ? 'flex' : 'none';
+                // 모달이 열릴 때 스크롤 비활성화
+                if (isVisible) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = ''; // 스크롤 다시 활성화
+                }
             }
 
             // 모달 외부 클릭 시 닫기

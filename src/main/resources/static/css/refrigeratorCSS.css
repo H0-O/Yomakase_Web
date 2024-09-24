@@ -70,10 +70,12 @@
 
 .refrigerator-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
     gap: 20px;
     padding: 20px;
+    height: 100vh; /* 부모 요소 높이를 100%로 설정 */
+    margin: auto; /* 자동으로 중앙에 배치 */
 }
 
 .refrigerator-photo, .table-container {
