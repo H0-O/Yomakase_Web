@@ -11,7 +11,7 @@
         }
 
         .mypagesNavbar {
-            background-color: #81c405;
+            background-color: white;
             display: flex;
             justify-content: center; /* 네비게이션 바의 내부 아이템도 중앙에 배치 */
             padding: 10px;
@@ -19,9 +19,10 @@
         }
 
         .mypagesNavbar a {
+            background-color: #81c405;
             color: white;
             text-align: center;
-            padding: 14px 20px;
+            padding: 14px 30px;
             text-decoration: none;
             font-size: 17px;
         }
@@ -33,14 +34,22 @@
         .mypagesContent {
             display: none;
         }
+
+        a.mypages-tablink.active-mypageTab{
+            background-color: #FFB524;
+            font-weight: bold;
+        }
         /* My Pages CSS End */
 
     </style>
     <script>
-        function openTab(event, tabName) {
+        function openTab(event, tabName, element) {
             event.preventDefault(); // 페이지 새로 고침 방지
             $(".mypagesContent").hide(); // 모든 콘텐츠를 숨김
             $("#" + tabName).show(); // 클릭한 탭의 콘텐츠만 보이도록 설정
+
+            $('.mypagesNavbar a').removeClass('active-mypageTab');
+            $(element).addClass('active-mypageTab');
         }
     </script>
     <div class="resume-section-content">
@@ -48,11 +57,11 @@
         <section class="resumeSection" id="myPages">
             <div class="mypagesNavbarContainer">
                 <div id="mypagesNavbar" class="mypagesNavbar">
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'myrecipe')">나의 레시피</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService')">구독 서비스</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'record')">소비 기록</a>
-                    <a th:href="@{/profile}" class="mypages-tablink" onclick="openTab(event, 'profileUpdate')">회원정보수정</a>
-                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'withdrawal')">회원탈퇴</a>
+                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'myrecipe', this)">나의 레시피</a>
+                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'subsService', this)">구독 서비스</a>
+                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'record', this)">소비 기록</a>
+                    <a th:href="@{/profile}" class="mypages-tablink" onclick="openTab(event, 'profileUpdate', this)">회원정보수정</a>
+                    <a href="#" class="mypages-tablink" onclick="openTab(event, 'withdrawal', this)">회원탈퇴</a>
                 </div>
             </div>
 
