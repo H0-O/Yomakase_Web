@@ -171,11 +171,36 @@
             background-color: white;
         }
 
+        .back-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        .backButton {
+            display: block;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .backButton:hover {
+            background-color: #7bb12a;
+        }
+
     </style>
 
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 
     <script>
+        function goBack() {
+            window.history.back();  // 바로 전 페이지로 이동
+        }
+
         $(document).ready(function() {
 
             //글 삭제
@@ -238,7 +263,9 @@
 <body>
 
 <h1>[ 글 읽기 ]</h1>
-
+<div class="back-container">
+    <button class="backButton" onclick="goBack()">← 뒤로</button>
+</div>
     <table>
         <tr>
             <th>카테고리</th>
@@ -292,15 +319,20 @@
         <!-- 리플 작성 폼 -->
         <form id="replyForm" th:action="@{/board/replyWrite}" method="post">
             <input type="hidden" name="boardNum" th:value="${board.boardNum}">
-            <input type="text" name="replyContents" id="replyContents" style="width:500px;">
-            <input type="submit" value="확인">
+            <table>
+                <tr>
+                    <th>댓글달기</th>
+                    <td><input type="text" name="replyContents" id="replyContents" style="width:500px;"></td>
+                    <td><input type="submit" value="확인"></td>
+                </tr>
+            </table>
         </form>
     </div>
     <div class="reply-section">
         <table>
             <p th:each="reply : ${board.replyList}">
                 <tr>
-                    <td class="reply-author"><span th:text="${reply.getMemberName()}"></span></td>
+                    <th class="reply-author"><span th:text="${reply.getMemberName()}"></span></th>
                     <td class="replyText"><span th:text="${reply.getReplyContents()}"></span></td>
                     <td class="reply-time"><span th:text="${#temporals.format(reply.createDate, 'yy.MM.dd HH:mm')}"></span></td>
                     <td class="replyDeleteBt">

@@ -5,16 +5,17 @@
 
 		<div class="boardNavbar">
 			<ul>
-				<li><a href="#" class="category-link" data-category="">전체</a></li>
-				<li><a href="#" class="category-link" data-category="알림">알림</a></li>
-				<li><a href="#" class="category-link" data-category="자취꿀팁">자취꿀팁</a></li>
-				<li><a href="#" class="category-link" data-category="사담">사담</a></li>
-				<li><a href="#" class="category-link" data-category="기타">기타</a></li>
+				<li><a href="#" class="category-link" data-category="" onclick="selectedCtg(this)">전체</a></li>
+				<li><a href="#" class="category-link" data-category="공지사항" onclick="selectedCtg(this)">공지사항</a></li>
+				<li><a href="#" class="category-link" data-category="나만의레시피" onclick="selectedCtg(this)">나만의레시피</a></li>
+				<li><a href="#" class="category-link" data-category="자취꿀팁" onclick="selectedCtg(this)">자취꿀팁</a></li>
+				<li><a href="#" class="category-link" data-category="사담" onclick="selectedCtg(this)">사담</a></li>
 			</ul>
 		</div>
 
 		<div sec:authorize="isAuthenticated()" id="userInfo">
-			<img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp
+			<div id="userIconBox"></div>
+			&nbsp
 			<span id="loginUserName" style="font-weight: bold;">사용자</span>님&nbsp&nbsp<button id="boardWriteBt">글쓰기</button>
 		</div>
 
@@ -31,7 +32,7 @@
 				<option value="contents" th:selected="${searchType == 'contents'}">내용</option>
 				<option value="name" th:selected="${searchType == 'name'}">작성자</option>
 			</select>
-			<input type="text" id="searchWord"  name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요">
+			<input type="text" id="searchWord" name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요" size="30">
 			<input type="submit" value="검색">
 		</div>
 		</form>
@@ -214,11 +215,44 @@
 			justify-content: center;
 		}
 
+		#searchWord{
+			margin-left: 5px;
+		}
+
+		.category-link{
+			text-decoration: none; /* 밑줄 제거 */
+			color: #333; /* 기본 글자색 */
+			font-weight: bold; /* 글자 두껍게 */
+			padding: 5px 10px; /* 링크 클릭 영역을 넓히기 위한 패딩 */
+			border-radius: 5px; /* 테두리 둥글게 */
+			transition: background-color 0.3s, color 0.3s; /* 부드러운 색상 전환 */
+		}
+
+		.active-category{
+			background-color: #FFB524;
+			color: white !important;
+		}
+
+		#userIconBox{
+			display: flex;
+			justify-content: flex-end;
+		}
+
 	</style>
 	<script src="/js/jquery-3.7.1.min.js"></script>
 	<script>
 
+		function selectedCtg(element){
+			// 모든 카테고리 링크에서 active-category 클래스 제거
+			$('.boardNavbar ul li a').removeClass('active-category');
+
+			// 클릭한 카테고리에 active-category 클래스 추가
+			$(element).addClass('active-category');
+		}
+
 		$(document).ready(function() {
+
+			var selectedCategory = '';
 
 			// 처음에 1페이지 데이터를 불러옴
 			loadBoardData(1);
@@ -231,8 +265,8 @@
 			// 카테고리 클릭 이벤트
 			$('.category-link').click(function(event) {
 				event.preventDefault();
-				var category = $(this).data('category');
-				loadBoardData(1, '', '', category); // 페이지는 1로 고정, 검색어와 타입은 빈 값
+				selectedCategory = $(this).data('category'); // 선택된 카테고리 저장
+				loadBoardData(1, '', '', selectedCategory); // 페이지는 1로 고정, 검색어와 타입은 빈 값
 			});
 
 			// 게시판 글 검색 기능 : 검색타입과 단어에 해당하는 글 출력
@@ -240,13 +274,13 @@
 				event.preventDefault();
 				var searchType = $('#searchType').val();
 				var searchWord = $('#searchWord').val();
-				loadBoardData(1, searchType, searchWord);
+				loadBoardData(1, searchType, searchWord, selectedCategory);
 			});
 
 			// 페이지 버튼 클릭 시 해당 페이지로 이동
 			$(document).on('click', '.paginationButton', function() {
 				var page = $(this).data('page');
-				loadBoardData(page);
+				loadBoardData(page, '', '', selectedCategory);
 			});
 
 			// page, searchType, searchWord, category를 파라미터로 받아 해당 게시글 목록을 출력하는 함수
@@ -265,6 +299,16 @@
 						var boardPage = response.boardPage;
 						var user = response.user
 						var boardList = '';
+						var userIcon = '';
+
+						if(user.roleName === 'ROLE_USER'){
+							userIcon += '<img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp';
+						} else if (user.roleName === 'ROLE_SUBSCRIBER'){
+							userIcon += '<img style="width: 22px; height: 22px" src="/img/subMem_icon.png">&nbsp';
+						} else if (user.roleName === 'ROLE_ADMIN'){
+							userIcon += '<img style="width: 22px; height: 22px" src="/img/admin_icon.png">&nbsp';
+						}
+						$('#userIconBox').html(userIcon);
 
 						$.each(boardPage.content, function(index, board) {
 							var formattedDate = formatDate(board.createDate);

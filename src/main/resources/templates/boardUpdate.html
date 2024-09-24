@@ -76,7 +76,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 20px;
+            padding-top: 0px;
         }
 
         form {
@@ -87,11 +87,37 @@
             width: 550px;
         }
 
+        .back-container {
+            width: 590px;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        .backButton {
+            display: block;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 0px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .backButton:hover {
+            background-color: #7bb12a;
+        }
+
     </style>
 
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 
     <script>
+        function goBack() {
+            window.history.back();  // 바로 전 페이지로 이동
+        }
+
         $(document).ready(function() {
 
             $('#updateForm').submit(function () {
@@ -116,7 +142,9 @@
 <body>
 
 <h1>[ 글 수정 ]</h1>
-
+<div class="back-container">
+    <button class="backButton" onclick="goBack()">← 뒤로</button>
+</div>
 <div id="boardUpdateBox">
     <form id="updateForm" th:action="@{/board/update}" method="post" enctype="multipart/form-data">
         <!--글 번호 -->
@@ -128,17 +156,17 @@
                 <td>
                     <div th:if="${user.roleName == 'ROLE_ADMIN'}">
                         <select class="category" name="category">
-                            <option value="알림" th:selected="${board.category == '알림'}">알림</option>
+                            <option value="공지사항" th:selected="${board.category == '공지사항'}">공지사항</option>
+                            <option value="나만의레시피" th:selected="${board.category == '나만의레시피'}">나만의레시피</option>
                             <option value="자취꿀팁" th:selected="${board.category == '자취꿀팁'}">자취꿀팁</option>
                             <option value="사담" th:selected="${board.category == '사담'}">사담</option>
-                            <option value="기타" th:selected="${board.category == '기타'}">기타</option>
                         </select>
                     </div>
                     <div th:unless="${user.roleName == 'ROLE_ADMIN'}">
                         <select class="category" name="category">
+                            <option value="나만의레시피" th:selected="${board.category == '나만의레시피'}">나만의레시피</option>
                             <option value="자취꿀팁" th:selected="${board.category == '자취꿀팁'}">자취꿀팁</option>
                             <option value="사담" th:selected="${board.category == '사담'}">사담</option>
-                            <option value="기타" th:selected="${board.category == '기타'}">기타</option>
                         </select>
                     </div>
                 </td>
