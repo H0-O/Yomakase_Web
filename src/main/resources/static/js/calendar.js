@@ -306,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 document.getElementById('diet-list-msg').style.display = 'none';
                 if(!calDTO.totalKcal && !calDTO.tooMuch && !calDTO.lack && !calDTO.recom){
                     dietList.style.display = 'none';
+                    nutrientList.style.display = 'none';
                     document.getElementById('diet-list-msg').style.display = 'block';
                 } else {
                     dietList.style.display = 'none';
