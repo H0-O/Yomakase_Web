@@ -36,7 +36,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
     //달력 초기화면에서 모달이 안 나오도록 함
     document.getElementById("diet-modal").style.display = 'none';
-    nutrientModal.style.display = 'none';
+    if(nutrientModal == null){
+        nutrientModal = document.getElementById("nutrient-modal");
+    } else{
+        nutrientModal.style.display = 'none';
+    }
 
     // console.log(nutrientCalBtn, dietCalBtn);  //일반 회원이 로그인했을 때는 버튼이 null 상태가 됨
     if (dietCalBtn === null || nutrientCalBtn === null) {
@@ -98,7 +102,9 @@ document.addEventListener('DOMContentLoaded', function(){
             days[daysLen].addEventListener('dblclick', function () {
                 that.doubleClickDay(this)
             });
-            if(nutrientModal !== null) {
+            if(nutrientModal == null) {
+                nutrientModal = document.getElementById("nutrient-modal");
+            } else {
                 days[daysLen].addEventListener('mouseover', function () {
                     that.nutrientScore(this)
                 });
@@ -110,21 +116,24 @@ document.addEventListener('DOMContentLoaded', function(){
                     nutrientList.style.display = 'none';
 
                 });
-                }
+            }
         }
 
         Calendar.prototype.doubleClickDay = function(td){
             modalOn();  // 모달 처리 함수는 따로 정의해야 함
         }
 
-        Calendar.prototype.nutrientScore = function(td){
-            modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
-        }
+        if(nutrientModal == null) {
+            nutrientModal = document.getElementById("nutrient-modal");
+        } else{
+            Calendar.prototype.nutrientScore = function (td) {
+                modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
+            }
 
-        Calendar.prototype.nutrientScoreOff = function (td) {
-            modalNutrientOff();  // 모달 처리 함수는 따로 정의
+            Calendar.prototype.nutrientScoreOff = function (td) {
+                modalNutrientOff();  // 모달 처리 함수는 따로 정의
+            }
         }
-
     }; //draw 함수 end
 
 
@@ -182,46 +191,46 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
             //마우스 오버 시 해당 일자 표시 (영양소 모달용)
-            days[j].addEventListener('mouseover', function () {
-                if (this.innerHTML !== "") {
-                    mouseoverDay = year + '-' + monthTag[month] + '-' + this.innerHTML;
-                    let parts = mouseoverDay.split('-');    // - 를 기준으로 나눠서 배열을 만듦
-                    let formattedDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
-                    //console.log(mouseoverDay);  //2024-9-28  백에서 처리하는 날짜 형식과 맞지 않음
-                    //console.log(formattedDate);   //2024-09-30
-                    let clickedNutrientDay = document.getElementsByClassName('clickedDietDay')[1];
-                    clickedNutrientDay.innerHTML = mouseoverDay;
+            if(nutrientModal == null){
+                nutrientModal = document.getElementById("nutrient-modal");
+            } else {
+                days[j].addEventListener('mouseover', function () {
+                    if (this.innerHTML !== "") {
+                        mouseoverDay = year + '-' + monthTag[month] + '-' + this.innerHTML;
+                        let parts = mouseoverDay.split('-');    // - 를 기준으로 나눠서 배열을 만듦
+                        let formattedDate = `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+                        //console.log(mouseoverDay);  //2024-9-28  백에서 처리하는 날짜 형식과 맞지 않음
+                        //console.log(formattedDate);   //2024-09-30
+                        let clickedNutrientDay = document.getElementsByClassName('clickedDietDay')[1];
+                        clickedNutrientDay.innerText = mouseoverDay;
+                        //console.log(clickedNutrientDay);  //<td class="clickedDietDay">2024-9-28</td>
 
-                    let nutrientModalContent = document.getElementById('nutrient-modal-table');
-                    let listScore = nutrientModalContent.getElementsByTagName('td')[1];
+                        let nutrientModalContent = document.getElementById('nutrient-modal-table');
+                        let listScore = nutrientModalContent.getElementsByTagName('td')[1];
 
-                    $.ajax({
-                        url: '/cal/nutrientScore',
-                        type: 'post',
-                        data: {mouseoverDay : formattedDate },  // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
-                        dataType: 'json',
-                        success: function (calDTO) {
-                            dietList.style.display = 'none';
-                            nutrientList.style.display = 'block';
-                            document.getElementById('diet-list-msg').style.display = 'none';
-                            console.log(calDTO); //
+                        $.ajax({
+                            url: '/cal/nutrientScore',
+                            type: 'post',
+                            data: {mouseoverDay: formattedDate},  // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
+                            dataType: 'json',
+                            success: function (calDTO) {
+                                dietList.style.display = 'none';
+                                nutrientList.style.display = 'block';
+                                document.getElementById('diet-list-msg').style.display = 'none';
+                                //console.log(calDTO);
 
-                            listScore.innerHTML = `${calDTO.score}점`;
-                        },
-                        error: function () {
-                            dietList.style.display = 'none';
-                            document.getElementById('diet-list-msg').style.display = 'block';
-                        }
-                    })
-                    nutrientModalContent.getElementsByTagName('td')[1].innerHTML = "";
-                    listScore.innerText = "식단 달력에서 식단을 입력해 주세요.";
-
-
-                }
-
-            });
-
-
+                                listScore.innerHTML = `${calDTO.score}점`;
+                            },
+                            error: function () {
+                                dietList.style.display = 'none';
+                                document.getElementById('diet-list-msg').style.display = 'block';
+                            }
+                        })
+                        nutrientModalContent.getElementsByTagName('td')[1].innerHTML = "";
+                        listScore.innerText = "식단 달력에서 식단을 입력해 주세요.";
+                    }
+                }); //각 날짜(td) mouseover addEventListener end
+            } //else문 end (일반 사용자 영양소 모달 null 처리)
         }
     };  //drawDays 함수 end
 
@@ -263,12 +272,17 @@ document.addEventListener('DOMContentLoaded', function(){
                 dietList.style.display = 'block';
                 document.getElementById('diet-list-msg').style.display = 'none';
                 //console.log(calDTO); //{"id":"alpha@yomakase.test","memberNum":1,"inputDate":"2024-08-02","dname":"손말이고기","lname":"부대찌개","bname":"맥심 커피"}
-                let listBName = dietList.getElementsByTagName('td')[1];
-                let listLName = dietList.getElementsByTagName('td')[3];
-                let listDName = dietList.getElementsByTagName('td')[5];
-                listBName.innerText = calDTO.bname;
-                listLName.innerText = calDTO.lname;
-                listDName.innerText = calDTO.dname;
+                if(!calDTO.bname && !calDTO.lname && !calDTO.dname){
+                    dietList.style.display = 'none';
+                    document.getElementById('diet-list-msg').style.display = 'block';
+                } else{
+                    let listBName = dietList.getElementsByTagName('td')[1];
+                    let listLName = dietList.getElementsByTagName('td')[3];
+                    let listDName = dietList.getElementsByTagName('td')[5];
+                    listBName.innerText = calDTO.bname;
+                    listLName.innerText = calDTO.lname;
+                    listDName.innerText = calDTO.dname;
+                }
             },
             error : function (){
                 dietList.style.display = 'none';
@@ -290,22 +304,30 @@ document.addEventListener('DOMContentLoaded', function(){
                 dietList.style.display = 'none';
                 nutrientList.style.display = 'block';
                 document.getElementById('diet-list-msg').style.display = 'none';
-                console.log(calDTO); //
-                let listTotalKcal = nutrientList.getElementsByTagName('td')[1];
-                let listTooMuch = nutrientList.getElementsByTagName('td')[3];
-                let listLack = nutrientList.getElementsByTagName('td')[5];
-                let listRecom = nutrientList.getElementsByTagName('td')[7];
-                //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
-                listTotalKcal.innerHTML = calDTO.totalKcal;
-                listTooMuch.innerHTML = calDTO.tooMuch;
-                listLack.innerHTML = calDTO.lack;
-                listRecom.innerHTML = calDTO.recom;
-                //listScore.innerText = calDTO.score + "점";
-                listTotalKcal.append();
-                listTooMuch.append();
-                listLack.append();
-                listRecom.append();
-                document.getElementById('diet-list-msg').style.display = 'none';
+                if(!calDTO.totalKcal && !calDTO.tooMuch && !calDTO.lack && !calDTO.recom){
+                    dietList.style.display = 'none';
+                    document.getElementById('diet-list-msg').style.display = 'block';
+                } else {
+                    dietList.style.display = 'none';
+                    nutrientList.style.display = 'block';
+                    document.getElementById('diet-list-msg').style.display = 'none';
+                    console.log(calDTO);
+                    let listTotalKcal = nutrientList.getElementsByTagName('td')[1];
+                    let listTooMuch = nutrientList.getElementsByTagName('td')[3];
+                    let listLack = nutrientList.getElementsByTagName('td')[5];
+                    let listRecom = nutrientList.getElementsByTagName('td')[7];
+                    //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
+                    listTotalKcal.innerHTML = calDTO.totalKcal;
+                    listTooMuch.innerHTML = calDTO.tooMuch;
+                    listLack.innerHTML = calDTO.lack;
+                    listRecom.innerHTML = calDTO.recom;
+                    //listScore.innerText = calDTO.score + "점";
+                    listTotalKcal.append();
+                    listTooMuch.append();
+                    listLack.append();
+                    listRecom.append();
+                    document.getElementById('diet-list-msg').style.display = 'none';
+                }
             },
             error : function (){
                 dietList.style.display = 'none';
