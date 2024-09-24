@@ -1,0 +1,358 @@
+.refrigerator-wrapper .refrigerator-photo {
+    position: relative;
+}
+
+.refrigerator-photo .refrigerator-container {
+    position: relative;
+    background-image: url('../img/refri.png');
+    background-size: cover;
+    background-position: center;
+    width: 350px;
+    height: 650px;
+    overflow: hidden;
+}
+
+.refrigerator-container #ingredients-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(9px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+}
+
+#ingredients-container .ingredient {
+    text-align: center;
+    cursor: pointer;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 106px;
+    height: 106px;
+    box-sizing: border-box;
+    position: relative;
+    transform: translateY(95px);
+}
+
+.ingredient img {
+    width: 100px;
+    height: auto;
+    display: block;
+}
+
+.ingredient .ingredient-text {
+    text-align: center;
+    bottom: 0;
+    left: 100px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    letter-spacing: 1px;
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    display: inline-block;
+    box-sizing: content-box;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.ingredient:hover .ingredient-text {
+    opacity: 1;
+}
+
+.refrigerator-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.refrigerator-photo, .table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.table-container {
+    overflow: hidden;
+    letter-spacing: 1px;
+}
+
+.table-wrapper {
+    max-width: 600px;
+    height: auto;
+    border: 4px solid #81c405;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.table-container table, .table-container td, .table-container th {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: auto;
+    width: 300px;
+    border: 1px #81c405;
+    padding: 8px;
+    text-align: center;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+}
+
+.table-container thead, .table-container tbody {
+    display: block;
+}
+
+.table-container tbody {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.table-container th {
+    background-color: #81c405;
+    color: white;
+}
+
+.d-day {
+    font-weight: bold;
+    color: #000;
+}
+
+.d-day-warning {
+    font-weight: bold;
+    color: red;
+}
+
+.d-day-last {
+    font-weight: bold;
+    color: blue;
+}
+
+.d-day-over {
+    font-weight: bold;
+    color: #ffb524;
+}
+
+.refriBtn {
+    margin: auto;
+    padding: 5px 10px;
+    background-color: #81c405;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: -3px -3px 7px #fff, 2px 2px 4px #babebc;
+    outline: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: transform 80ms ease-in;
+    display: inline-block;
+}
+
+.refriBtn:active {
+    box-shadow: inset 1px 1px 2px #babebc, inset -1px -1px 2px #fff;
+}
+
+.refriBtn:hover {
+    background-color: #ffb524;
+}
+
+.table-container tbody::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container tbody::-webkit-scrollbar-thumb {
+    background: #ffb524;
+    border-radius: 10px;
+}
+
+.table-container tbody::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-overlay {
+    z-index: 1000;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.modal-overlay .modal-window {
+    z-index: 1001;
+    background: ivory;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(13.5px);
+    -webkit-backdrop-filter: blur(13.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    max-width: 800px;
+    max-height: 600px;
+}
+
+#delModal .modal-window {
+    width: 260px;
+    height: 140px;
+    text-align: center;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+#dateModal .modal-window {
+    width: 300px;
+    height: 150px;
+}
+
+.close-area, #delModal .close-area, #dateModal .close-area {
+    display: inline;
+    float: right;
+    padding-right: 10px;
+    cursor: pointer;
+    color: black;
+}
+
+#delModal .modal-text {
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    padding-top: 8px;
+    padding-left: 20px;
+}
+
+#delModal .button-container {
+    margin: auto;
+}
+
+#delModal .refriBtn {
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
+
+#dateModal .date-text {
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    padding-left: 12px;
+}
+
+#date-container input[type="date"] {
+    margin-left: 40px;
+}
+
+#date-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-input-container {
+    display: flex;
+    align-items: center;
+}
+
+#submitDate {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin: auto;
+}
+
+#RecipeModal .modal-window {
+    width: 1000px;
+    height: 700px; /* 모달 창 높이 확장 */
+    max-height: 90vh; /* 화면의 최대 90% 높이까지 확장 가능 */
+    overflow-y: auto; /* 세로 스크롤 가능 */
+}
+
+/* 레시피 추천 모달 */
+.modal-window {
+    position: relative;
+    width: 800px;
+    height: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 자식 요소들을 가운데 정렬 */
+}
+
+/* 오른쪽 상단 고정 닫기 버튼 */
+.modal-window img {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.modal-window img:hover {
+    transform: scale(1.1);
+}
+
+/* 제목 스타일 */
+.modal-window h2, .modal-window h3 {
+    color: #FFB524;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* 버튼 스타일 - 가운데 정렬 */
+.title {
+    display: flex;
+    justify-content: center; /* 버튼을 가운데 정렬 */
+    width: 100%;
+    margin: 10px 0; /* 위아래 여백 */
+}
+
+/* <p> 태그 스타일 */
+.modal-window p {
+    color: #333; /* 텍스트 색상: 어두운 회색 */
+    font-size: 20px; /* 텍스트 크기 */
+    line-height: 1.6; /* 줄 간격 */
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 15px; /* 아래쪽 여백 */
+    padding: 10px; /* 텍스트 주변 간격 */
+    background-color: #f9f9f9; /* 읽기 쉽게 배경색 추가 */
+    border-radius: 5px; /* 부드러운 모서리 */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05); /* 안쪽 그림자 */
+    font-weight: bold;
+}
+
+

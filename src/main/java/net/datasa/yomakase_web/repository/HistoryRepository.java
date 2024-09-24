@@ -1,6 +1,5 @@
 package net.datasa.yomakase_web.repository;
 
-import net.datasa.yomakase_web.domain.compositeK.HistoryId;
 import net.datasa.yomakase_web.domain.entity.HistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,7 @@ import java.util.List;
  * 소비기록 관련 Repository
  */
 @Repository
-public interface HistoryRepository extends JpaRepository<HistoryEntity, HistoryId> {
+public interface HistoryRepository extends JpaRepository<HistoryEntity, Integer> {
 
     // 각 재료별로 소비와 버림의 횟수를 기간 내에서 집계하는 쿼리
     @Query("SELECT h.ingredientName, h.type, COUNT(h) " +

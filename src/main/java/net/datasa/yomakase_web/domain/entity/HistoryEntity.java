@@ -2,39 +2,38 @@ package net.datasa.yomakase_web.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import net.datasa.yomakase_web.domain.compositeK.HistoryId;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "history")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-@IdClass(HistoryId.class)
-public class HistoryEntity implements Serializable {
+public class HistoryEntity {
 
     @Id
-    @Column(name = "ingredient_name", nullable = false)
-    private String ingredientName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "history_id")
+    private Integer historyId; // 자동 증가하는 기본 키
 
-    @Id
+    @Column(name = "ingredient_name", nullable = false, length = 700)
+    private String ingredientName; // 재료 이름
+
     @Column(name = "member_num", nullable = false)
-    private int memberNum;
+    private Integer memberNum; // 회원 번호
 
-    @Id
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private LocalDate date; // 날짜
 
-    @Column(name = "type", nullable = false)
-    private String type; // 'c' 소비, 'b' 버림
+    @Column(name = "type", nullable = false, length = 10)
+    private String type; // 'c' -> 소비, 'b' -> 버림
 
-    // stock 테이블과의 복합 외래 키 설정
+    // 필요한 경우, Stock 엔티티와 관계 설정 (Optional)
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "ingredient_name", referencedColumnName = "ingredient_name", insertable = false, updatable = false),

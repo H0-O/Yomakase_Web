@@ -2,12 +2,12 @@
      xmlns:th="http://www.thymeleaf.org">
   <section class="ftco-section">
     <div class="container">
-      <!--<div class="row justify-content-center"></div>-->
+      <div class="row justify-content-center"></div>
       <div>
         <h4 id="dietCalTitle" style="display: block">식단 달력</h4>
         <h4 id="nutrientCalTitle" style="display: none">영양소 달력</h4>
       </div>
-      <div sec:authorize="hasRole('SUBSCRIBER')">
+      <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
         <button id="dietCalBtn">식단</button> <button id="nutrientCalBtn">영양소</button>
       </div>
       <!-- 여기서부터 달력 부분-->
@@ -187,16 +187,16 @@
   <div id="nutrient-modal" class="cal-modal-overlay" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
     <div class="cal-modal-window" >
       <div class="cal-content">
-          <table id="nutrient-modal-table">
-            <tr>
-              <th>식단 점수</th>
-              <td class="clickedDietDay">날짜</td>
-            </tr>
-            <tr>
-              <td colspan="2"></td>
-
-            </tr>
-          </table>
+        <table id="nutrient-modal-table">
+          <tr>
+            <th>식단 점수</th>
+            <td class="clickedDietDay">날짜</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td></td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -216,7 +216,7 @@
       let bName = document.getElementById('bName').value;
       let lName = document.getElementById('lName').value;
       let dName = document.getElementById('dName').value;
-      let clickedDietDay = document.getElementById('clickedDietDay').value;
+      let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0].value;
       //console.log(bName, lName, dName);
 
       if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
