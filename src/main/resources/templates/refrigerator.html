@@ -67,10 +67,12 @@
                 <!-- 레시피 모달 페이지 -->
                 <div id="RecipeModal" class="modal-overlay" style="display: none;">
                     <div class="modal-window">
-                            <!-- 추천메뉴 -->
-                            <h2><span id="food-name"></span></h2>
-                        <img onclick="closeModal('RecipeModal')" src="/img/closeIcon.png">                        <div class="title" style="align-content: center">
-                            <button class="btn" onclick="saveRecipe()" style="justify-content: flex-end;">레시피 저장</button>
+                        <!-- 추천메뉴 -->
+                        <h2><span id="food-name"></span></h2>
+                        <img onclick="closeModal('RecipeModal')" src="/img/closeIcon.png">
+                        <div class="title" style="align-content: center">
+                            <button class="btn" onclick="saveRecipe()" style="justify-content: flex-end;">레시피 저장
+                            </button>
                         </div>
                         <h3>레시피</h3>
                         <p id="recipe-details"></p> <!-- 레시피 내용 표시 -->
@@ -79,10 +81,13 @@
                         <p id="recipe-comment"></p> <!-- 레시피 설명 -->
 
                         <h3>관련 동영상</h3>
-                        <iframe id="recipe-video" width="560" height="315"
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="responsive-video-container">
+
+                            <iframe id="recipe-video" width="560" height="315"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
                     </div>
                 </div>
                 <!-- 로딩 모달 -->
@@ -102,6 +107,7 @@
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
+
         $(document).ready(function () {
             // 페이지 로드 시 서버에서 재료 데이터를 가져와 테이블에 표시
             fetchStockData();
@@ -117,7 +123,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         if (data.length > 0) {
                             let tableContent = '';
                             data.forEach(item => {
@@ -197,7 +202,6 @@
                 })
                     .then(response => response.text())  // .json() 대신 .text()로 변경
                     .then(data => {
-                        console.log(data);  // 응답 메시지 출력
                         alert(data);  // 서버에서 전달한 메시지를 그대로 출력
 
                         // 모달 닫기 및 데이터 갱신
@@ -245,17 +249,14 @@
 
             // 이미지 데이터 가져오기
             function fetchStockImages() {
-                console.log('Calling fetchStockImages');  // 함수 호출 시 로그
                 fetch('/rest/stockImg')
                     .then(response => {
-                        console.log('Fetch response received', response);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
                         return response.json();
                     })
                     .then(stockItems => {
-                        console.log('Received stock items:', stockItems); // 데이터 확인용 로그
                         const container = document.getElementById('ingredients-container');
                         container.innerHTML = ''; // 기존 이미지 제거
 
@@ -274,7 +275,6 @@
 
             // 냉장고에 이미지를 표시하는 함수
             function displayImages(stockItems, container) {
-                console.log('Displaying images', stockItems); // 이미지 표시 로그
                 const containerWidth = container.offsetWidth;
                 const containerHeight = container.offsetHeight;
                 const rows = 3, cols = 3;
@@ -311,10 +311,8 @@
             }
 
 
-
-
             // 레시피 추천 버튼 클릭 시 서버에 요청을 보내고 데이터를 받아 모달에 출력
-            $('#RecipeModalBtn').click(function() {
+            $('#RecipeModalBtn').click(function () {
                 const rows = document.querySelectorAll("#materialsTable tbody tr");
                 const ingredientNames = Array.from(rows).map(row => row.querySelector("td:first-child").textContent.trim());
 
@@ -322,7 +320,7 @@
                     .filter(([key, value]) => value === true)
                     .map(([key]) => key);
 
-                const requestData = { allergies, ingredients: ingredientNames };
+                const requestData = {allergies, ingredients: ingredientNames};
 
                 document.getElementById('loading-modal').style.display = 'flex'; // 로딩 모달 표시
 
@@ -344,10 +342,13 @@
                         alert('레시피를 가져오는 중 문제가 발생했습니다.');
                     });
             });
+
             function openRecipeModal(recipe, video) {
                 $('#food-name').text(recipe.food_name);
                 $('#recipe-details').text(recipe.recipe);
                 $('#recipe-comment').text(recipe.comment);
+                console.log('YouTube URL:', video.url);
+
                 $('#recipe-video').attr('src', video.url.replace("watch?v=", "embed/"));
                 toggleModalVisibility('RecipeModal', true);
             }
@@ -379,7 +380,6 @@
                 })
                     .then(response => response.text()) // 문자열 응답을 처리
                     .then(data => {
-                        console.log('Server response:', data);
                         alert(data); // 서버에서 전달한 메시지를 그대로 출력
 
                         // 모달 닫기 및 데이터 갱신
