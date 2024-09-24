@@ -120,26 +120,6 @@ public class StockService {
         return stockRepository.findAllIngredientNamesByMemberNumAndIsHavingTrue(memberNum);
     }
 
-    /**
-     * 특정 회원(memberNum)의 재고 데이터를 테이블에 출력
-     * isHaving 값이 0인 경우는 제외
-     */
-    public List<StockDTO> getStocksByMember(int memberNum) {
-        // DB에서 해당 회원(memberNum)의 재고 데이터를 가져옵니다.
-        List<StockEntity> stocks = stockRepository.findByMemberNum(memberNum);
-
-        // 가져온 StockEntity 중에서 isHaving 값이 1인 경우만 DTO로 변환하여 반환합니다.
-        return stocks.stream()
-                .filter(stock -> stock.isHaving())  // isHaving이 true(1)인 경우만 필터링
-                .map(stock -> StockDTO.builder()
-                        .ingredientName(stock.getIngredientName())
-                        .memberNum(stock.getMemberNum())
-                        .isHaving(stock.isHaving())
-                        .useByDate(stock.getUseByDate())
-                        .updateDate(stock.getUpdateDate())
-                        .build())
-                .collect(Collectors.toList());
-    }
 
     // 이미지 파일명 리스트
     private final List<String> imageFileNames = List.of(
