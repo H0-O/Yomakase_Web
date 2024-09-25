@@ -13,6 +13,14 @@
     <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script>
+        // // selected_day를 설정할 때 한글 및 특수문자 인코딩
+        // document.cookie = "selected_day=" + encodeURIComponent("Tue Sep 10 2024 00:00:00 GMT+0900 (한국 표준시)");
+        // // ISO 형식으로 날짜 저장 (예: 2024-09-10T00:00:00+09:00)
+        // document.cookie = "selected_day=" + new Date().toISOString();
+        // // 한글 및 불필요한 정보를 제거한 간단한 날짜 형식으로 쿠키 저장
+        // document.cookie = "selected_day=" + new Date().toUTCString();
+    </script>
 </head>
 <body id="page-top">
 <!-- Navigation-->
@@ -52,64 +60,64 @@
         </div>
     </section>
     <div sec:authorize="isAuthenticated()">
-    <hr class="m-0" />
-    <!-- 나의 냉장고 -->
-    <section class="resume-section" id="myRefrigerator">
-        <div class="resume-section-content">
-            <div th:insert="~{refrigerator :: refrigerator}">
+        <hr class="m-0" />
+        <!-- 나의 냉장고 -->
+        <section class="resume-section" id="myRefrigerator">
+            <div class="resume-section-content">
+                <div th:insert="~{refrigerator :: refrigerator}">
+                </div>
             </div>
-        </div>
-    </section>
-    <hr class="m-0" />
+        </section>
+        <hr class="m-0" />
 
-    <!-- 재료 입력 -->
-    <section class="resume-section" id="ingredientInput">
-        <div class="resume-section-content">
-            <div th:insert="~{ingredientInput :: ingredientInput}">
+        <!-- 재료 입력 -->
+        <section class="resume-section" id="ingredientInput">
+            <div class="resume-section-content">
+                <div th:insert="~{ingredientInput :: ingredientInput}">
+                </div>
             </div>
-        </div>
-    </section>
-    <hr class="m-0" />
-    <!-- 달력 -->
-    <section class="resume-section" id="calendar">
-        <div class="resume-section-content">
-            <div th:insert="~{calendar :: calendar}">
+        </section>
+        <hr class="m-0" />
+        <!-- 달력 -->
+        <section class="resume-section" id="calendar">
+            <div class="resume-section-content">
+                <div th:insert="~{calendar :: calendar}">
+                </div>
             </div>
-        </div>
-    </section>
-    <hr class="m-0" />
+        </section>
+        <hr class="m-0" />
 
-    <!-- 게시판 -->
-    <section class="resume-section" id="board">
-        <div class="resume-section-content">
-            <div th:insert="~{boardListView :: boardListView}">
+        <!-- 게시판 -->
+        <section class="resume-section" id="board">
+            <div class="resume-section-content">
+                <div th:insert="~{boardListView :: boardListView}">
+                </div>
             </div>
-        </div>
-    </section>
-    <hr class="m-0" />
+        </section>
+        <hr class="m-0" />
 
-    <!-- 마이 페이지 -->
-    <section class="resume-section" id="myPages">
-        <div class="resume-section-content">
-            <div th:replace="~{myPages :: myPages}">
+        <!-- 마이 페이지 -->
+        <section class="resume-section" id="myPages">
+            <div class="resume-section-content">
+                <div th:replace="~{myPages :: myPages}">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     </div>
     <hr class="m-0" />
-        <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6;">
-            <div style="margin-bottom: 10px;">
-                <a href="#" style="margin-right: 15px; color: #6c757d; text-decoration: none;">이용약관</a>
-                <a href="#" style="color: #6c757d; text-decoration: none;">개인정보취급방침</a>
-            </div>
-            <div style="margin-bottom: 10px; color: #6c757d;">
-                (주)요마카세 서울 강남구 영동대로 513 | T. 02-000-0000 | F. 031-000-0000
-                이용문의 : T. 02-000-0000
-            </div>
-            <div style="color: #adb5bd;">
-                Copyright よまかせ 2024. All Rights Reserved.
-            </div>
-        </footer>
+    <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6;">
+        <div style="margin-bottom: 10px;">
+            <a href="#" style="margin-right: 15px; color: #6c757d; text-decoration: none;">이용약관</a>
+            <a href="#" style="color: #6c757d; text-decoration: none;">개인정보취급방침</a>
+        </div>
+        <div style="margin-bottom: 10px; color: #6c757d;">
+            (주)요마카세 서울 강남구 영동대로 513 | T. 02-000-0000 | F. 031-000-0000
+            이용문의 : T. 02-000-0000
+        </div>
+        <div style="color: #adb5bd;">
+            Copyright よまかせ 2024. All Rights Reserved.
+        </div>
+    </footer>
 </div>
 <!-- Jquery JS-->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

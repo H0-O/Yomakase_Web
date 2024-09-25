@@ -1,4 +1,5 @@
 <div th:fragment="subsFragment">
+    <link rel="stylesheet" th:href="@{/css/subsCSS.css}">
     <div class="subscription">
         <p>구독 시 제공할 서비스</p>
         <ul>
@@ -53,6 +54,7 @@
                     })
                     .then(data => {
                         console.log('Success:', data);
+                        alert('결제창으로 넘어갑니다...')
                         alert('구독 완료');
                         // 구독 성공 후 페이지 새로고침
                         window.location.reload(); // 페이지를 새로고침하여 구독 상태 반영

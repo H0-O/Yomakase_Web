@@ -1,0 +1,164 @@
+/* 구독 페이지 스타일 */
+.subscription {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subscription p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.subscription strong {
+    color: #ff4500;
+}
+
+.subscription ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.subscription ul li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* 체크 아이콘 추가 */
+.subscription ul li::before {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-size: 12px;
+}
+
+/* 동의 체크박스 스타일 */
+.subscription div {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.subscription input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.subscription label {
+    font-size: 14px;
+}
+
+/* 구독 버튼 스타일 */
+#mypagesSubscribeButton {
+    width: 100%;
+    background-color: #81c405;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#mypagesSubscribeButton:hover {
+    background-color: #ffb524;
+}
+
+#mypagesSubscribeButton:active {
+    transform: translateY(2px);
+    opacity: 0.9;
+    box-shadow: inset 1px 1px 2px #babebc, inset -1px -1px 2px #fff;
+}
+
+/* 경고 문구 색상 */
+.subscription p strong {
+    color: #e74c3c;
+}
+
+/* 구독 취소 페이지 스타일 */
+.mypages-subscription-info, .mypages-cancel-info {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mypages-subscription-info p, .mypages-cancel-info p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.mypages-subscription-info ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.mypages-subscription-info ul li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* 체크 아이콘 추가 */
+.mypages-subscription-info ul li::before {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-size: 12px;
+}
+
+/* 구독 취소 버튼 스타일 */
+.mypages-cancel-info {
+    text-align: center;
+}
+
+.mypages-cancel-info button {
+    width: 120px;
+    background-color: #81c405;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    box-shadow: -3px -3px 7px #fff, 2px 2px 4px #babebc;
+    outline: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: inline-block;
+}
+
+#mypages-cancelNoButton:hover, #mypages-cancelYesButton:hover {
+    background-color: #ffb524;
+}
+
+/* 버튼 클릭 상태 */
+#mypages-cancelNoButton:active, #mypages-cancelYesButton:active {
+    transform: translateY(2px);
+    opacity: 0.9;
+    box-shadow: inset 1px 1px 2px #babebc, inset -1px -1px 2px #fff;
+}
+

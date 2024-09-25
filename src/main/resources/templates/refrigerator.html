@@ -127,6 +127,7 @@
                             let tableContent = '';
                             data.forEach(item => {
                                 const dDayText = calculateDday(item.useByDate); // D-Day 형식 계산
+
                                 tableContent += `
                 <tr>
                     <td>${item.ingredientName}</td>
@@ -161,6 +162,17 @@
                     return 'D-Day'; // 오늘이 소비기한일 경우
                 } else {
                     return `D+${Math.abs(daysLeft)}`; // 소비기한이 지난 경우 D+형식
+                }
+
+                // D-Day 형식에 Css 적용
+                function getDdayClass(daysLeft) {
+                    if (daysLeft === 0) {
+                        return "d-day-last";
+                    } else if (daysLeft > 0 && daysLeft <= 1) {
+                        return "d-day-warning";
+                    } else {
+                        return "d-day";
+                    }
                 }
             }
 
