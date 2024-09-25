@@ -181,3 +181,8 @@ INSERT INTO `stock` (`ingredient_name`, `member_num`, `is_having`, `use_by_date`
                                                                                                      ('가지', 8, 0, '2024-09-19', CURRENT_TIMESTAMP),    -- 재고 없음
                                                                                                      ('호박', 8, 1, '2024-10-15', CURRENT_TIMESTAMP),    -- 재고 있음
                                                                                                      ('고구마', 8, 0, '2024-09-28', CURRENT_TIMESTAMP);  -- 재고 없음
+
+INSERT INTO `saved_recipe` (`member_num`, `food_name`, `recipe_url`, `saved_recipe`) VALUES
+                                                                                         (8, '김치찌개', 'https://www.youtube.com/watch?v=qWbHSOplcvY', '재료: 김치, 돼지고기, 두부, 대파\n1. 김치를 잘게 썰어 냄비에 넣고 볶아주세요.\n2. 돼지고기를 넣고 함께 볶다가 물을 넣고 끓여줍니다.\n3. 두부와 대파를 넣고 한소끔 더 끓여 마무리합니다.'),
+                                                                                         (8, '된장찌개', 'https://www.youtube.com/watch?v=ffuakdFmuh4', '재료: 된장, 감자, 두부, 애호박, 표고버섯\n1. 냄비에 된장을 풀고 물을 넣어 끓입니다.\n2. 감자, 두부, 애호박, 표고버섯을 넣고 익을 때까지 끓입니다.\n3. 필요하면 소금으로 간을 맞추고 마무리합니다.'),
+                                                                                         (8, '비빔밥', 'https://www.youtube.com/watch?v=Jq2SwKMw8vI', '재료: 밥, 고사리, 시금치, 당근, 계란, 고추장\n1. 밥 위에 다양한 나물과 볶은 야채를 올립니다.\n2. 계란 후라이를 올리고 고추장을 넣어 비벼 드세요.');

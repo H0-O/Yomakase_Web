@@ -70,6 +70,7 @@
     box-sizing: content-box;
     max-width: 100%;
     word-wrap: break-word;
+    font-size: 18px;
 }
 
 .ingredient:hover .ingredient-text {
@@ -110,12 +111,13 @@
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: auto;
-    width: 300px;
+    width: 450px;
     border: 1px #81c405;
     padding: 8px;
     text-align: center;
     letter-spacing: 1px;
     word-wrap: break-word;
+    font-size: 20px;
 }
 
 .table-container thead, .table-container tbody {
@@ -270,7 +272,6 @@
     font-weight: bold;
     font-size: 20px;
     text-align: center;
-    padding-left: 12px;
 }
 
 #date-container input[type="date"] {
@@ -298,11 +299,6 @@
 
 /* 레시피 추천 모달 */
 #RecipeModal .modal-window {
-    /*width: 1000px;*/
-    /*height: 700px; !* 모달 창 높이 확장 *!*/
-    /*max-height: 90vh; !* 화면의 최대 90% 높이까지 확장 가능 *!*/
-    /*overflow-y: auto; !* 세로 스크롤 가능 *!*/
-
     position: relative;
     width: 800px;
     height: 700px;

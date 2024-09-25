@@ -15,7 +15,9 @@
         </div>
     </div>
     <!-- 처음에 버튼을 숨기기 위해 display: none을 적용 -->
-    <button id="mypagesSubscribeButton" onclick="subscribe()" style="display: none;">결제</button>
+    <div id="subBtn-container">
+        <button id="mypagesSubscribeButton" onclick="subscribe()" style="display: none;">결제</button>
+    </div>
     <script>
         // 체크박스 상태 변경 시 버튼 활성화/비활성화 처리
         document.getElementById('mypagesAgreeTerms').addEventListener('change', function() {
@@ -24,7 +26,7 @@
             const subscribeButton = document.getElementById('mypagesSubscribeButton');
 
             if (isChecked) {
-                subscribeButton.style.display = 'block'; // 체크박스가 선택되면 버튼을 표시
+                subscribeButton.style.display = 'flex'; // 체크박스가 선택되면 버튼을 표시
             } else {
                 subscribeButton.style.display = 'none'; // 체크박스가 선택되지 않으면 버튼을 숨김
             }

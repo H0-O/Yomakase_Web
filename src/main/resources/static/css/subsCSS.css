@@ -61,7 +61,6 @@
 
 /* 구독 버튼 스타일 */
 #mypagesSubscribeButton {
-    width: 100%;
     background-color: #81c405;
     color: white;
     border: none;
@@ -69,8 +68,17 @@
     padding: 12px;
     font-size: 16px;
     margin-top: 20px;
+    margin-left: 45%;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.subBtn-container {
+    display: flex; /* Flexbox 활성화 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    height: 100vh;
 }
 
 #mypagesSubscribeButton:hover {

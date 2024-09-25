@@ -5070,4 +5070,12 @@
     display: block;
   }
   /* My Pages CSS End */
+
+  html, button, .btn {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: 1px !important;
+  }
 }
