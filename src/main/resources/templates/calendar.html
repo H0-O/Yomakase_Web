@@ -3,12 +3,12 @@
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center"></div>
-      <div>
-        <h4 id="dietCalTitle" style="display: block">식단 달력</h4>
-        <h4 id="nutrientCalTitle" style="display: none">영양소 달력</h4>
+      <div class="cal-title">
+        <h3 id="dietCalTitle" style="display: block">식단 달력</h3>
+        <h3 id="nutrientCalTitle" style="display: none">영양소 달력</h3>
       </div>
-      <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
-        <button id="dietCalBtn">식단</button> <button id="nutrientCalBtn">영양소</button>
+      <div class="cal-title-btn" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+        <button id="dietCalBtn">식단</button><button id="nutrientCalBtn">영양소</button>
       </div>
       <!-- 여기서부터 달력 부분-->
       <div class="row">
@@ -60,13 +60,16 @@
                   <div id="diet-list-msg" style="display: block;">
                     <table>
                       <tr>
-                        <td>해당 날짜에 입력된 식단이 없습니다.</td>
+                        <td>해당 날짜에 입력된</td>
+                      </tr>
+                      <tr>
+                        <td>식단이 없습니다.</td>
                       </tr>
                       <tr>
                         <td>식단을 입력하고 싶다면</td>
                       </tr>
                       <tr>
-                        <td>날짜를 더블클릭 해주세요</td>
+                        <td>날짜를 더블클릭 해주세요.</td>
                       </tr>
                     </table>
                   </div>
@@ -160,7 +163,7 @@
   <!--식단 입력 모달 부분-->
   <div id="diet-modal" class="cal-modal-overlay">
     <div class="cal-modal-window">
-      <div class="cal-title">
+      <div class="cal-modal-title">
         <h4>식단 입력</h4>
       </div>
       <div class="close-btn"><img src="/img/x_circle_icon.png" style="height: 35px"></div>

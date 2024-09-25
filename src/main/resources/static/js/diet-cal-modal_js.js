@@ -23,7 +23,7 @@ calCloseBtn.addEventListener("click", e => {
 // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
 dietModal.addEventListener("click", e => {
     const evTarget = e.target;
-    if (evTarget.classList.contains("diet-modal-overlay")) {
+    if (evTarget.classList.contains("cal-modal-overlay")) {
         calBackgroundChange();
         modalOff();
     }

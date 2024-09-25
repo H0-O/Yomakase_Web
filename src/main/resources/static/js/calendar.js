@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function(){
     //달력 날짜 계산하고 그리는 함수
     Calendar.prototype.drawDays = function () {
         var startDay = new Date(year, month, 1).getDay(),
-            nDays = new Date(year, month + 1, 0).getDate(),
+            nDays = new Date(year, month + 1, 0).getDate(), //달의 마지막날
             n = startDay;
 
         for(var k = 0; k < 42; k++) {
@@ -174,9 +174,10 @@ document.addEventListener('DOMContentLoaded', function(){
             n++;
         }
 
+
         for(var j = 0; j < 42; j++) {
             if(days[j].innerHTML === ""){
-                days[j].id = "disabled";
+                days[j].id = "disabledDay";
             } else if(j === day + startDay - 1){
                 if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
                     this.drawHeader(day);
