@@ -32,4 +32,13 @@ public class SavedRecipeEntity {
     @Lob
     @Column(name = "saved_recipe", nullable = false, columnDefinition = "mediumtext")
     private String savedRecipe;
+
+    @Override
+    public String toString() {
+        return "SavedRecipeEntity{" +
+                "id=" + getMember().getId() +
+                ", foodName='" + foodName + '\'' +
+                // 중요한 필드만 포함하고, MemberEntity 등 참조 엔티티는 제외
+                '}';
+    }
 }

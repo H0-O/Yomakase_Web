@@ -55,4 +55,13 @@ public class MemberEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SavedRecipeEntity> savedRecipes = new ArrayList<>();  // 연관된 레시피들
+
+    @Override
+    public String toString() {
+        return "MemberEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                // 중요한 필드만 포함하고, SavedRecipeEntity 등 참조 엔티티는 제외
+                '}';
+    }
 }
