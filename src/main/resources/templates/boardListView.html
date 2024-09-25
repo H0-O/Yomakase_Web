@@ -56,38 +56,41 @@
 		}
 
 		.boardNavbar ul {
+			background-color: #81c405;
 			list-style: none;
 			padding: 0;
 			margin: 0;
 			display: flex;
 			justify-content: center;
-			gap: 50px;
+			width: 700px;
+			height: 50px;
 		}
 
 		.boardNavbar ul li {
-			font-family: 'Arial', sans-serif; /* 폰트를 변경 */
-			font-size: 1.1rem; /* 글자 크기 */
-
+			font-size: 17px;
+			display: flex; /* Flexbox 사용 */
+			align-items: center; /* 세로 가운데 정렬 */
+			justify-content: center; /* 가로 가운데 정렬 (필요 시) */
+			width: 20%;
+			height: 100%; /* 부모의 높이에 맞추기 */
 		}
 
 		.boardNavbar ul li a {
 			text-decoration: none; /* 밑줄 제거 */
-			color: #333; /* 기본 글자색 */
-			font-weight: bold; /* 글자 두껍게 */
+			color: white; /* 기본 글자색 */
 			padding: 5px 10px; /* 링크 클릭 영역을 넓히기 위한 패딩 */
-			border-radius: 5px; /* 테두리 둥글게 */
-			transition: background-color 0.3s, color 0.3s; /* 부드러운 색상 전환 */
+			border-radius: 0px;
+			display: flex; /* Flexbox 사용 */
+			justify-content: center;
+			align-items: center; /* 세로 가운데 정렬 */
+			width: 100%;
+			height: 100%;
+			font-weight: normal;
 		}
 
 		.boardNavbar ul li a:hover {
-			color: #81c405; /* 호버 시 글자색 변경 */
+			background-color: #6aa003;
 			cursor: pointer;
-		}
-
-		/* 선택된 카테고리 링크에 대한 스타일 */
-		.boardNavbar ul li a.active {
-			background-color: #007BFF; /* 선택된 카테고리 배경색 */
-			color: white; /* 선택된 카테고리 글자색 */
 		}
 
 		#boardWriteBt{
@@ -125,8 +128,7 @@
 		}
 
 		.boardTable th {
-			background-color: #81c405;
-			color: white;
+			border-bottom: 1px solid #81c405;
 			font-weight: bold;
 		}
 
@@ -188,23 +190,33 @@
 		#pagingForm input[type="submit"]:hover {
 			background-color: #7bb12a;
 		}
+
 		.boardNumCol{
 			width: 10%;
 		}
+
 		.boardCatCol{
 			width: 15%;
 		}
+
 		.writerNameCol{
 			width: 15%;
 		}
+
 		.writerDateCol{
 			width: 15%;
 		}
+
+		.boardTitCol{
+			font-weight: bold;
+		}
+
 		#paginationControls{
 			display: flex;
 			justify-content: center;
 			margin-top: 30px;
 		}
+
 		.paginationButton{
 			background-color: white;
 			color: #81c405;
@@ -225,12 +237,13 @@
 			font-weight: bold; /* 글자 두껍게 */
 			padding: 5px 10px; /* 링크 클릭 영역을 넓히기 위한 패딩 */
 			border-radius: 5px; /* 테두리 둥글게 */
-			transition: background-color 0.3s, color 0.3s; /* 부드러운 색상 전환 */
+			transition: background-color 0s, color 0s; /* 부드러운 색상 전환 */
 		}
 
 		.active-category{
-			background-color: #FFB524;
+			background-color: #FFB524 !important;
 			color: white !important;
+			font-weight: bold !important;
 		}
 
 		#userIconBox{
@@ -315,7 +328,7 @@
 							boardList += `<tr>
 									<td class="boardNumCol">${board.boardNum}</td>
 									<td class="boardCatCol">${board.category}</td>
-									<td><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
+									<td class="boardTitCol"><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
 									<td class="writerNameCol">${board.name}</td>
 									<td class="writerDateCol">${formattedDate}</td>
 								</tr>`;
