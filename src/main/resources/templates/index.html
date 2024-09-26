@@ -140,7 +140,7 @@
 <script src="js/scripts.js"></script>
 <!-- JavaScript는 모든 HTML 요소가 렌더링된 후에 실행되도록 body 끝에 위치 -->
 <!-- 서버에서 전달된 userRole 값을 담고 있는 숨겨진 input -->
-<input type="hidden" id="userRole" name="userRole" th:value="${member.userRole}">
+<input type="hidden" id="userRole" name="userRole" th:value="${member?.userRole ?: 'ROLE_GUEST'}">
 <script>
     let clickedHref = ""; // 클릭한 링크의 href 값을 저장할 변수
 
