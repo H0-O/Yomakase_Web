@@ -18,9 +18,10 @@ public class SubscriptionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "subscription_id")
     private int subscriptionId;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_num", referencedColumnName = "member_num")
     private MemberEntity member;  // 회원 정보
 

@@ -54,6 +54,9 @@ public class MemberEntity {
     }
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubscriptionEntity> subscriptions;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SavedRecipeEntity> savedRecipes = new ArrayList<>();  // 연관된 레시피들
 
     @Override

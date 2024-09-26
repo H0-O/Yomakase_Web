@@ -19,15 +19,76 @@
             <label for="mypagesAgreeTerms">결제에 동의함</label>
         </div>
     </div>
+
     <!-- 처음에 버튼을 숨기기 위해 display: none을 적용 -->
     <div id="subBtn-container">
         <button id="mypagesSubscribeButton" onclick="subscribe()" style="display: none;">결제</button>
     </div>
+
+    <!-- 가짜 결제 모달 창 -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeModal()">X</button>
+            <h2>가상 결제 화면</h2>
+            <p>구독 서비스 결제를 진행해 주세요.</p>
+            <p>결제 금액: 490원</p>
+            <button id="confirmPaymentButton">결제하기</button>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 자식 요소를 수직 가운데 정렬 */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #confirmPaymentButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #FFB524;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: center; /* 버튼을 가로 가운데 정렬 */
+        }
+    </style>
+
     <script>
         // 체크박스 상태 변경 시 버튼 활성화/비활성화 처리
-        document.getElementById('mypagesAgreeTerms').addEventListener('change', function() {
+        document.getElementById('mypagesAgreeTerms').addEventListener('change', function () {
             const isChecked = this.checked;
-            console.log('Checkbox changed:', isChecked);
             const subscribeButton = document.getElementById('mypagesSubscribeButton');
 
             if (isChecked) {
@@ -37,6 +98,16 @@
             }
         });
 
+        // 모달 열기 함수
+        function openModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        // 모달 닫기 함수
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
         // 구독 버튼 클릭 시 구독 처리
         function subscribe() {
             console.log('Subscribe button clicked');
@@ -44,36 +115,39 @@
 
             if (isAgreed) {
                 console.log('Agreement checked');
-
-                // fetch API를 사용한 POST 요청
-                fetch('/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}), // 서버로 전송할 데이터 (필요에 따라 수정)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Success:', data);
-                        alert('결제창으로 넘어갑니다>>>')
-                        alert('구독 완료');
-                        // 구독 성공 후 페이지 새로고침
-                        window.location.reload(); // 페이지를 새로고침하여 구독 상태 반영
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                        alert('구독에 실패했습니다。');
-                    });
+                // 결제 모달 창 열기
+                openModal();
             } else {
-                alert('결제 동의가 필요합니다。');
+                alert('결제 동의가 필요합니다.');
             }
         }
+
+        // 결제 모달 창의 결제 버튼 클릭 시 처리
+        document.getElementById('confirmPaymentButton').addEventListener('click', function () {
+            closeModal(); // 모달 닫기
+            // 실제 구독 요청 처리
+            fetch('/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('구독 완료');
+                    window.location.reload(); // 페이지를 새로고침하여 구독 상태 반영
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('구독에 실패했습니다.');
+                });
+        });
     </script>
 </div>
-

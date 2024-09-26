@@ -1,19 +1,19 @@
 package net.datasa.yomakase_web.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.dto.MemberDTO;
 import net.datasa.yomakase_web.domain.entity.MemberEntity;
 import net.datasa.yomakase_web.service.MemberService;
+import net.datasa.yomakase_web.service.SubscriptionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,13 +23,11 @@ import java.util.Map;
 
 @Slf4j
 @Controller
+@AllArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final SubscriptionService subscriptionService;
 
     // 회원가입 폼을 보여주는 메소드
     @GetMapping("signupForm")
@@ -79,6 +77,7 @@ public class MemberController {
 
             // 구독 상태를 변경하기 위한 서비스 호출 (DB에서 해당 사용자의 구독 상태 업데이트)
             memberService.subscribeUser(userEmail);
+            subscriptionService.subscribeUser(userEmail);
             log.info("사용자의 구독 상태 변경 완료 - 사용자 이메일: {}", userEmail); // 로그 추가
 
             // 사용자의 현재 권한을 가져옴
@@ -118,7 +117,6 @@ public class MemberController {
         }
     }
 
-
     @PostMapping("/unsubscribe")
     public ResponseEntity<Map<String, String>> unsubscribe(Authentication authentication) {
         try {
@@ -128,6 +126,7 @@ public class MemberController {
 
             // 구독 취소 상태로 변경하는 서비스 호출 (DB에서 구독 상태 업데이트)
             memberService.unsubscribeUser(userEmail);
+            subscriptionService.unsubscribeUser(userEmail);
             log.info("구독 취소 상태 변경 완료 - 사용자 이메일: {}", userEmail); // 로그 추가
 
             // 사용자의 현재 권한을 가져옴
