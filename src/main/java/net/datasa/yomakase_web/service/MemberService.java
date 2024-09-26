@@ -137,6 +137,7 @@ public class MemberService {
         // MemberEntity를 memberDTO로 변환
         MemberDTO memberDTO = MemberDTO.builder()
                 .memberNum(memberEntity.getMemberNum())
+                .userRole(memberEntity.getUserRole())
                 .email(memberEntity.getId())
                 .nickname(memberEntity.getName())
                 .birthDate(memberEntity.getBirthDate())
