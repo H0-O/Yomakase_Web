@@ -3,7 +3,7 @@
     justify-content: center;  /* 수평 중앙 정렬 */
     align-items: center;      /* 수직 중앙 정렬 */
     height: 100vh;            /* 부모 요소의 높이를 전체 화면으로 설정 */
-    transform: translate(75px, -170px);  /* 미세조정 */
+    transform: translate(85px, -170px);  /* 미세조정 */
 }
 
 .refrigerator-wrapper .refrigerator-photo {
@@ -144,7 +144,7 @@
     color: red;
 }
 
-.d-day-last {
+.d-day {
     font-weight: bold;
     color: blue;
 }
@@ -294,7 +294,6 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    margin: auto;
 }
 
 /* 레시피 추천 모달 */
