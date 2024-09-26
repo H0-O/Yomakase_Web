@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @AllArgsConstructor // 모든 필드를 포함하는 생성자를 자동 생성함
 @NoArgsConstructor // 파라미터가 없는 기본 생성자를 자동 생성함
 public class SubscriptionDTO {
-    private int memberNum;
+    private Integer subscriptionId;
+    private Integer memberNum;
     private LocalDate startDate;
     private LocalDate endDate;
 }
