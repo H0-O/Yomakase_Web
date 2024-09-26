@@ -5069,5 +5069,8 @@
   #defaultContent {
     display: block;
   }
+  .nav-link.js-scroll-trigger.active{
+    background-color: #FFB524 !important;
+  }
   /* My Pages CSS End */
 }
