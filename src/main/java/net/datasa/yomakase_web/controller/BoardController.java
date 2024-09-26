@@ -84,7 +84,7 @@ public class BoardController {
 
 		boardService.save(dto, uploadPath, upload);	// 작성글, 저장경로, 업로드파일에 대한 정보
 		
-		return "redirect:/";
+		return "redirect:/#board";
 	}
 
 	// 선택한 게시글 조회
@@ -108,14 +108,13 @@ public class BoardController {
 			, @AuthenticationPrincipal AuthenticatedUser user) {
 
 		try {
-			log.debug("1");
 			boardService.delete(boardNum, user.getMemberNum(), uploadPath, user.getRoleName());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return "redirect:/";
+		return "redirect:/#board";
 	}
 
 	// 게시글 수정 폼으로 이동
@@ -137,7 +136,7 @@ public class BoardController {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/";
+			return "redirect:/#board";
 		}
 	}
 
@@ -156,7 +155,7 @@ public class BoardController {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/";
+			return "redirect:/#board";
 		}
 	}
 
@@ -222,7 +221,5 @@ public class BoardController {
 		}
 		return "redirect:read?boardNum=" + replyDTO.getBoardNum();
 	}
-
-
 
 }
