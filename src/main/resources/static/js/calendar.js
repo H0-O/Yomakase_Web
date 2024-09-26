@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function(){
         dietCalBtn =  '<button id="dietCalBtn">식단</button>';
         nutrientCalBtn =  '<button id="nutrientCalBtn">식단</button>';
     } else {
+        dietCalBtn.style.backgroundColor = '#198754';
         dietCalBtn.addEventListener('click', function()  {
             if (nutrientCalTitle.style.display === 'block' || dietCalTitle.style.display !== 'block') {
                 dietCalTitle.style.display = 'block';
@@ -177,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
         for(var j = 0; j < 42; j++) {
             if(days[j].innerHTML === ""){
-                days[j].id = "disabledDay";
+                days[j].className = "disabledDay";
             } else if(j === day + startDay - 1){
                 if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
                     this.drawHeader(day);
@@ -233,7 +234,10 @@ document.addEventListener('DOMContentLoaded', function(){
                 }); //각 날짜(td) mouseover addEventListener end
             } //else문 end (일반 사용자 영양소 모달 null 처리)
         }
+
+
     };  //drawDays 함수 end
+
 
 
     Calendar.prototype.clickDay = function(o) {

@@ -10,7 +10,9 @@ import net.datasa.yomakase_web.repository.MemberRepository;
 import net.datasa.yomakase_web.repository.SavedRecipeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,4 +60,16 @@ public class SavedRecipeService {
         savedRecipeRepository.save(savedRecipeEntity);
     }
 
+    // 레시피 불러오기
+    public List<SavedRecipeDTO> getSavedRecipes() {
+        return savedRecipeRepository.findAll().stream()
+                .map(recipe -> SavedRecipeDTO.builder()
+                        .indexNum(recipe.getIndexNum())
+                        .memberNum(recipe.getMember().getMemberNum())
+                        .foodName(recipe.getFoodName())
+                        .recipeUrl(recipe.getRecipeUrl())
+                        .savedRecipe(recipe.getSavedRecipe())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
