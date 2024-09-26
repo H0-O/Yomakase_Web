@@ -5073,4 +5073,14 @@
     background-color: #FFB524 !important;
   }
   /* My Pages CSS End */
+
+  html, button, .btn, div {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: normal;
+  }
+  button, .btn {
+    letter-spacing: 1px !important;
+  }
 }
