@@ -49,6 +49,13 @@ window.addEventListener('DOMContentLoaded', event => {
     // 기본으로 첫 번째 탭을 엽니다.
     document.addEventListener('DOMContentLoaded', function() {
         openTab("recipe");
+
     });
 
 });
+
+$('.nav-link.js-scroll-trigger').click(function(){
+    // alert("1");
+    $('.navbar-nav a').removeClass('active');
+    $(this).addClass('active');
+})

@@ -27,6 +27,7 @@ public class IndexController {
 
     @GetMapping({"", "/"})
     public String index(@AuthenticationPrincipal UserDetails user, Model model) {
+
         if (user != null) {
             String username = user.getUsername();
             if (StringUtils.hasLength(username)) {

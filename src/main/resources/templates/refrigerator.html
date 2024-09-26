@@ -127,10 +127,12 @@
                             let tableContent = '';
                             data.forEach(item => {
                                 const dDayText = calculateDday(item.useByDate); // D-Day 형식 계산
+                                const dDayClass = getDdayClass(item.useByDate); // D-Day에 따른 클래스 설정
+
                                 tableContent += `
                 <tr>
                     <td>${item.ingredientName}</td>
-                    <td>${dDayText}</td> <!-- D-Day 형식으로 표시 -->
+                    <td class="${dDayClass}" style="font-weight: bold">${dDayText}</td> <!-- D-Day 형식으로 표시 -->
                     <td><button class="refriBtn" data-ingredient-name="${item.ingredientName}">수정</button></td>
                 </tr>`;
                             });
@@ -161,6 +163,24 @@
                     return 'D-Day'; // 오늘이 소비기한일 경우
                 } else {
                     return `D+${Math.abs(daysLeft)}`; // 소비기한이 지난 경우 D+형식
+                }
+            }
+
+            // D-Day 클래스 결정 함수
+            function getDdayClass(useByDate) {
+                const today = new Date().setHours(0, 0, 0, 0); // 오늘 날짜 초기화
+                const targetDate = new Date(useByDate).setHours(0, 0, 0, 0); // 소비기한 날짜 초기화
+                const timeDifference = targetDate - today; // 시간 차이 계산
+                const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // 일수 계산
+
+                if (daysLeft === 0) {
+                    return 'd-day'; // D-Day인 경우
+                } else if (daysLeft === 1) {
+                    return 'd-day-warning'; // D-1인 경우
+                } else if (daysLeft < 0) {
+                    return 'd-day-over'; // D+로 소비기한이 지났을 경우
+                } else {
+                    return ''; // 기본값으로는 아무 클래스도 적용하지 않음
                 }
             }
 
@@ -207,6 +227,7 @@
                         // 모달 닫기 및 데이터 갱신
                         toggleModalVisibility('dateModal', false);
                         fetchStockData();  // 테이블 갱신
+                        fetchStockImages();
                     })
                     .catch(error => {
                         console.error('Error:', error);

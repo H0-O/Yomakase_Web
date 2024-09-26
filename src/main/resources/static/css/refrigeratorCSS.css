@@ -1,3 +1,11 @@
+#ingredients-container p {
+    display: flex;
+    justify-content: center;  /* 수평 중앙 정렬 */
+    align-items: center;      /* 수직 중앙 정렬 */
+    height: 100vh;            /* 부모 요소의 높이를 전체 화면으로 설정 */
+    transform: translate(85px, -170px);  /* 미세조정 */
+}
+
 .refrigerator-wrapper .refrigerator-photo {
     position: relative;
 }
@@ -62,6 +70,7 @@
     box-sizing: content-box;
     max-width: 100%;
     word-wrap: break-word;
+    font-size: 18px;
 }
 
 .ingredient:hover .ingredient-text {
@@ -102,12 +111,13 @@
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: auto;
-    width: 300px;
+    width: 450px;
     border: 1px #81c405;
     padding: 8px;
     text-align: center;
     letter-spacing: 1px;
     word-wrap: break-word;
+    font-size: 20px;
 }
 
 .table-container thead, .table-container tbody {
@@ -134,7 +144,7 @@
     color: red;
 }
 
-.d-day-last {
+.d-day {
     font-weight: bold;
     color: blue;
 }
@@ -169,16 +179,16 @@
     background-color: #ffb524;
 }
 
-.table-container tbody::-webkit-scrollbar {
+.table-container tbody::-webkit-scrollbar, #RecipeModal .modal-window::-webkit-scrollbar {
     width: 8px;
 }
 
-.table-container tbody::-webkit-scrollbar-thumb {
+.table-container tbody::-webkit-scrollbar-thumb, #RecipeModal .modal-window::-webkit-scrollbar-thumb {
     background: #ffb524;
     border-radius: 10px;
 }
 
-.table-container tbody::-webkit-scrollbar-track {
+.table-container tbody::-webkit-scrollbar-track, #RecipeModal .modal-window::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
@@ -201,7 +211,7 @@
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.modal-overlay .modal-window {
+.modal-window {
     z-index: 1001;
     background: ivory;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -218,7 +228,7 @@
 
 #delModal .modal-window {
     width: 260px;
-    height: 140px;
+    height: 200px;
     text-align: center;
     justify-content: center;
     flex-direction: row;
@@ -230,7 +240,7 @@
     height: 150px;
 }
 
-.close-area, #delModal .close-area, #dateModal .close-area {
+.close-area {
     display: inline;
     float: right;
     padding-right: 10px;
@@ -243,8 +253,8 @@
     font-weight: bold;
     font-size: 20px;
     text-align: center;
-    padding-top: 8px;
-    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 
 #delModal .button-container {
@@ -262,7 +272,6 @@
     font-weight: bold;
     font-size: 20px;
     text-align: center;
-    padding-left: 12px;
 }
 
 #date-container input[type="date"] {
@@ -285,18 +294,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    margin: auto;
-}
-
-#RecipeModal .modal-window {
-    width: 1000px;
-    height: 700px; /* 모달 창 높이 확장 */
-    max-height: 90vh; /* 화면의 최대 90% 높이까지 확장 가능 */
-    overflow-y: auto; /* 세로 스크롤 가능 */
 }
 
 /* 레시피 추천 모달 */
-.modal-window {
+#RecipeModal .modal-window {
     position: relative;
     width: 800px;
     height: 700px;
@@ -344,7 +345,7 @@
 }
 
 /* <p> 태그 스타일 */
-.modal-window p {
+#RecipeModal .modal-window p {
     color: #333; /* 텍스트 색상: 어두운 회색 */
     font-size: 20px; /* 텍스트 크기 */
     line-height: 1.6; /* 줄 간격 */
