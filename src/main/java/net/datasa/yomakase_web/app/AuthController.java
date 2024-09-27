@@ -54,9 +54,17 @@ public class AuthController {
     }
 
     @GetMapping("/allergy")
-    public ResponseEntity<MemberDTO> getMyAllergy(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Map<String, Boolean>> getMyAllergy(@RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);  // 'Bearer ' 이후의 실제 JWT 부분만 추출
+        } else {
+            log.warn("Invalid token format: {}", token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
         String userEmail = jwtTokenProvider.getUsernameFromToken(token);
-        MemberDTO member = memberInfoService.getAllergyByEmail(userEmail);
+        Map<String, Boolean> member = memberInfoService.getAllergyByEmail(userEmail);
+
+        log.debug(member.toString());
         return ResponseEntity.ok(member);
     }
 
