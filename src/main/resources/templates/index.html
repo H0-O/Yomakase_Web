@@ -19,6 +19,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+    <script>
+        // selected_day를 설정할 때 한글 및 특수문자 인코딩
+        document.cookie = "selected_day=" + encodeURIComponent("Tue Sep 10 2024 00:00:00 GMT+0900 (한국 표준시)");
+        // ISO 형식으로 날짜 저장 (예: 2024-09-10T00:00:00+09:00)
+        document.cookie = "selected_day=" + new Date().toISOString();
+        // 한글 및 불필요한 정보를 제거한 간단한 날짜 형식으로 쿠키 저장
+        document.cookie = "selected_day=" + new Date().toUTCString();
+    </script>
 </head>
 <body id="page-top">
 <!-- Navigation-->
