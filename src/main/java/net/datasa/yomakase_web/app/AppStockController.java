@@ -26,13 +26,9 @@ public class AppStockController {
 
     @PostMapping("/save")
     public ResponseEntity<String> saveStockForApp(
-            @RequestBody Map<String, String> ingredients, // Map<String, String>으로 변경
+            @RequestBody Map<String, String> ingredients,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            // 로그로 토큰과 데이터 출력
-            log.info("Received token: {}", token);
-            log.info("Received ingredients: {}", ingredients); // 수정된 데이터 타입
-
             // 토큰을 사용한 사용자 정보 추출
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
@@ -42,7 +38,7 @@ public class AppStockController {
                 log.info("Extracted memberName from token: {}", memberNumFromToken);
 
                 // 데이터 저장 처리
-                stockService.saveStock(ingredients, memberNumFromToken); // 앱 사용자 처리
+                stockService.saveStock(ingredients, memberNumFromToken);
                 log.info("Stock saved successfully for memberNum: {}", memberNumFromToken);
                 return new ResponseEntity<>("저장되었습니다!", HttpStatus.OK);
             } else {
@@ -63,9 +59,6 @@ public class AppStockController {
     public ResponseEntity<?> getStockForApp(
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            // 로그로 토큰 출력
-            log.info("Received token: {}", token);
-
             // 토큰을 사용한 사용자 정보 추출
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
@@ -75,7 +68,7 @@ public class AppStockController {
                 log.info("Extracted memberNum from token: {}", memberNumFromToken);
 
                 // 스톡 데이터 가져오기
-                List<Map<String, Object>> stockList = stockService.getStockForMember(memberNumFromToken); // 앱 사용자 처리
+                List<Map<String, Object>> stockList = stockService.getStockForMember(memberNumFromToken);
                 log.info("Fetched stock list for memberNum: {}", memberNumFromToken);
                 log.debug("Fetched stock list: {}", stockList);
 
@@ -103,9 +96,6 @@ public class AppStockController {
             @RequestBody Map<String, String> historyData,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            log.info("Received token: {}", token);
-            log.info("Received historyData: {}", historyData);
-
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7);
                 Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken);
@@ -134,9 +124,6 @@ public class AppStockController {
             @RequestBody Map<String, String> requestData,
             @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            log.info("Received token: {}", token);
-            log.info("Received requestData: {}", requestData);
-
             // 토큰을 사용한 사용자 정보 추출
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
@@ -175,5 +162,38 @@ public class AppStockController {
             return new ResponseEntity<>("소비기한 업데이트에 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/existing-ingredients")
+    public ResponseEntity<List<String>> getExistingIngredients(
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            // 토큰을 사용한 사용자 정보 추출
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7); // 'Bearer ' 이후의 실제 JWT 부분만 추출
+                log.info("JWT Token (parsed): {}", jwtToken);
 
+                Integer memberNumFromToken = jwtTokenProvider.getMemberNumFromToken(jwtToken); // JWT에서 사용자 식별자 추출
+                log.info("Extracted memberNum from token: {}", memberNumFromToken);
+
+                // 해당 사용자의 재료 목록을 가져오기
+                List<String> ingredients = stockService.getAllIngredientNamesForMember(memberNumFromToken);
+                log.info("Fetched ingredients for memberNum: {}", memberNumFromToken);
+
+                // 재료 목록이 없을 경우
+                if (ingredients.isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 재료 목록이 없는 경우 204 응답
+                }
+
+                return new ResponseEntity<>(ingredients, HttpStatus.OK); // 재료 목록을 반환
+            } else {
+                log.warn("No or invalid token provided.");
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 인증되지 않은 사용자의 경우
+            }
+        } catch (JwtException e) {
+            log.error("JWT 인증 실패: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // JWT 인증 실패 시
+        } catch (Exception e) {
+            log.error("재료 목록 가져오기 실패: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 서버 내부 오류 시
+        }
+    }
 }
