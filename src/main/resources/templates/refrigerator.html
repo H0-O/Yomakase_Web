@@ -416,7 +416,7 @@
             // 소비/버림 버튼을 가진 삭제 모달 표시 함수
             function showDeleteModal(ingredientName) {
                 const modal = document.getElementById('delModal');
-                modal.querySelector('.modal-text').innerText = `${ingredientName}을(를) 어떻게 할까요?`;
+                modal.querySelector('.modal-text').innerText = `${ingredientName}을/를 어떻게 할까요?`;
 
                 // 데이터 속성에 ingredientName 저장 (나중에 사용할 수 있도록 버튼에 저장)
                 $('#consume-btn').data('ingredient-name', ingredientName);

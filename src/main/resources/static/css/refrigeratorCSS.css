@@ -228,8 +228,7 @@
 }
 
 #delModal .modal-window {
-    width: 260px;
-    height: 200px;
+    width: 300px;
     text-align: center;
     justify-content: center;
     flex-direction: row;
@@ -256,6 +255,9 @@
     text-align: center;
     padding-top: 20px;
     padding-bottom: 10px;
+    word-wrap: break-word; /* 단어가 너무 길면 줄바꿈 */
+    overflow-wrap: break-word; /* 긴 단어가 넘치지 않도록 처리 */
+    max-width: 100%; /* 모달 바깥으로 넘치지 않도록 제한 */
 }
 
 #delModal .button-container {
