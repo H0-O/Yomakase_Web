@@ -24,7 +24,7 @@ public class MemberInfoService {
     private final UserBodyInfoRepository userBodyInfoRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberDTO getAllergyByEmail(Object identifier) {
+    public Map<String, Boolean> getAllergyByEmail(Object identifier) {
         MemberEntity memberEntity;
 
         // identifier가 Integer인 경우 (memberNum 직접 전달)
@@ -64,10 +64,7 @@ public class MemberInfoService {
         allergies.put("Shellfish", memberEntity.getAllergy().isShellfish());
         allergies.put("Pine Nut", memberEntity.getAllergy().isPineNut());
 
-        // 알러지 정보를 MemberDTO에 설정
-        memberDTO.setAllergies(allergies);
-
-        return memberDTO;
+        return allergies;
     }
 
 }

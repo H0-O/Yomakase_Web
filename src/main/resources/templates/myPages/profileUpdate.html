@@ -58,49 +58,70 @@
             <div class="form-group">
                 <label>알레르기 정보</label>
                 <div class="allergy-group">
-                    <!-- 알레르기 정보 드롭다운: 고기류 -->
                     <div class="dropdown">
                         <div class="dropdown-label" id="meat-dropdown">
                             고기류
                             <span>&#9662;</span>
                         </div>
                         <div class="dropdown-content" id="meat-content">
-                            <!-- 알레르기 정보: 돼지고기 -->
+                            <label data-allergy="eggs">달걀류</label>
                             <label data-allergy="pork">돼지고기</label>
-                            <!-- 알레르기 정보: 닭고기 -->
                             <label data-allergy="chicken">닭고기</label>
-                            <!-- 알레르기 정보: 쇠고기 -->
                             <label data-allergy="beef">쇠고기</label>
                         </div>
                     </div>
-                    <!-- 알레르기 정보 드롭다운: 해산물 -->
                     <div class="dropdown">
                         <div class="dropdown-label" id="seafood-dropdown">
                             해산물
                             <span>&#9662;</span>
                         </div>
                         <div class="dropdown-content" id="seafood-content">
-                            <!-- 알레르기 정보: 고등어 -->
                             <label data-allergy="mackerel">고등어</label>
-                            <!-- 알레르기 정보: 새우 -->
                             <label data-allergy="shrimp">새우</label>
-                            <!-- 알레르기 정보: 오징어 -->
                             <label data-allergy="squid">오징어</label>
+                            <label data-allergy="crab">게</label>
+                            <label data-allergy="shellfish">조개류</label>
                         </div>
                     </div>
-                    <!-- 알레르기 정보 드롭다운: 견과류 -->
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="fruit-dropdown">
+                            과채류
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="fruit-content">
+                            <label data-allergy="peach">복숭아</label>
+                            <label data-allergy="tomato">토마토</label>
+                        </div>
+                    </div>
                     <div class="dropdown">
                         <div class="dropdown-label" id="nut-dropdown">
                             견과류
                             <span>&#9662;</span>
                         </div>
                         <div class="dropdown-content" id="nut-content">
-                            <!-- 알레르기 정보: 땅콩 -->
                             <label data-allergy="peanut">땅콩</label>
-                            <!-- 알레르기 정보: 호두 -->
-                            <label data-allergy="walnut">호두</label>
-                            <!-- 알레르기 정보: 잣 -->
+                            <label data-allergy="walnuts">호두</label>
                             <label data-allergy="pineNut">잣</label>
+                            <label data-allergy="soybean">대두</label>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="grain-dropdown">
+                            곡물
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="grain-content">
+                            <label data-allergy="buckwheat">메밀</label>
+                            <label data-allergy="wheat">밀</label>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <div class="dropdown-label" id="dairy-dropdown">
+                            유제품
+                            <span>&#9662;</span>
+                        </div>
+                        <div class="dropdown-content" id="dairy-content">
+                            <label data-allergy="milk">우유</label>
                         </div>
                     </div>
                 </div>
@@ -142,13 +163,110 @@
 
     <style>
         /* 모달 창 스타일 */
+        .mypages-modal-content {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 박스 쉐도우 */
+        }
+
+        .mypages-modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .mypages-modal-content .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .mypages-modal-content .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .mypages-modal-content .form-group input,
+        .mypages-modal-content .form-group select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .mypages-modal-content .form-group input[type="submit"] {
+            background-color: #81c405;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .mypages-modal-content .form-group input[type="submit"]:hover {
+            background-color: #6aa003;
+        }
+
+        /* 기존 모달창을 대체할 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 배경 투명도 */
+        }
+
+        .modal-content {
+            background-color: white;
+            border: 2px solid #FFB524;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 10px;
+            color: #81c405;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content .close {
+            color: #81c405;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content .close:hover {
+            color: #FFB524;
+        }
+
+        /* 닫기 버튼 hover 스타일 */
+        .modal-content .close:hover {
+            color: #FFB524; /* 닫기 버튼 hover 시 색상 변경 */
+        }
+
+        /* 박스 */
         #signup-form {
             background-color: white;
             margin: 5% auto;
             padding: 20px;
-            width: 80%;
-            height: 80%;
-            max-width: 500px;
+            width: 100%;
+            height: 100%;
+            max-width: 900px;
             max-height: 400px;
             text-align: center;
             border-radius: 10px;
@@ -156,7 +274,6 @@
             transform: translateX(50px);
         }
 
-        /* first-container와 second-container에 공통 적용 */
         .first-container, .second-container {
             position: absolute;
             padding: 20px;
@@ -169,7 +286,6 @@
             transition: opacity 0.5s, transform 0.5s;
         }
 
-        /* first-container의 기본 스타일 */
         .first-container {
             z-index: 2;
             opacity: 1;
@@ -178,7 +294,6 @@
             pointer-events: auto;
         }
 
-        /* 숨겨진 상태일 때 */
         .first-container.hidden {
             opacity: 0;
             transform: translateX(-100%);
@@ -187,13 +302,12 @@
             pointer-events: none;
         }
 
-        /* 두 번째 화면은 기본적으로 숨김 상태 */
         .second-container {
             display: none;
         }
 
         /* 버튼 스타일 */
-        .btn {
+        .btn, .boxbtn {
             padding: 5px 10px;
             margin: 5px;
             background-color: #81c405;
@@ -210,13 +324,6 @@
         .form-group {
             margin-bottom: 10px;
             text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 1px;
-            font-weight: bold;
-            color: #333;
         }
 
         .form-group input {
@@ -334,73 +441,6 @@
             cursor: pointer;
         }
 
-        .boxbtn {
-            display: block;
-            margin: 20px auto 0 auto;
-            padding: 5px 15px;
-            font-size: 0.9rem;
-            background-color: #81c405;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        /* 모달창 배경 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* 배경 투명도 */
-        }
-
-        /* 모달창 콘텐츠 스타일 */
-        .modal-content {
-            background-color: #81c405; /* 밝은 녹색 배경 */
-            margin: 15% auto;
-            padding: 20px;
-            border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-            border-radius: 10px;
-            color: white; /* 텍스트 색상 */
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-        }
-
-        /* 닫기 버튼 스타일 */
-        .close {
-            color: white;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #FFB524; /* 닫기 버튼 hover 시 주황색 */
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* 모달창 안의 텍스트 스타일 */
-        .modal-content p {
-            color: white; /* 텍스트 색상 */
-            margin: 20px 0;
-        }
-
-        /* 닫기 버튼 hover 스타일 */
-        .close:hover {
-            color: #FFB524; /* 닫기 버튼 hover 시 색상 변경 */
-        }
-
     </style>
 
     <script>
@@ -497,6 +537,7 @@
                         input.value = 'true';
                         this.classList.add('selected');
                     }
+
                 });
             });
 
@@ -512,29 +553,28 @@
                     confirmPassword: document.getElementById('confirmPassword').value,
                     birthDate: document.getElementById('birthDate').value,
                     gender: document.getElementById('gender').value,
-                    height: document.getElementById('height').value,
-                    weight: document.getElementById('weight').value,
-                    // 알레르기 정보 수집
-                    eggs: document.getElementById('eggs').value,
-                    milk: document.getElementById('milk').value,
-                    buckwheat: document.getElementById('buckwheat').value,
-                    peanut: document.getElementById('peanut').value,
-                    soybean: document.getElementById('soybean').value,
-                    wheat: document.getElementById('wheat').value,
-                    mackerel: document.getElementById('mackerel').value,
-                    crab: document.getElementById('crab').value,
-                    shrimp: document.getElementById('shrimp').value,
-                    pork: document.getElementById('pork').value,
-                    peach: document.getElementById('peach').value,
-                    tomato: document.getElementById('tomato').value,
-                    walnuts: document.getElementById('walnuts').value,
-                    chicken: document.getElementById('chicken').value,
-                    beef: document.getElementById('beef').value,
-                    squid: document.getElementById('squid').value,
-                    shellfish: document.getElementById('shellfish').value,
-                    pineNut: document.getElementById('pineNut').value
+                    height: parseInt(document.getElementById('height').value),
+                    weight: parseInt(document.getElementById('weight').value),
+                    // 알레르기 정보 수집 (문자열을 boolean으로 변환)
+                    eggs: document.getElementById('eggs').value === 'true',
+                    milk: document.getElementById('milk').value === 'true',
+                    buckwheat: document.getElementById('buckwheat').value === 'true',
+                    peanut: document.getElementById('peanut').value === 'true',
+                    soybean: document.getElementById('soybean').value === 'true',
+                    wheat: document.getElementById('wheat').value === 'true',
+                    mackerel: document.getElementById('mackerel').value === 'true',
+                    crab: document.getElementById('crab').value === 'true',
+                    shrimp: document.getElementById('shrimp').value === 'true',
+                    pork: document.getElementById('pork').value === 'true',
+                    peach: document.getElementById('peach').value === 'true',
+                    tomato: document.getElementById('tomato').value === 'true',
+                    walnuts: document.getElementById('walnuts').value === 'true',
+                    chicken: document.getElementById('chicken').value === 'true',
+                    beef: document.getElementById('beef').value === 'true',
+                    squid: document.getElementById('squid').value === 'true',
+                    shellfish: document.getElementById('shellfish').value === 'true',
+                    pineNut: document.getElementById('pineNut').value === 'true'
                 };
-
                 // JSON 데이터를 서버로 전송
                 fetch('/member/update', {
                     method: 'POST',
@@ -553,11 +593,15 @@
                     .then(result => {
                         console.log("회원정보 수정 성공:", result);
                         showSuccessModal(); // 성공 시 모달창 표시
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
                     })
                     .catch(error => {
                         console.error('오류 발생:', error);
                     });
             });
+
         });
 
     </script>

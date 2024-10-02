@@ -1,7 +1,7 @@
 <div th:fragment="subsFragment">
     <link rel="stylesheet" th:href="@{/css/subsCSS.css}">
     <div class="subscription">
-        <p>구독 시 제공할 서비스</p>
+        <h4>구독 시 제공할 서비스</h4>
         <ul>
             <li>광고 제거 기능</li>
             <li>식단 점수 달력 제공</li>
@@ -14,7 +14,7 @@
         <p class="notice-detail">서비스 내용은 사전 고지 후 변경될 수 있으며, 변경된 내용은 적용 후 즉시 반영됩니다.</p>
         <p class="notice-detail">계정 및 개인정보는 관련 법령에 따라 보호되며, 계정 보안 유지에 대한 책임은 사용자 본인에게 있습니다.</p>
         <p class="notice-detail">서비스 중단 또는 종료 시 사전에 공지되며, 중단 시점까지 이용에 대한 비용은 별도로 청구되지 않습니다.</p>
-        <div>
+        <div class="signSubsBtn">
             <input type="checkbox" id="mypagesAgreeTerms" name="mypagesAgreeTerms" />
             <label for="mypagesAgreeTerms">결제에 동의함</label>
         </div>
@@ -51,7 +51,8 @@
         }
 
         .modal-content {
-            background: white;
+            background: white !important; /* 배경색을 흰색으로 설정 */
+            color: #81C405 !important; /* 텍스트 색을 #81C405로 설정 */
             padding: 20px;
             border-radius: 8px;
             width: 400px;
@@ -71,6 +72,7 @@
             border: none;
             font-size: 16px;
             cursor: pointer;
+            color : #FFB524;
         }
 
         #confirmPaymentButton {

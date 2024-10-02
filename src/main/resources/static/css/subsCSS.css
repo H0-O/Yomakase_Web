@@ -3,8 +3,9 @@
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 20px;
-    max-width: 600px;
+    text-align: center;
+    padding: 10px;
+    max-width: 900px;
     margin: 20px auto;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -30,16 +31,18 @@
     position: relative;
     padding-left: 20px;
     margin-bottom: 10px;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 /* 체크 아이콘 추가 */
 .subscription ul li::before {
     content: '✔';
-    position: absolute;
-    left: 0;
+    margin-right: 5px; /* 체크 아이콘과 텍스트 사이 간격 설정 */
     color: #28a745;
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline; /* 아이콘을 텍스트와 같은 줄에 표시 */
+    position: relative; /* 텍스트와 자연스럽게 정렬 */
 }
 
 .notice-detail {
@@ -176,5 +179,20 @@
     transform: translateY(2px);
     opacity: 0.9;
     box-shadow: inset 1px 1px 2px #babebc, inset -1px -1px 2px #fff;
+}
+
+.signSubsBtn {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center;     /* 세로 중앙 정렬 */
+}
+
+.signSubsBtn input {
+    transform: scale(1.5); /* 체크박스 크기 조절 */
+    margin-right: 5px; /* 텍스트와의 간격 조절 */
+}
+
+.signSubsBtn label {
+    font-size: 16px; /* 텍스트 크기 조절 */
 }
 
