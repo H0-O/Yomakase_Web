@@ -209,12 +209,11 @@ document.addEventListener('DOMContentLoaded', function(){
                     listTotalKcal.innerHTML = calDTO.totalKcal;
                     listTooMuch.innerHTML = calDTO.tooMuch;
                     listLack.innerHTML = calDTO.lack;
-                    let recomSplit = calDTO.recom.split("\n");
-                    console.log(recomSplit);
-                    nutrientList.getElementsByTagName('td')[7].innerHTML = `${recomSplit[1]}`;
-                    nutrientList.getElementsByTagName('td')[8].innerHTML = `${recomSplit[2]}`;
-                    nutrientList.getElementsByTagName('td')[9].innerHTML = `${recomSplit[3]}`;
-                    nutrientList.getElementsByTagName('td')[11].innerHTML = calDTO.score;
+                    //let recomSplit = calDTO.recom.split("\n");
+                    //console.log(recomSplit);
+                    nutrientList.getElementsByTagName('td')[7].innerHTML = calDTO.recom;
+
+                    nutrientList.getElementsByTagName('td')[9].innerHTML = calDTO.score;
 
                     document.getElementById('diet-list-msg').style.display = 'none';
                 }
