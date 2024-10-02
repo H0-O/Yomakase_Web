@@ -5024,6 +5024,14 @@
   #sideNav .navbar-collapse .navbar-nav .nav-item {
     display: block;
   }
+  #sideNav .navbar-collapse .navbar-nav .nav-item.active > a {
+    background-color: white; /* 클릭된 항목의 배경색 */
+    color: #6aa003;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    width: 80%;
+    float: right;
+  }
   #sideNav .navbar-collapse .navbar-nav .nav-item .nav-link {
     display: block;
   }

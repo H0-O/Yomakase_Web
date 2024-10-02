@@ -154,14 +154,13 @@
         </div>
     </div>
     <!-- 모달창 -->
-    <div id="success-modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close">&times;</span>
+    <div id="success-modal" class="modify-modal" style="display:none;">
+        <div class="modify-modal-content">
             <p>회원정보가 수정되었습니다.</p>
         </div>
     </div>
     <style>
-        .modal {
+        .modify-modal {
             display: none; /* 기본적으로 숨김 */
             position: fixed; /* 화면의 중앙에 모달을 고정 */
             z-index: 1; /* 화면의 최상위에 위치 */
@@ -174,7 +173,7 @@
         }
 
         /* 모달 콘텐츠 박스 */
-        .modal-content {
+        .modify-modal-content {
             background-color: #fefefe; /* 흰색 배경 */
             margin: 25% auto; /* 화면 중앙에 배치 */
             padding: 50px;
@@ -188,7 +187,7 @@
         }
 
         /* 닫기 버튼 스타일 */
-        .modal-content .close {
+        .modify-modal-content .close {
             position: absolute; /* 부모 요소 안에서 절대 위치 */
             top: 10px;
             right: 15px; /* 모달 콘텐츠 박스의 오른쪽 끝으로 정렬 */
@@ -198,13 +197,6 @@
             cursor: pointer; /* 클릭 가능한 커서 */
         }
 
-        /* 닫기 버튼에 마우스 올렸을 때 스타일 */
-        .modal-content .close:hover,
-        .modal-content .close:focus {
-            color: #000; /* 검정색으로 변경 */
-            text-decoration: none;
-            cursor: pointer;
-        }
 
         #modify-signup{
             font-family: 'Arial', sans-serif;
@@ -230,7 +222,6 @@
             position: relative;
         }
         .modify-first-container, .modify-second-container {
-        //position: absolute;
             padding: 20px;
             top: 0;
             left: 0;
@@ -390,15 +381,11 @@
             const backBtn = document.getElementById('back-btn');
             const submitBtn = document.getElementById('submit-btn');
             const modal = document.getElementById('success-modal'); // 모달창 요소
-            const closeModal = document.querySelector('.close');    // 모달 닫기 버튼
 
             function showSuccessModal() {
                 modal.style.display = 'block';
             }
 
-            closeModal.addEventListener('click', function () {
-                modal.style.display = 'none';
-            });
 
             // 성별 버튼 클릭 이벤트 설정
             if (maleBtn) {

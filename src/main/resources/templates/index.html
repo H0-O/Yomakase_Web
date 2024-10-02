@@ -169,6 +169,24 @@
             closeAd(); // 광고를 닫고
             window.location.href = clickedHref; // 저장된 href로 이동
         });
+        // 네브 바 클릭 했을때 배경 색 주기
+        document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 모든 nav-item에서 active 클래스 제거
+                document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+
+                // 클릭된 항목에 active 클래스 추가
+                this.classList.add('active');
+            });
+        });
+        // 로고 클릭 시 네브바의 모든 항목에서 active 클래스 제거
+        document.querySelector('.navbar-brand').addEventListener('click', function() {
+            document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+        });
     });
 
     // 광고를 열 때 오버레이와 광고 영역을 표시하는 함수
