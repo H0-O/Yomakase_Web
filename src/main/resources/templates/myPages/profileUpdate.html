@@ -593,6 +593,9 @@
                     .then(result => {
                         console.log("회원정보 수정 성공:", result);
                         showSuccessModal(); // 성공 시 모달창 표시
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
                     })
                     .catch(error => {
                         console.error('오류 발생:', error);
