@@ -238,10 +238,16 @@ document.addEventListener('DOMContentLoaded', function(){
         e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
         headMonth[0].innerHTML = `${monthTag[month]}월`;
         headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
+        if (selectedDay){
 
         let formattedDay = selectedDay.toLocaleDateString('en-CA')
-        //console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
+        console.log(selectedDay);
+        console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
         clickedDietDay.innerHTML = formattedDay;
+        } else {
+            console.warn('선택된 날짜가 정의되지 않음')
+            selectedDay = new Date();
+        }
 
     }; //drawHeader 함수 end
 
