@@ -54,18 +54,18 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     function btnActive(){
-        dietCalBtn.style.backgroundColor = '#198754';
+        dietCalBtn.style.backgroundColor = '#FFB524';
         nutrientCalBtn.addEventListener('click', function (){
             btnActiveCheck = false;
             dietCalBtn.style.backgroundColor = '';
-            nutrientCalBtn.style.backgroundColor = '#198754';
+            nutrientCalBtn.style.backgroundColor = '#FFB524';
             document.getElementById('nutrientCalTitle').style.display = 'block';
             document.getElementById('dietCalTitle').style.display = 'none';
         });
         dietCalBtn.addEventListener('click', function (){
             btnActiveCheck = true;
             nutrientCalBtn.style.backgroundColor = '';
-            dietCalBtn.style.backgroundColor = '#198754';
+            dietCalBtn.style.backgroundColor = '#FFB524';
             document.getElementById('dietCalTitle').style.display = 'block';
             document.getElementById('nutrientCalTitle').style.display = 'none';
         })
