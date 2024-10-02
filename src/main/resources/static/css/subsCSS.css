@@ -112,38 +112,47 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
-    max-width: 600px;
+    max-width: 900px;
     margin: 20px auto;
+    text-align: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .mypages-subscription-info p, .mypages-cancel-info p {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+    text-align: center;
     word-wrap: break-word;
 }
 
 .mypages-subscription-info ul {
     list-style: none;
     padding-left: 0;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: bold;
 }
 
 .mypages-subscription-info ul li {
     position: relative;
+    text-align: center;
     padding-left: 20px;
     margin-bottom: 10px;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 /* 체크 아이콘 추가 */
 .mypages-subscription-info ul li::before {
     content: '✔';
-    position: absolute;
     left: 0;
     color: #28a745;
-    font-size: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 5px; /* 체크 아이콘과 텍스트 사이 간격 설정 */
+    display: inline; /* 아이콘을 텍스트와 같은 줄에 표시 */
+    align-content: center;
+    position: relative; /* 텍스트와 자연스럽게 정렬 */
 }
 
 /* 구독 취소 버튼 스타일 */
