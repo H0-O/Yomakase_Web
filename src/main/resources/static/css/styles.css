@@ -5082,5 +5082,6 @@
   }
   button, .btn {
     letter-spacing: 1px !important;
+    font-weight: bolder;
   }
 }
