@@ -5035,6 +5035,7 @@
    max-width: 75rem;
  }section.resume-section .resume-section-content {
     width: 100%;
+    padding-top: 15px;
   }@media (min-width: 768px) {
   section.resume-section {
     min-height: 100vh;

@@ -9,70 +9,65 @@ document.addEventListener('DOMContentLoaded', function(){
         day = today.getDate(),
         calendarTable = document.getElementById('calendarTable'),
         days = calendarTable.getElementsByTagName('td'),
-        selectedDay,    //선택된 요일
-        setDate,        //선택된 날짜
-        daysLen = days.length; //<td>요소의 총 개수. 한달의 일수
+        selectedDay,    //사용자가 선택한 날짜 정보 : Sun Oct 27 2024 00:00:00 GMT+0900 (한국 표준시)
+        setDate,        
+        daysLen = days.length, //<td>요소의 총 개수. 한달의 일수
+        headDate = document.getElementById('head-date');    //달력 중앙 '2024년 9월' 부분
 
+    let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0];
 
-    let mouseoverDay = year + '-' + monthTag[month] + '-' + this.innerHTML;
-    //달력 중앙 '2024년 9월' 부분
-    let headDate = document.getElementById('head-date');
-
+    //사용자 인증 정보 (일반, 구독자 계정 구분용)
+    const userRole = document.getElementById('userRole').value;
+    //버튼 선택 영역
+    let btnDiv = document.getElementById('cal-title-btn');
+    //식단 버튼
+    let dietCalBtn  = document.getElementById('dietCalBtn');
+    //영양소 버튼
+    let nutrientCalBtn = document.getElementById('nutrientCalBtn');
+    //버튼 활성화 확인
+    let btnActiveCheck = true;  //기본적으로 식단 버튼 클릭 상태일 때 true, 영양소 버튼 상태일 때 false
     //식단 조회 영역
     let dietList = document.getElementById('diet-list');
     //영양소 조회 영역
     let nutrientList = document.getElementById('nutrient-list');
 
-    //영양소 모달
-    let nutrientModal = document.getElementById("nutrient-modal");
-
-    //식단 달력, 영양소 달력 버튼
-    let nutrientCalBtn = document.getElementById('nutrientCalBtn');
-    let dietCalBtn  = document.getElementById('dietCalBtn');
-
-    //식단 달력, 영양소 달력 제목
-    let nutrientCalTitle = document.getElementById('nutrientCalTitle');
-    let dietCalTitle = document.getElementById('dietCalTitle');
-
-    //달력 초기화면에서 모달이 안 나오도록 함
-    document.getElementById("diet-modal").style.display = 'none';
-    if(nutrientModal == null){
-        nutrientModal = document.getElementById("nutrient-modal");
-    } else{
-        nutrientModal.style.display = 'none';
-    }
-
-    // console.log(nutrientCalBtn, dietCalBtn);  //일반 회원이 로그인했을 때는 버튼이 null 상태가 됨
-    if (dietCalBtn === null || nutrientCalBtn === null) {
-        dietCalBtn =  '<button id="dietCalBtn">식단</button>';
-        nutrientCalBtn =  '<button id="nutrientCalBtn">식단</button>';
-    } else {
-        dietCalBtn.addEventListener('click', function()  {
-            if (nutrientCalTitle.style.display === 'block' || dietCalTitle.style.display !== 'block') {
-                dietCalTitle.style.display = 'block';
-                nutrientCalTitle.style.display = 'none';
-                dietCalBtn.style.backgroundColor = '#198754';
-                nutrientCalBtn.style.backgroundColor = '';
-            }
-        });
-
-        nutrientCalBtn.addEventListener('click', function()  {
-            if (dietCalTitle.style.display === 'block' || nutrientCalTitle.style.display !== 'black') {
-                nutrientCalTitle.style.display = 'block';
-                dietCalTitle.style.display = 'none';
-                nutrientCalBtn.style.backgroundColor = '#198754';
-                dietCalBtn.style.backgroundColor = '';
-            }
-        });
-    }
 
 
-    //Calendar 객체 생성자 함수 정의
+    /**
+     * Calendar 객체 생성자 함수 정의
+     * @param selector
+     * @param options
+     * @constructor
+     */
     function Calendar(selector, options) {
         this.options = options;
         this.draw();
     }
 
+    
+    //버튼 선택 영역 : 구독 사용자에게만 보이도록 함
+    if(userRole === 'ROLE_SUBSCRIBER'){
+        btnDiv.style.visibility = 'visible';
+    } else{
+        btnDiv.style.visibility = 'hidden';
+    }
+
+
+    function btnActive(){
+        dietCalBtn.style.backgroundColor = '#198754';
+        nutrientCalBtn.addEventListener('click', function (){
+            btnActiveCheck = false;
+            dietCalBtn.style.backgroundColor = '';
+            nutrientCalBtn.style.backgroundColor = '#198754';
+        });
+        dietCalBtn.addEventListener('click', function (){
+            btnActiveCheck = true;
+            nutrientCalBtn.style.backgroundColor = '';
+            dietCalBtn.style.backgroundColor = '#198754';
+        })
+
+    }
+    btnActive();
 
     /**
      * 달력을 계속 새로 그리는 함수
@@ -89,183 +84,63 @@ document.addEventListener('DOMContentLoaded', function(){
             //다음 버튼
             next = document.getElementsByClassName('next-button');
 
-        pre[0].addEventListener('click', function(){that.preMonth(); });
-        next[0].addEventListener('click', function(){that.nextMonth(); });
-        reset.addEventListener('click', function(){that.reset(); });
+        pre[0].addEventListener('click', function () {
+            that.preMonth();
+        });
+        next[0].addEventListener('click', function () {
+            that.nextMonth();
+        });
+        reset.addEventListener('click', function () {
+            that.reset();
+        });
 
 
-        //페이지의 모든 <td>요소에 클릭 이벤트를 등록하는 반복문
+        //페이지의 모든 <td>요소에 이벤트를 등록하는 반복문
         while (daysLen--) {
             days[daysLen].addEventListener('click', function () {
-                that.clickDay(this)
-            })
-            days[daysLen].addEventListener('dblclick', function () {
-                that.doubleClickDay(this)
+                if(btnActiveCheck) {
+                    dietView(this);
+                } else{
+                    nutrientView(this);
+                }
             });
-            if(nutrientModal == null) {
-                nutrientModal = document.getElementById("nutrient-modal");
-            } else {
-                days[daysLen].addEventListener('mouseover', function () {
-                    that.nutrientScore(this)
-                });
-                days[daysLen].addEventListener('mouseleave', function () {
-                    that.nutrientScoreOff(this)
-                    let nutrientModalContent = document.getElementById('nutrient-modal-table');
-                    /*let listScore = nutrientModalContent.getElementsByTagName('td')[1];
-                    listScore.append();*/
-                    nutrientList.style.display = 'none';
 
-                });
-            }
+            days[daysLen].addEventListener('dblclick', function () {
+                if(btnActiveCheck){
+                    modalOn();
+                }
+            });
+
+            /*days[daysLen].addEventListener('mouseover', function () {
+                if(!btnActiveCheck){
+                    modalNutrientOn();
+                }
+            });
+            days[daysLen].addEventListener('mouseleave', function () {
+                if(!btnActiveCheck){
+                    modalNutrientOff();
+                }
+            });*/
+
+
         }
-
-        Calendar.prototype.doubleClickDay = function(td){
-            modalOn();  // 모달 처리 함수는 따로 정의해야 함
-        }
-
-        if(nutrientModal == null) {
-            nutrientModal = document.getElementById("nutrient-modal");
-        } else{
-            Calendar.prototype.nutrientScore = function (td) {
-                modalNutrientOn();  // 모달 처리 함수는 따로 정의해야 함
-            }
-
-            Calendar.prototype.nutrientScoreOff = function (td) {
-                modalNutrientOff();  // 모달 처리 함수는 따로 정의
-            }
-        }
-    }; //draw 함수 end
-
+    }
 
     /**
-     * @param e 사용자가 클릭해서 선택한 날짜(일)
+     * 날짜 관련 함수 (while 반복문 호출용)
      */
-    Calendar.prototype.drawHeader = function(e) {
-        var headDay = document.getElementsByClassName('head-day'),
-            headMonth = document.getElementsByClassName('head-month');
+    function dietView(td){
+        //alert('식단 입력')
 
-        e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
-        headMonth[0].innerHTML = `${monthTag[month]}월`;
-        headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
+        selectedDay = new Date(year, month, td.innerHTML);
 
-        let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0];
+        calendar.drawHeader(td.innerHTML);
+        calendar.setCookie('selected_day', 1);
 
-        let formattedDate = `${year}-${monthTag[month]}-${e}`;
-        //console.log(formattedDate); //2024-08-31 선택한 날짜로 잘 나옴
-        clickedDietDay.innerHTML = formattedDate;
-
-    }; //drawHeader 함수 end
-
-
-    //달력 날짜 계산하고 그리는 함수
-    Calendar.prototype.drawDays = function () {
-        var startDay = new Date(year, month, 1).getDay(),
-            nDays = new Date(year, month + 1, 0).getDate(),
-            n = startDay;
-
-        for(var k = 0; k < 42; k++) {
-            days[k].innerHTML = '';
-            days[k].id = '';
-            days[k].className = '';
-        }
-
-        for(var i = 1; i <= nDays; i++) {
-            days[n].innerHTML = i;
-            n++;
-        }
-
-        for(var j = 0; j < 42; j++) {
-            if(days[j].innerHTML === ""){
-                days[j].id = "disabled";
-            } else if(j === day + startDay - 1){
-                if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
-                    this.drawHeader(day);
-                    days[j].id = "today";
-                }
-            }
-            if(selectedDay){
-                if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
-                    days[j].className = "selected";
-                    this.drawHeader(selectedDay.getDate());
-                }
-            }
-
-            //마우스 오버 시 해당 일자 표시 (영양소 모달용)
-            if(nutrientModal == null){
-                nutrientModal = document.getElementById("nutrient-modal");
-            } else {
-                days[j].addEventListener('mouseover', function () {
-                    if (this.innerHTML !== "") {
-                        mouseoverDay = year + '-' + monthTag[month] + '-' + this.innerHTML;
-                        let parts = mouseoverDay.split('-');    // - 를 기준으로 나눠서 배열을 만듦
-                        let formattedDate = `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
-                        //console.log(mouseoverDay);  //2024-9-28  백에서 처리하는 날짜 형식과 맞지 않음
-                        //console.log(formattedDate);   //2024-09-30
-                        let clickedNutrientDay = document.getElementsByClassName('clickedDietDay')[1];
-                        clickedNutrientDay.innerText = mouseoverDay;
-                        //console.log(clickedNutrientDay);  //<td class="clickedDietDay">2024-9-28</td>
-
-                        let nutrientModalContent = document.getElementById('nutrient-modal-table');
-                        let listScore = nutrientModalContent.getElementsByTagName('td')[1];
-
-                        $.ajax({
-                            url: '/cal/nutrientScore',
-                            type: 'post',
-                            data: {mouseoverDay: formattedDate},  // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
-                            dataType: 'json',
-                            success: function (calDTO) {
-                                dietList.style.display = 'none';
-                                nutrientList.style.display = 'block';
-                                document.getElementById('diet-list-msg').style.display = 'none';
-                                //console.log(calDTO);
-
-                                listScore.innerHTML = `${calDTO.score}점`;
-                            },
-                            error: function () {
-                                dietList.style.display = 'none';
-                                document.getElementById('diet-list-msg').style.display = 'block';
-                            }
-                        })
-                        nutrientModalContent.getElementsByTagName('td')[1].innerHTML = "";
-                        listScore.innerText = "식단 달력에서 식단을 입력해 주세요.";
-                    }
-                }); //각 날짜(td) mouseover addEventListener end
-            } //else문 end (일반 사용자 영양소 모달 null 처리)
-        }
-    };  //drawDays 함수 end
-
-
-    Calendar.prototype.clickDay = function(o) {
-        /*  var selected = document.getElementsByClassName("selected"),
-              len = selected.length;
-          if(len !== 0){
-              selected[0].className = "";
-          }
-          o.className = "selected";*/
-
-        selectedDay = new Date(year, month, o.innerHTML);      //new Date(연, 월 ,일);
-        /*if (!this.isSameDay(selectedDay, o.innerHTML)) {
-            this.dietView(o);
-        }*/
-        // console.log("clickDay함수에서 설정한 seletedDay : ", selectedDay);
-        this.drawHeader(o.innerHTML);
-        this.setCookie('selected_day', 1);
-
-        if(nutrientCalTitle.style.display === 'block' || dietCalTitle.style.display === 'none'){
-            this.nutrientView(selectedDay);
-        } else if (nutrientCalTitle.style.display === 'none' || nutrientCalTitle.style.display === ''){
-            this.dietView(selectedDay);
-        }
-
-    };  //clickDay 함수 end
-
-
-    // 저장된 식단 확인
-    Calendar.prototype.dietView = function(o){
         $.ajax({
             url : '/cal/dietList',
             type : 'post',
-            data : {selectedDay: o.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
+            data : {selectedDay: selectedDay.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
             dataType : 'json',
             success : function(calDTO){
                 nutrientList.style.display = 'none';
@@ -291,14 +166,18 @@ document.addEventListener('DOMContentLoaded', function(){
         })
     }
 
-    //저장된 식단을 바탕으로 한 영양소 출력
-    Calendar.prototype.nutrientView = function(o){
-        //alert("영양소 확인");
+    function nutrientView(td){
+        //alert('영양소 입력');
+
+        selectedDay = new Date(year, month, td.innerHTML);
+
+        calendar.drawHeader(td.innerHTML);
+        calendar.setCookie('selected_day', 1);
 
         $.ajax({
             url : '/cal/nutrientList',
             type : 'post',
-            data : {selectedDay: o.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
+            data : {selectedDay: selectedDay.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
             dataType : 'json',
             success : function(calDTO){
                 dietList.style.display = 'none';
@@ -306,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 document.getElementById('diet-list-msg').style.display = 'none';
                 if(!calDTO.totalKcal && !calDTO.tooMuch && !calDTO.lack && !calDTO.recom){
                     dietList.style.display = 'none';
+                    nutrientList.style.display = 'none';
                     document.getElementById('diet-list-msg').style.display = 'block';
                 } else {
                     dietList.style.display = 'none';
@@ -322,10 +202,10 @@ document.addEventListener('DOMContentLoaded', function(){
                     listLack.innerHTML = calDTO.lack;
                     listRecom.innerHTML = calDTO.recom;
                     //listScore.innerText = calDTO.score + "점";
-                    listTotalKcal.append();
-                    listTooMuch.append();
-                    listLack.append();
-                    listRecom.append();
+                    /*     listTotalKcal.append();
+                         listTooMuch.append();
+                         listLack.append();
+                         listRecom.append();*/
                     document.getElementById('diet-list-msg').style.display = 'none';
                 }
             },
@@ -335,8 +215,99 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         })
         document.getElementById('diet-list-msg').style.display = 'none';
+
     }
 
+
+    /**
+     * @param e 사용자가 클릭해서 선택한 날짜(일)
+     */
+    Calendar.prototype.drawHeader = function(e) {
+        var headDay = document.getElementsByClassName('head-day'),
+            headMonth = document.getElementsByClassName('head-month');
+
+        e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
+        headMonth[0].innerHTML = `${monthTag[month]}월`;
+        headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
+
+        let formattedDay = selectedDay.toLocaleDateString('en-CA')
+        //console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
+        clickedDietDay.innerHTML = formattedDay;
+
+    }; //drawHeader 함수 end
+
+
+    /**
+     * 달력의 날짜를 계산하고 그리는 함수
+     */
+    Calendar.prototype.drawDays = function () {
+        var startDay = new Date(year, month, 1).getDay(),
+            nDays = new Date(year, month + 1, 0).getDate(), //달의 마지막날
+            n = startDay;
+
+        for(var k = 0; k < 42; k++) {
+            days[k].innerHTML = '';
+            days[k].id = '';
+            days[k].className = '';
+        }
+
+        for(var i = 1; i <= nDays; i++) {
+            days[n].innerHTML = i;
+            n++;
+        }
+
+        for(var j = 0; j < 42; j++) {
+            if(days[j].innerHTML === ""){
+                days[j].className = "disabledDay";
+            } else if(j === day + startDay - 1){
+                if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
+                    this.drawHeader(day);
+                    days[j].id = "today";
+                }
+            }
+            if(selectedDay){
+                if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
+                    days[j].className = "selected";
+                    this.drawHeader(selectedDay.getDate());
+                }
+            }
+
+            }
+
+    } //drawDays 함수 end
+
+
+
+
+   /* /!**
+     * 날짜 클릭 메서드
+     * @param o 클릭된 <td>요소
+     *!/
+    Calendar.prototype.clickDay = function(o) {
+        var selected = document.getElementsByClassName("selected"),
+            len = selected.length;
+        if(len !== 0){
+            selected[0].className = "";
+        }
+        o.className = "selected";
+        selectedDay = new Date(year, month, o.innerHTML);
+        //console.log(selectedDay);   //Sat Sep 07 2024 00:00:00 GMT+0900 (한국 표준시)  //클릭한 날짜로 나옴
+        this.drawHeader(o.innerHTML);
+        this.setCookie('selected_day', 1);
+
+        var headDay = document.getElementsByClassName('head-day');
+
+        // 더블 클릭 이벤트 리스너 등록
+        //Calendar.prototype.dateDoubleClick(o);
+        // function handleDoubleClick() {
+        //     alert('모달창 부분');
+        //     o.removeEventListener('dblclick', handleDoubleClick); // 이벤트 리스너 제거
+        // }
+
+        // 클릭된 요소에 대해 더블 클릭 이벤트 리스너 등록
+        //o.addEventListener('dblclick', handleDoubleClick, { once: true });
+
+    };  //clickDay 함수 end*/
 
     Calendar.prototype.preMonth = function() {
         if(month < 1){
@@ -395,6 +366,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     };
 
-    var calendar = new Calendar();
+    var calendar = new Calendar();  //해당 부분 필수! 없으면 달력 안 그려짐
 
-}, false);  //addEventListener의 함수 end
+}, false);  //전체 문서 addEventListener의 함수 end

@@ -1,20 +1,446 @@
-#diet-modal-table > tr {
+/*식단, 영양소 달력 CSS*/
+#calendar {
+    width: 100%;
+}
+
+.elegant-calencar {
+    max-width: 700px;
+    text-align: center;
+    position: relative;     /*자식 요소의 절대 위치 지정 가능*/
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0px 19px 27px -20px rgba(0,0,0,0.16);
+    -webkit-box-shadow: 0px 19px 27px -20px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 19px 27px -20px rgba(0,0,0,0.16);
+}
+
+h1, h2, h3, h4, h5,
+.h1, .h2, .h3, .h4, .h5 {
+    line-height: 1.5;
+    font-weight: 400;
+    font-family: "Lato", Arial, sans-serif;
+    color: #000;
+}
+
+/*달력 부분 위아래 여백 설정*/
+.ftco-section {
+    padding: 2em 0; }
+
+
+.img {
+    background-size: cover; /*배경 이미지 크기를 요소 크기에 맞춤*/
+    background-repeat: no-repeat;
+    background-position: center center; }
+
+.elegant-calencar {
+    max-width: 100%;
+    text-align: center;
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 19px 27px -20px rgba(0, 0, 0, 0.16); }
+
+/*식단, 영양소 출력되는 배경사진 있는 부분*/
+.wrap-header {
+    position: relative;
+    width: 35%;
+    z-index: 0; /*쌓임 순서 설정*/ }
+
+.wrap-header:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    background: #000;
+    opacity: .5;
+    z-index: -1; }
+@media (max-width: 767.98px) {
+    .wrap-header {
+        width: 100%;
+        padding: 20px 0; } }
+
+#header {
+    width: 100%;
+    position: relative;}
+#header .pre-button, #header .next-button {
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+   /* border-radius: 50%;*/
+    position: absolute;
+    top: 20px;
+    transform: translateY(-50%);
+    font-size: 18px; }
+
+.pre-button {
+    left: 5px; }
+
+.next-button {
+    right: 5px; }
+
+.button-wrap {
+    position: relative;
+    top: -5px;}
+.button-wrap .pre-button, .button-wrap .next-button {
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    font-size: 18px;}
+
+.button-wrap .pre-button i, .button-wrap .next-button i {
+    color: #cccccc; /* 아이콘 색상을 연한 회색으로 설정 */
+}
+.button-wrap .pre-button {
+    left: 20px; }
+.button-wrap .next-button {
+    right: 20px; }
+
+/*달력 테이블 크기 설정*/
+#calendarTable {
+    width: 70%;
+    border-collapse: collapse; /* 경계선 겹치기 방지 */
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+#calendarTable tr {
+    height: 3em;
+}
+
+#calendarTable td:hover, .selected {
+    color: #fff; /* 글자 색을 흰색으로 변경 */
+    border: none; /* 테두리 없음 */
+    cursor: pointer;
+}
+
+#calendarTable td:hover:after, .selected:after {
+    background: #2a3246; /* 배경색을 어두운 색으로 변경 */
+} /*todo : 존재하지 않는 날짜에는 배경색도 바뀌지 않게 조정*/
+
+/*button:not(:disabled),
+[type="button"]:not(:disabled),
+[type="reset"]:not(:disabled),
+[type="submit"]:not(:disabled) {
+    cursor: pointer; }
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+    padding: 0;
+    border-style: none; }*/
+
+#today {
+    color: #fff;
+    &:after{
+        background: deeppink;
+    }
+}
+
+#calendarTable .disabledDay  {
+    cursor: default;
+    background: #fff;
+}
+
+#calendarTable .disabledDay:hover {
+    background: #fff;
+    color: #fff;
+    &:after{
+        background: transparent;
+    }
+}
+
+#calendarTable td {
+    position: relative;
+    z-index: 0;
+}
+
+#calendarTable td:after {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    width: 44px;
+    height: 44px;
+    margin: 0 auto;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    transition: 0.3s;
+    z-index: -1;
+}
+
+#calendarTable th, #calendarTable td {
+    padding: 10px 27px 10px 27px; /* 패딩 추가로 여백 생성 */
+    /*text-align: center;*/ /* 텍스트 중앙 정렬 */
+}
+
+
+
+#header .head-day {
+    font-size: 2em;
+    line-height: 1;
+    color: #ffffff;
+    text-transform: uppercase;
+    float: right;
+    padding-right: 25%;
+    padding-top: 20%;
+    /*padding-bottom: 30%*/
+}
+
+#header .head-month {
+    font-size: 2em;     /*font-size: 16px;*/
+    line-height: 1;
+    color: #ffffff;
+    text-transform: uppercase;
+    /*font-weight: 300; */
+    float: left;
+    padding-left: 25%;
+    padding-top: 20%;
+   /* padding-bottom: 30%*/
+}
+
+/*#list-div {
+    margin: auto !important;
+}*/
+#diet-list table,
+#nutrient-list table,
+#diet-list-msg table {
+    width: 100%; /* 전체 너비로 설정 */
+    border-collapse: collapse; /* 경계선 겹치기 방지 */
+    table-layout: fixed; /* 고정 레이아웃 설정 */
+    margin-top: 45%;
+}
+#nutrient-list table {
+    margin-top: 20%; /*영양소는 내용이 많아서 더 위쪽에서 출력*/
+}
+
+#diet-list td,
+#nutrient-list td,
+#diet-list-msg td {
+    width: 50px; /* 원하는 너비로 설정 */
+    padding: 6px; /* 여백 추가 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+#diet-list tr,
+#nutrient-list tr,
+#diet-list-msg tr {
+    width: 50px; /* 원하는 너비로 설정 */
+    padding: 6px; /* 여백 추가 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+#diet-list, #nutrient-list, #diet-list-msg {
+    font-size: 1em;
+    color : #ffffff;
+    text-align: center;
+}
+
+.cal-title, .cal-title-btn {
+    display: inline-block;
+}
+.cal-title {
+    padding-left: 45%;
+
+}
+#cal-title-btn {
+    float: right;
+    margin-right: 150px;
+    margin-top: 28px;
+}
+#cal-title-btn button {
+    display: inline-block;
+    /*padding: 10px;*/
+    margin : 2px;
+
+
+}
+/*
+#diet-list, #nutrient-list, #diet-list-msg td {
+    width: 30px; !* td의 가로 길이를 150px로 설정 *!
+    padding: 10px; !* 여백 추가 *!
+}
+
+#diet-list, #nutrient-list, #diet-list-msg tr {
+    width: 50px; !* td의 가로 길이를 150px로 설정 *!
+    padding: 10px; !* 여백 추가 *!
+}*/
+
+
+.calendar-wrap {
+    width: 70%;
+    background: #fff;
+    padding: 40px 20px 20px 20px; }
+@media (max-width: 767.98px) {
+    .calendar-wrap {
+        width: 100%; } }
+
+
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    /* margin-right: -70%;
+     margin-left: -15px;*/
+    margin: auto;
+    width: 900px}
+.d-flex {
+    display: flex !important; }
+@media (min-width: 768px) {
+    .d-md-flex {
+        display: flex !important;
+    }
+
+    #reset {
+        display: block;
+        position: absolute;
+        right: 0.5em;
+        top: 0.5em;
+        z-index: 999;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 0 0.5em;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+
+    #reset:hover {
+        color: #fff;
+        border-color: #fff;
+    }
+
+    #reset:active {
+        transform: scale(0.8);
+    }
+
+
+}
+
+
+/*모달 관련 css*/
+#diet-modal {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 358%;
+    /*top: 0;*/
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 101;
+
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+#nutrient-modal {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 358%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.cal-modal-window {
+    background: rgba(192, 192, 192, 0.87);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(13.5px);
+    -webkit-backdrop-filter: blur(13.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    z-index: 100;
+
+    width: 400px;
+    height: 300px;
+    position: absolute;
+    top: 28%;
+    left: 40%;
+    padding: 10px;
+    text-align: center;
+}
+
+#diet-modal .cal-modal-title {
+    display: inline;
+    text-shadow: 1px 1px 2px gray;
+    color: white;
+
+}
+
+#diet-modal .cal-modal-title h4 {
+    display: inline;
+    padding-left: 30px;
+}
+
+#diet-modal .close-btn {
+    display: inline;
+    float: right;
+    padding-right: 10px;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px gray;
+    color: white;
+}
+
+#diet-modal .cal-content {
+    margin-left: 30px;
+}
+
+#diet-modal-table {
+    width: 100%;
+}
+#diet-modal-table th, tr, td {
+   /* padding : 5px;*/
     border-collapse: collapse;
     border-spacing: 0;
-    table-layout: auto;
+    /*table-layout: auto;*/
     height: auto;
-    border: 1px #81c405;
-    padding: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
     text-align: center;
     letter-spacing: 1px;
     word-wrap: break-word;
+    width: 20%;
+}
 
+#diet-modal-table td {
+    width: 65%;
+    text-align: center;
 }
 
 #bName, #lName, #dName {
-    width: auto;
+    width: 96%;
 }
-
-#clickedDietDay {
-    text-align: center;
+#dietBtn {
+    margin : auto;
 }
