@@ -5,7 +5,7 @@
                 <span class="myrecipe-title" th:text="${recipe.foodName}"></span>
                 <!-- YouTube iframe with allow attribute to enhance compatibility -->
                 <iframe class="myrecipe-youtube-frame"
-                        th:data-url="${recipe.recipeUrl}"
+                        th:src="${recipe.recipeUrl}"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
             </button>

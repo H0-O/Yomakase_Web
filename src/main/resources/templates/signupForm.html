@@ -82,6 +82,25 @@
       background-color: #555;
     }
 
+    /* 버튼 클릭 시 색상 변경 */
+    .btn:active {
+      background-color: #FFB524;
+    }
+
+    /* Checkbtn 버튼을 가운데 정렬 */
+    .Checkbtn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #81c405;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* 기타 폼 그룹 스타일 */
     .form-group {
       margin-bottom: 15px;
       text-align: left;
@@ -112,6 +131,7 @@
       border-radius: 5px;
     }
 
+    /* 드롭다운 스타일 */
     .dropdown {
       position: relative;
       text-align: left;
@@ -168,6 +188,7 @@
       color: white;
     }
 
+    /* 성별 선택 토글 버튼 스타일 */
     .gender-toggle button {
       padding: 10px 20px;
       margin: 5px;
@@ -186,6 +207,7 @@
     .gender-toggle button:hover {
       background-color: #ddd;
     }
+
   </style>
 </head>
 <script src="/jq/jquery-3.7.1.min.js"></script>
@@ -222,12 +244,12 @@
     <form id="signup-form" action="signupForm" method="post">
       <div class="first-container">
         <div class="header">
-          <div class="custom-heading"><h3>회원가입</h3></div>
+          <div class="custom-heading"><h2>회원가입</h2></div>
         </div>
         <div class="form-group">
           <label for="email">이메일</label>
           <input type="email" id="email" name="email" required>
-          <button type="button" id="id-check-btn" class="btn">ID 중복 확인</button>
+          <button type="button" id="id-check-btn" class="Checkbtn">ID 중복 확인</button>
           <div id="id-check-result" style="margin-top: 10px; color: red;"></div> <!-- 결과를 표시하는 영역 -->
         </div>
         <div class="form-group">
@@ -246,7 +268,7 @@
           <label for="birthDate">생년월일</label>
           <input type="date" id="birthDate" name="birthDate" required>
         </div>
-        <label for="gender">성별</label>
+        <label for="gender"></label>
         <div class="gender-toggle">
           <button type="button" id="male-btn" class="selected">남성</button>
           <button type="button" id="female-btn">여성</button>
@@ -258,15 +280,15 @@
       <!-- 두 번째 화면 -->
       <div class="second-container">
         <div class="header">
-          <div class="custom-heading"><h3>회원가입 - 추가 정보</h3></div>
+          <div class="custom-heading"><h2>회원가입 - 추가 정보</h2></div>
         </div>
         <div class="form-group">
           <label for="height">키</label>
-          <input type="text" id="height" name="height">
+          <input type="text" id="height" name="height" placeholder="cm">
         </div>
         <div class="form-group">
           <label for="weight">몸무게</label>
-          <input type="text" id="weight" name="weight">
+          <input type="text" id="weight" name="weight" placeholder="kg">
         </div>
         <div class="form-group">
           <label>알레르기 정보</label>
@@ -277,6 +299,7 @@
                 <span>&#9662;</span>
               </div>
               <div class="dropdown-content" id="meat-content">
+                <label data-allergy="eggs">달걀류</label>
                 <label data-allergy="pork">돼지고기</label>
                 <label data-allergy="chicken">닭고기</label>
                 <label data-allergy="beef">쇠고기</label>
@@ -291,6 +314,18 @@
                 <label data-allergy="mackerel">고등어</label>
                 <label data-allergy="shrimp">새우</label>
                 <label data-allergy="squid">오징어</label>
+                <label data-allergy="crab">게</label>
+                <label data-allergy="shellfish">조개류</label>
+              </div>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-label" id="fruit-dropdown">
+                과채류
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="fruit-content">
+                <label data-allergy="peach">복숭아</label>
+                <label data-allergy="tomato">토마토</label>
               </div>
             </div>
             <div class="dropdown">
@@ -302,6 +337,26 @@
                 <label data-allergy="peanut">땅콩</label>
                 <label data-allergy="walnuts">호두</label>
                 <label data-allergy="pineNut">잣</label>
+                <label data-allergy="soybean">대두</label>
+              </div>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-label" id="grain-dropdown">
+                곡물
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="grain-content">
+                <label data-allergy="buckwheat">메밀</label>
+                <label data-allergy="wheat">밀</label>
+              </div>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-label" id="dairy-dropdown">
+                유제품
+                <span>&#9662;</span>
+              </div>
+              <div class="dropdown-content" id="dairy-content">
+                <label data-allergy="milk">우유</label>
               </div>
             </div>
           </div>

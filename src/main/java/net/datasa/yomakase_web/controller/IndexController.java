@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -33,7 +34,7 @@ public class IndexController {
             if (StringUtils.hasLength(username)) {
                 // 이메일로 사용자 정보를 조회
                 MemberDTO member = memberService.getUserByEmail(username);
-                MemberDTO allergy = memberInfoService.getAllergyByEmail(username);
+                Map<String, Boolean> allergy = memberInfoService.getAllergyByEmail(username);
                 List<SavedRecipeDTO> recipes = savedRecipeService.getSavedRecipes();
                 if (member == null) {
                     // 만약 사용자를 찾을 수 없다면, 오류 처리 또는 리다이렉트

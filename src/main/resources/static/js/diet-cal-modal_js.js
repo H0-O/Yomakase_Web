@@ -57,27 +57,31 @@ function calBackgroundChange() {
     index++;
 }
 
+
 // 영양소 모달 관련 자바스크립트
-let nutrientModal = document.getElementById("nutrient-modal");
+    let nutrientModal = document.getElementById("nutrient-modal");
+
 
     function modalNutrientOn() {
         nutrientModal.style.display = "flex";
+        nutrientModal.style.visibility = "visible";
     }
+
+    function modalNutrientOff() {
+        nutrientModal.style.display = "none";
+        nutrientModal.style.visibility = "hidden";
+    }
+
 
     function isModalNutrientOn() {
         return nutrientModal.style.display === "flex";
     }
 
-    function modalNutrientOff() {
-        nutrientModal.style.display = "none";
 
-    }
-
-
-   /* // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
+    // 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기
     nutrientModal.addEventListener("click", e => {
         const evTarget = e.target;
-        if (evTarget.classList.contains("modal-overlay")) {
+        if (evTarget.classList.contains("cal-modal-overlay")) {
             modalNutrientOff();
         }
     });
@@ -87,7 +91,7 @@ let nutrientModal = document.getElementById("nutrient-modal");
         if (isModalNutrientOn() && e.key === "Escape") {
             modalNutrientOff();
         }
-    })*/
+    })
 
 
 

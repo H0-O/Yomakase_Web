@@ -7,7 +7,7 @@
         <h3 id="dietCalTitle" style="display: block">식단 달력</h3>
         <h3 id="nutrientCalTitle" style="display: none">영양소 달력</h3>
       </div>
-      <div class="cal-title-btn" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+      <div id="cal-title-btn" style="visibility: hidden">
         <button id="dietCalBtn">식단</button><button id="nutrientCalBtn">영양소</button>
       </div>
       <!-- 여기서부터 달력 부분-->
@@ -161,7 +161,7 @@
   </section>
 
   <!--식단 입력 모달 부분-->
-  <div id="diet-modal" class="cal-modal-overlay">
+  <div id="diet-modal" class="cal-modal-overlay" style="display: none">
     <div class="cal-modal-window">
       <div class="cal-modal-title">
         <h4>식단 입력</h4>
@@ -196,7 +196,7 @@
 
 
   <!--영양소 점수출력 모달 부분-->
-  <div id="nutrient-modal" class="cal-modal-overlay" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+  <div id="nutrient-modal" class="cal-modal-overlay" style="visibility: hidden">
     <div class="cal-modal-window" >
       <div class="cal-content">
         <table id="nutrient-modal-table">
