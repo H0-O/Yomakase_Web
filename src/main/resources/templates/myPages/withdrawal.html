@@ -11,7 +11,7 @@
         </div>
         <div class="mypages-button-container">
             <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
-            <button id="mypages-cancelYesButton" class="mypages-cancelYesButton" onclick="deleteAccount()" disabled>예</button>
+            <button id="mypages-cancelYesButton" class="mypages-cancelYesButton" onclick="deleteAccount()">예</button>
         </div>
     </div>
     <style>
@@ -108,49 +108,41 @@
         }
     </style>
     <script>
-        // 체크박스와 버튼 요소를 가져옴
-        const agreeCheckbox = document.getElementById('agreeCheckbox');
-        const cancelYesButton = document.getElementById('mypages-cancelYesButton');
+        document.addEventListener('DOMContentLoaded', function() {
+            // 체크박스와 버튼 요소를 가져옴
+            const agreeCheckbox = document.getElementById('agreeCheckbox');
 
-        // 체크박스 상태에 따라 탈퇴 버튼 활성화/비활성화
-        agreeCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                cancelYesButton.disabled = false; // 체크되면 탈퇴 버튼 활성화
-            } else {
-                cancelYesButton.disabled = true;  // 체크 해제되면 탈퇴 버튼 비활성화
-            }
-        });
-
-        function cancelDelete() {
-            alert('탈퇴가 취소되었습니다.');
-            // 회원 탈퇴 취소 시 아무런 동작도 하지 않고 모달을 닫는 함수
-            closeModal('modal-deleteAccount');
-            window.location.href = "/";
-        }
-
-        function deleteAccount() {
-            const isChecked = agreeCheckbox.checked; // 체크박스 상태 확인
-
-            if (!isChecked) {
-                alert('회원탈퇴에 동의하지 않으면 탈퇴할 수 없습니다.');
-                return; // 탈퇴 진행을 막음
-            }
-
-            // 회원 탈퇴 요청을 서버로 전송하는 함수
-            // AJAX 요청을 통해 현재 로그인한 회원을 삭제
-            const xhr = new XMLHttpRequest();
-            xhr.open("DELETE", "/member/delete", true); // DELETE 메서드를 사용해 서버에 요청
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log("회원 탈퇴 완료");
-                    alert("정상적으로 탈퇴되었습니다.")
-                    window.location.href = "/"; // 탈퇴 후 홈으로 리다이렉트
-                } else if (xhr.readyState === 4) {
-                    console.error("회원 탈퇴 중 오류 발생", xhr.responseText);
-                }
+            // 탈퇴 취소 함수
+            window.cancelDelete = function () {
+                alert('탈퇴가 취소되었습니다.');
+                // 회원 탈퇴 취소 시 아무런 동작도 하지 않고 모달을 닫는 함수
+                closeModal('modal-deleteAccount');
+                window.location.href = "/";
             };
-            xhr.send();
-        }
+
+            // 탈퇴 요청 함수
+            window.deleteAccount = function () {
+                if (!agreeCheckbox.checked) {
+                    alert('회원탈퇴에 동의하지 않으면 탈퇴할 수 없습니다.');
+                    return;
+                }
+
+                // 회원 탈퇴 요청을 서버로 전송하는 함수
+                // AJAX 요청을 통해 현재 로그인한 회원을 삭제
+                const xhr = new XMLHttpRequest();
+                xhr.open("DELETE", "/member/delete", true); // DELETE 메서드를 사용해 서버에 요청
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log("회원 탈퇴 완료");
+                        alert("정상적으로 탈퇴되었습니다.")
+                        window.location.href = "/"; // 탈퇴 후 홈으로 리다이렉트
+                    } else if (xhr.readyState === 4) {
+                        console.error("회원 탈퇴 중 오류 발생", xhr.responseText);
+                    }
+                };
+                xhr.send();
+            };
+        });
     </script>
 </div>
