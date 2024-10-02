@@ -230,20 +230,20 @@
         }
 
         .modal-content {
-            background-color: #81c405;
-            border: 1px solid #FFB524;
+            background-color: white;
+            border: 2px solid #FFB524;
             margin: 10% auto;
             padding: 20px;
             width: 90%;
             max-width: 500px;
             text-align: center;
             border-radius: 10px;
-            color: white;
+            color: #81c405;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .modal-content .close {
-            color: white;
+            color: #81c405;
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -537,6 +537,7 @@
                         input.value = 'true';
                         this.classList.add('selected');
                     }
+
                 });
             });
 
@@ -552,29 +553,28 @@
                     confirmPassword: document.getElementById('confirmPassword').value,
                     birthDate: document.getElementById('birthDate').value,
                     gender: document.getElementById('gender').value,
-                    height: document.getElementById('height').value,
-                    weight: document.getElementById('weight').value,
-                    // 알레르기 정보 수집
-                    eggs: document.getElementById('eggs').value,
-                    milk: document.getElementById('milk').value,
-                    buckwheat: document.getElementById('buckwheat').value,
-                    peanut: document.getElementById('peanut').value,
-                    soybean: document.getElementById('soybean').value,
-                    wheat: document.getElementById('wheat').value,
-                    mackerel: document.getElementById('mackerel').value,
-                    crab: document.getElementById('crab').value,
-                    shrimp: document.getElementById('shrimp').value,
-                    pork: document.getElementById('pork').value,
-                    peach: document.getElementById('peach').value,
-                    tomato: document.getElementById('tomato').value,
-                    walnuts: document.getElementById('walnuts').value,
-                    chicken: document.getElementById('chicken').value,
-                    beef: document.getElementById('beef').value,
-                    squid: document.getElementById('squid').value,
-                    shellfish: document.getElementById('shellfish').value,
-                    pineNut: document.getElementById('pineNut').value
+                    height: parseInt(document.getElementById('height').value),
+                    weight: parseInt(document.getElementById('weight').value),
+                    // 알레르기 정보 수집 (문자열을 boolean으로 변환)
+                    eggs: document.getElementById('eggs').value === 'true',
+                    milk: document.getElementById('milk').value === 'true',
+                    buckwheat: document.getElementById('buckwheat').value === 'true',
+                    peanut: document.getElementById('peanut').value === 'true',
+                    soybean: document.getElementById('soybean').value === 'true',
+                    wheat: document.getElementById('wheat').value === 'true',
+                    mackerel: document.getElementById('mackerel').value === 'true',
+                    crab: document.getElementById('crab').value === 'true',
+                    shrimp: document.getElementById('shrimp').value === 'true',
+                    pork: document.getElementById('pork').value === 'true',
+                    peach: document.getElementById('peach').value === 'true',
+                    tomato: document.getElementById('tomato').value === 'true',
+                    walnuts: document.getElementById('walnuts').value === 'true',
+                    chicken: document.getElementById('chicken').value === 'true',
+                    beef: document.getElementById('beef').value === 'true',
+                    squid: document.getElementById('squid').value === 'true',
+                    shellfish: document.getElementById('shellfish').value === 'true',
+                    pineNut: document.getElementById('pineNut').value === 'true'
                 };
-
                 // JSON 데이터를 서버로 전송
                 fetch('/member/update', {
                     method: 'POST',
@@ -598,6 +598,7 @@
                         console.error('오류 발생:', error);
                     });
             });
+
         });
 
     </script>

@@ -38,8 +38,8 @@
         </table>
     </div>
     <!-- 로딩 모달 -->
-    <div id="loading-modal">
-        <div class="modal-content">
+    <div id="ingredient-loading-modal">
+        <div class="loading-modal-content">
             <p>영수증에서 식재료 추출 중...</p>
             <div class="spinner"></div>
         </div>
@@ -206,29 +206,31 @@
 
 
         /* 로딩 모달 스타일 */
-        #loading-modal {
+        #ingredient-loading-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             display: none; /* 기본적으로 숨김 */
         }
 
-        .modal-content {
+        .loading-modal-content {
             background: white;
             padding: 20px;
             border-radius: 8px;
             text-align: center;
             font-size: 2rem;
             font-weight: bold;
-        / / color: white;
+            color: #81c405 !important;
+            border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
+
         }
+
 
         .spinner {
             width: 17.6px;
@@ -320,7 +322,7 @@
                 alert('영수증을 먼저 업로드하세요!');
                 return;
             }
-            document.getElementById('loading-modal').style.display = 'flex';
+            document.getElementById('ingredient-loading-modal').style.display = 'flex';
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
@@ -333,6 +335,20 @@
                     const ingredientsList = document.getElementById('ingredients-list');
                     //ingredientsList.innerHTML = ''; // 기존 목록을 초기화
 
+                    // ingredients-list에서 모든 input 그룹을 가져옴
+                    const inputGroups = document.querySelectorAll('#ingredients-list .input-group');
+
+                    inputGroups.forEach(group => {
+                        // 그룹 내의 input 필드들을 가져옴
+                        const ingredientInput = group.querySelector('input[name="ingredients[]"]');
+                        const expirationInput = group.querySelector('input[name="expiration[]"]');
+
+                        // 둘 중 하나라도 비어있으면 그 그룹은 비어있는 그룹으로 간주
+                        if (!ingredientInput.value.trim() || !expirationInput.value.trim()) {
+                            ingredientsList.innerHTML = '';
+                        }
+                    });
+
                     // 데이터를 처리하면서 이름과 소비기한을 각각 나누어 처리
                     Object.entries(data).forEach(([ingredientName, expiration]) => {
                         const inputGroup = createInputGroup(ingredientName, expiration);
@@ -341,7 +357,7 @@
                 })
                 .catch(error => console.error('Error:', error))
                 .finally(() => {
-                    document.getElementById('loading-modal').style.display = 'none';
+                    document.getElementById('ingredient-loading-modal').style.display = 'none';
                 });
         });
 
