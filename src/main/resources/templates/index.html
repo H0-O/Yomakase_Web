@@ -31,19 +31,19 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#myRefrigerator" onclick="checkLogin('/myRefrigerator')">나의냉장고</a>
+                <a class="nav-link js-scroll-trigger" href="#myRefrigerator">나의냉장고</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#ingredientInput" onclick="checkLogin('/ingredientInput')">재료입력</a>
+                <a class="nav-link js-scroll-trigger" href="#ingredientInput">재료입력</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#calendar" onclick="checkLogin('/calendar')">달력</a>
+                <a class="nav-link js-scroll-trigger" href="#calendar">달력</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#board" onclick="checkLogin('/board')">게시판</a>
+                <a class="nav-link js-scroll-trigger" href="#board">게시판</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#myPages" onclick="checkLogin('/myPages')">마이페이지</a>
+                <a class="nav-link js-scroll-trigger" href="#myPages">마이페이지</a>
             </li>
         </ul>
     </div>
@@ -190,25 +190,6 @@
     function closeAd() {
         document.getElementById('ads-overlay').style.display = 'none'; // 오버레이 숨김
         document.getElementById('dummy-ads-container').style.display = 'none'; // 광고 컨테이너 숨김
-    }
-    function checkLogin(destinationUrl) {
-        // 로그인 상태를 확인하는 AJAX 요청 (서버에서 로그인 여부를 반환하는 API 필요)
-        fetch('/api/checkLogin', {
-            method: 'GET',
-            credentials: 'same-origin' // 쿠키와 함께 요청
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.loggedIn) {
-                    window.location.href = destinationUrl; // 로그인 되어 있으면 해당 페이지로 이동
-                } else {
-                    alert('로그인이 필요합니다.');
-                    window.location.href = '/loginForm'; // 로그인 페이지로 리다이렉트
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
     }
 
 </script>
