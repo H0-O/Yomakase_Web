@@ -37,9 +37,9 @@
                     <p>현재 저장된 재료가 없습니다.</p>
                 </div>
                 <!-- 식재료 삭제 모달 페이지 -->
-                <div id="delModal" class="modal-overlay">
+                <div id="deleteModal" class="modal-overlay">
                     <div class="modal-window">
-                        <img onclick="closeModal('delModal')" src="/img/closeIcon.png">
+                        <img onclick="closeModal('deleteModal')" src="/img/closeIcon.png">
                         <div class="modal-text">
                             <!-- 모달에 식재료 이름 표시 -->
                         </div>
@@ -50,9 +50,9 @@
                     </div>
                 </div>
                 <!-- 날짜 수정 모달 페이지 -->
-                <div id="dateModal" class="modal-overlay">
+                <div id="modifyDateModal" class="modal-overlay">
                     <div class="modal-window">
-                        <img onclick="closeModal('dateModal')" src="/img/closeIcon.png">
+                        <img onclick="closeModal('modifyDateModal')" src="/img/closeIcon.png">
                         <p class="date-text">소비기한 수정</p>
                         <div id="date-container">
                             <input type="hidden" id="ingredientName" value="">
@@ -196,7 +196,7 @@
                 $('#date').val(''); // 날짜 초기화
 
                 // 수정 모달 열기
-                toggleModalVisibility('dateModal', true);
+                toggleModalVisibility('modifyDateModal', true);
             });
             // 소비기한 수정 버튼 클릭 시 서버로 데이터 전송
             $('#submitDate').on('click', function () {
@@ -226,7 +226,7 @@
                         alert(data);  // 서버에서 전달한 메시지를 그대로 출력
 
                         // 모달 닫기 및 데이터 갱신
-                        toggleModalVisibility('dateModal', false);
+                        toggleModalVisibility('modifyDateModal', false);
                         fetchStockData();  // 테이블 갱신
                         fetchStockImages();
                     })
@@ -252,14 +252,14 @@
             $(document).on('click', function (event) {
                 const target = $(event.target);
 
-                // delModal 모달 외부 클릭 시 닫기
-                if (target.hasClass('modal-overlay') && target.closest('.modal-window').length === 0) {
-                    toggleModalVisibility('delModal', false);
+                // deleteModal 모달 외부 클릭 시 닫기
+                if (target.hasClass('modal-overlay') && target.closest('.deleteModal-window').length === 0) {
+                    toggleModalVisibility('deleteModal', false);
                 }
 
-                // dateModal 모달 외부 클릭 시 닫기
+                // modifyDateModal 모달 외부 클릭 시 닫기
                 if (target.hasClass('modal-overlay') && target.closest('.modal-window').length === 0) {
-                    toggleModalVisibility('dateModal', false);
+                    toggleModalVisibility('modifyDateModal', false);
                 }
 
                 // RecipeModal 모달 외부 클릭 시 닫기
@@ -270,8 +270,8 @@
 
             // 모달 닫기 버튼 클릭 시 모달 닫기
             $('.close-area').click(function () {
-                toggleModalVisibility('delModal', false);
-                toggleModalVisibility('dateModal', false);
+                toggleModalVisibility('deleteModal', false);
+                toggleModalVisibility('modifyDateModal', false);
                 toggleModalVisibility('RecipeModal', false);
             });
 
@@ -416,14 +416,14 @@
 
             // 소비/버림 버튼을 가진 삭제 모달 표시 함수
             function showDeleteModal(ingredientName) {
-                const modal = document.getElementById('delModal');
+                const modal = document.getElementById('deleteModal');
                 modal.querySelector('.modal-text').innerText = `${ingredientName}을/를 어떻게 할까요?`;
 
                 // 데이터 속성에 ingredientName 저장 (나중에 사용할 수 있도록 버튼에 저장)
                 $('#consume-btn').data('ingredient-name', ingredientName);
                 $('#discard-btn').data('ingredient-name', ingredientName);
 
-                toggleModalVisibility('delModal', true);
+                toggleModalVisibility('deleteModal', true);
             }
 
             function handleConsumeOrDiscard(ingredientName, type) {
@@ -444,7 +444,7 @@
                         alert(data); // 서버에서 전달한 메시지를 그대로 출력
 
                         // 모달 닫기 및 데이터 갱신
-                        toggleModalVisibility('delModal', false);
+                        toggleModalVisibility('deleteModal', false);
                         fetchStockData(); // 테이블 갱신
                         fetchStockImages();
                     })

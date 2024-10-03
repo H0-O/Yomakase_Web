@@ -217,28 +217,26 @@
 
 .modal-window {
     z-index: 1001;
-    background: ivory;
+    background: white;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(13.5px);
     -webkit-backdrop-filter: blur(13.5px);
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 2px solid #ffb524;
     position: relative;
     margin: auto;
     padding: 20px;
     max-width: 800px;
     max-height: 600px;
+
 }
 
-#delModal .modal-window {
-    width: 300px;
+#deleteModal .modal-window {
+    width: 500px;
     text-align: center;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
 }
 
-#dateModal .modal-window {
+#modifyDateModal .modal-window {
     width: 300px;
     height: 150px;
 }
@@ -251,7 +249,7 @@
     color: black;
 }
 
-#delModal .modal-text {
+#deleteModal .modal-text {
     letter-spacing: 1px;
     font-weight: bold;
     font-size: 20px;
@@ -263,17 +261,17 @@
     max-width: 100%; /* 모달 바깥으로 넘치지 않도록 제한 */
 }
 
-#delModal .button-container {
+#deleteModal .button-container {
     margin: auto;
 }
 
-#delModal .refriBtn {
+#deleteModal .refriBtn {
     margin: 10px;
     padding: 10px;
     font-size: 20px;
 }
 
-#dateModal .date-text {
+#modifyDateModal .date-text {
     letter-spacing: 1px;
     font-weight: bold;
     font-size: 20px;
