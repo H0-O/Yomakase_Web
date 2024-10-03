@@ -85,7 +85,24 @@
 
             // 클릭한 li에 active 클래스 추가
             $(element).closest('li').addClass('active');
+
+            console.log('클릭된 탭:', tabName);
+
         }
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectedTab = localStorage.getItem('selectedTab');
+            console.log('불러온 탭:', selectedTab); // 콘솔에 출력해 확인
+
+            // 저장된 탭이 있을 경우 해당 탭을 활성화
+            if (selectedTab) {
+                $(`#${selectedTab}`).show(); // 탭 내용 보여줌
+                $(`.mypagesNavbar ul li a[onclick*="${selectedTab}"]`).closest('li').addClass('active'); // 탭 활성화
+            } else {
+                // 저장된 탭이 없으면 기본 탭을 활성화 (예: 나의 레시피)
+                $("#myrecipe").show();
+                $('.mypagesNavbar ul li:first').addClass('active');
+            }
+        });
     </script>
 
     <div class="resume-section-content">
