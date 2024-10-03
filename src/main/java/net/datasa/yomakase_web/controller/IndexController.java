@@ -7,13 +7,17 @@ import net.datasa.yomakase_web.domain.dto.SavedRecipeDTO;
 import net.datasa.yomakase_web.service.MemberInfoService;
 import net.datasa.yomakase_web.service.MemberService;
 import net.datasa.yomakase_web.service.SavedRecipeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,5 +53,17 @@ public class IndexController {
         }
 
         return "index";
+    }
+
+    @ResponseBody
+    @GetMapping("/api/checkLogin")
+    public ResponseEntity<Map<String, Boolean>> checkLogin(Authentication authentication) {
+        Map<String, Boolean> response = new HashMap<>();
+        if (authentication != null && authentication.isAuthenticated()) {
+            response.put("loggedIn", true);
+        } else {
+            response.put("loggedIn", false);
+        }
+        return ResponseEntity.ok(response);
     }
 }
