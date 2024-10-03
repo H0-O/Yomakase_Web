@@ -1,22 +1,22 @@
 <div th:fragment="withdrawalFragment">
-    <div id="modal-deleteAccount" class="mypages-modal-content">
+    <div id="modal-deleteAccount" class="withdrawal-modal-content">
         <h3>회원 탈퇴</h3>
-        <p class="mypages-warning">정말로 회원 탈퇴를 하시겠습니까?</p>
-        <p class="mypages-danger">※ 탈퇴 시 모든 정보가 삭제되며 복구할 수 없습니다.</p>
-        <p class="mypages-info">회원님의 모든 데이터가 삭제되며, 탈퇴 후에는 재가입이 필요합니다.</p>
+        <p class="withdrawal-warning">정말로 회원 탈퇴를 하시겠습니까?</p>
+        <p class="withdrawal-danger">※ 탈퇴 시 모든 정보가 삭제되며 복구할 수 없습니다.</p>
+        <p class="withdrawal-info">회원님의 모든 데이터가 삭제되며, 탈퇴 후에는 재가입이 필요합니다.</p>
         <!-- 동의 체크박스 추가 -->
         <div class="withdrawalBtn">
             <input type="checkbox" id="agreeCheckbox">
             <label for="agreeCheckbox">회원탈퇴에 동의함</label>
         </div>
-        <div class="mypages-button-container">
-            <button class="mypages-cancelNoButton" onclick="cancelDelete()">아니오</button>
-            <button id="mypages-cancelYesButton" class="mypages-cancelYesButton" onclick="deleteAccount()" disabled>예</button>
+        <div class="withdrawal-button-container">
+            <button class="withdrawal-cancelNoButton" onclick="cancelDelete()">아니오</button>
+            <button id="withdrawal-cancelYesButton" class="withdrawal-cancelYesButton" onclick="deleteAccount()" disabled>예</button>
         </div>
     </div>
     <style>
         /* 모달 창 스타일 */
-        .mypages-modal-content {
+        .withdrawal-modal-content {
             font-family: 'Arial', sans-serif;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
@@ -30,7 +30,7 @@
         }
 
         /* 경고 스타일 */
-        .mypages-warning {
+        .withdrawal-warning {
             font-size: 18px;
             color: #333;
             font-weight: bold;
@@ -38,7 +38,7 @@
         }
 
         /* 심각한 경고 스타일 */
-        .mypages-danger {
+        .withdrawal-danger {
             color: red;
             font-size: 16px;
             margin-bottom: 20px;
@@ -46,7 +46,7 @@
         }
 
         /* 추가 안내 정보 스타일 */
-        .mypages-info {
+        .withdrawal-info {
             color: #555;
             font-size: 14px;
             margin-bottom: 20px;
@@ -54,7 +54,7 @@
         }
 
         /* 버튼 컨테이너 스타일 */
-        .mypages-button-container {
+        .withdrawal-button-container {
             display: flex;
             justify-content: space-around;
             gap: 10px;
@@ -62,12 +62,12 @@
             margin-bottom: 30px;
         }
 
-        .mypages-cancelYesButton:active {
+        .withdrawal-cancelYesButton:active {
             transform: translateY(2px);
         }
 
         /* 버튼 컨테이너 스타일 */
-        .mypages-button-container {
+        .withdrawal-button-container {
             display: flex;
             justify-content: center;
             gap: 10px; /* 버튼 간의 간격을 조절 */
@@ -75,19 +75,19 @@
         }
 
         /* 버튼 스타일 */
-        .mypages-cancelNoButton,
-        .mypages-cancelYesButton {
+        .withdrawal-cancelNoButton,
+        .withdrawal-cancelYesButton {
             padding: 10px 20px;
             background-color: #81c405;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        .mypages-cancelNoButton:hover,
-        .mypages-cancelYesButton:hover {
+        .withdrawal-cancelNoButton:hover,
+        .withdrawal-cancelYesButton:hover {
             background-color: #555 !important;
             opacity: 0.9;
         }
