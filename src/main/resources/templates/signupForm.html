@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>회원가입</title>
   <style>
-    /* 모달 창 스타일 */
+    /* 기존 CSS 내용 유지 */
     .modal-content {
       background-color: white;
       margin: 5% auto;
@@ -18,7 +18,6 @@
       position: relative;
     }
 
-    /* first-container와 second-container에 공통 적용 */
     .first-container, .second-container {
       position: absolute;
       padding: 20px;
@@ -31,7 +30,6 @@
       transition: opacity 0.5s, transform 0.5s;
     }
 
-    /* first-container의 기본 스타일 */
     .first-container {
       z-index: 2;
       opacity: 1;
@@ -40,7 +38,6 @@
       pointer-events: auto;
     }
 
-    /* 숨겨진 상태일 때 */
     .first-container.hidden {
       opacity: 0;
       transform: translateX(-100%);
@@ -49,7 +46,6 @@
       pointer-events: none;
     }
 
-    /* second-container의 기본 스타일 */
     .second-container {
       opacity: 0;
       transform: translateX(100%);
@@ -58,7 +54,6 @@
       pointer-events: none;
     }
 
-    /* 활성화된 상태일 때 */
     .second-container.active {
       opacity: 1;
       transform: translateX(0);
@@ -67,7 +62,6 @@
       pointer-events: auto;
     }
 
-    /* 버튼 스타일 */
     .btn {
       padding: 10px 20px;
       margin: 10px;
@@ -82,12 +76,10 @@
       background-color: #555;
     }
 
-    /* 버튼 클릭 시 색상 변경 */
     .btn:active {
       background-color: #FFB524;
     }
 
-    /* Checkbtn 버튼을 가운데 정렬 */
     .Checkbtn {
       display: block;
       margin: 20px auto;
@@ -100,7 +92,6 @@
       text-align: center;
     }
 
-    /* 기타 폼 그룹 스타일 */
     .form-group {
       margin-bottom: 15px;
       text-align: left;
@@ -131,7 +122,6 @@
       border-radius: 5px;
     }
 
-    /* 드롭다운 스타일 */
     .dropdown {
       position: relative;
       text-align: left;
@@ -188,7 +178,6 @@
       color: white;
     }
 
-    /* 성별 선택 토글 버튼 스타일 */
     .gender-toggle button {
       padding: 10px 20px;
       margin: 5px;
@@ -207,41 +196,14 @@
     .gender-toggle button:hover {
       background-color: #ddd;
     }
-
   </style>
 </head>
-<script src="/jq/jquery-3.7.1.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $('#id-check-btn').click(function() {
-      var email = $('#email').val();
-
-      if (!email) {
-        alert("이메일을 입력하세요.");
-        return;
-      }
-
-      $.ajax({
-        type: 'POST',
-        url: '/idCheck',
-        data: { searchId: email },
-        success: function(result) {
-          $('#id-check-result').text(result);
-        },
-        error: function(xhr, status, error) {
-          console.error('Error:', error);
-          $('#id-check-result').text("오류가 발생했습니다. 다시 시도해주세요.");
-        }
-      });
-    });
-  });
-
-</script>
 <body>
 <div id="box">
   <div class="modal-content">
     <!-- 통합된 폼 -->
     <form id="signup-form" action="signupForm" method="post">
+      <!-- 첫 번째 화면  -->
       <div class="first-container">
         <div class="header">
           <div class="custom-heading"><h2>회원가입</h2></div>
@@ -249,7 +211,6 @@
         <div class="form-group">
           <label for="email">이메일</label>
           <input type="email" id="email" name="email" required>
-          <button type="button" id="id-check-btn" class="Checkbtn">ID 중복 확인</button>
           <div id="id-check-result" style="margin-top: 10px; color: red;"></div> <!-- 결과를 표시하는 영역 -->
         </div>
         <div class="form-group">
@@ -385,65 +346,126 @@
     </form>
   </div>
 </div>
-
+<script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
 <script>
-  // 다음 버튼 클릭 시 첫 화면을 숨기고 두 번째 화면을 보여줌
-  document.getElementById('next-btn').addEventListener('click', function() {
-    console.log("Next button clicked: Moving to the second form");
-    document.querySelector('.first-container').classList.add('hidden');
-    document.querySelector('.second-container').classList.add('active');
-  });
+  $(document).ready(function() {
+// 필수 필드 입력 체크 함수
+    function checkRequiredFields() {
+      var email = $('#email').val();
+      var nickname = $('#nickname').val();
+      var password = $('#password').val();
+      var confirmPassword = $('#confirm_password').val();
+      var birthDate = $('#birthDate').val();
+      var idCheckResult = $('#id-check-result').text();
 
-  // 이전 버튼 클릭 시 두 번째 화면을 숨기고 첫 번째 화면을 보여줌
-  document.getElementById('back-btn').addEventListener('click', function() {
-    console.log("Back button clicked: Returning to the first form");
-    document.querySelector('.second-container').classList.remove('active');
-    document.querySelector('.first-container').classList.remove('hidden');
-  });
-
-  // 성별 버튼 클릭 이벤트
-  document.getElementById('male-btn').addEventListener('click', function() {
-    console.log("Male selected");
-    document.getElementById('male-btn').classList.add('selected');
-    document.getElementById('female-btn').classList.remove('selected');
-    document.getElementById('gender').value = 'M';
-  });
-
-  document.getElementById('female-btn').addEventListener('click', function() {
-    console.log("Female selected");
-    document.getElementById('female-btn').classList.add('selected');
-    document.getElementById('male-btn').classList.remove('selected');
-    document.getElementById('gender').value = 'F';
-  });
-
-  // 드롭다운 라벨을 클릭하면 해당 컨텐츠를 표시하거나 숨기는 이벤트 처리
-  document.querySelectorAll('.dropdown-label').forEach(label => {
-    label.addEventListener('click', function() {
-      const content = this.nextElementSibling; // 해당 드롭다운의 컨텐츠 찾기
-      content.classList.toggle('show'); // 드롭다운 표시/숨김 토글
-      console.log("Dropdown clicked: Toggling visibility for ", content);
-    });
-  });
-
-  // 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
-  document.querySelectorAll('.dropdown-content label').forEach(label => {
-    label.addEventListener('click', function() {
-      const allergy = this.getAttribute('data-allergy');
-      const input = document.getElementById(allergy);
-
-      if (input.value === 'true') {
-        input.value = 'false';
-        this.classList.remove('selected');
-        console.log(allergy + " deselected");
-      } else {
-        input.value = 'true';
-        this.classList.add('selected');
-        console.log(allergy + " selected");
+// 필수 항목이 비어 있거나 ID가 중복되었는지 확인
+      if (!email || !nickname || !password || !confirmPassword || !birthDate) {
+        alert('모든 필수 항목을 입력해주세요.');
+        return false;
       }
 
-      console.log("Current allergy values: " + input.value);
+      if (!idCheckResult.includes('사용가능한')) {
+        alert('이메일 중복 확인을 해주세요.');
+        return false;
+      }
+
+      if (password !== confirmPassword) {
+        alert('비밀번호가 일치하지 않습니다.');
+        return false;
+      }
+
+      return true;
+    }
+
+// 이메일 체크 AJAX (디바운스 적용)
+    let debounceTimer;
+    $('#email').on('keyup', function () {
+      clearTimeout(debounceTimer);
+      let email = $(this).val();
+
+      if (!email) {
+        $('#id-check-result').html('이메일을 입력해주세요.');
+        $('#id-check-result').css('color', 'red');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        $('#id-check-result').html('올바른 이메일 형식이 아닙니다.');
+        $('#id-check-result').css('color', 'red');
+        return;
+      }
+
+      debounceTimer = setTimeout(function () {
+        $.ajax({
+          url: '/idCheck',
+          type: 'POST',
+          data: { searchId: email },
+          success: function (data) {
+            $('#id-check-result').html(data);
+
+            if (data.includes('사용가능한')) {
+              $('#id-check-result').css('color', 'green');
+            } else {
+              $('#id-check-result').css('color', 'red');
+            }
+          },
+          error: function () {
+            $('#id-check-result').html('ID 중복 확인 중 오류가 발생했습니다.');
+            $('#id-check-result').css('color', 'red');
+          }
+        });
+      }, 500);
+    });
+
+// 다음 버튼 클릭 시
+    $('#next-btn').click(function() {
+// 필수 항목 체크
+      if (checkRequiredFields()) {
+// 모든 필드가 유효할 때만 다음 단계로 전환
+        $('.first-container').addClass('hidden');
+        $('.second-container').addClass('active');
+      }
+    });
+
+// 성별 버튼 클릭 이벤트
+    document.getElementById('male-btn').addEventListener('click', function() {
+      document.getElementById('male-btn').classList.add('selected');
+      document.getElementById('female-btn').classList.remove('selected');
+      document.getElementById('gender').value = 'M';
+    });
+
+    document.getElementById('female-btn').addEventListener('click', function() {
+      document.getElementById('female-btn').classList.add('selected');
+      document.getElementById('male-btn').classList.remove('selected');
+      document.getElementById('gender').value = 'F';
+    });
+
+// 드롭다운 라벨을 클릭하면 해당 컨텐츠를 표시하거나 숨기는 이벤트 처리
+    document.querySelectorAll('.dropdown-label').forEach(label => {
+      label.addEventListener('click', function() {
+        const content = this.nextElementSibling;
+        content.classList.toggle('show');
+      });
+    });
+
+// 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
+    document.querySelectorAll('.dropdown-content label').forEach(label => {
+      label.addEventListener('click', function() {
+        const allergy = this.getAttribute('data-allergy');
+        const input = document.getElementById(allergy);
+
+        if (input.value === 'true') {
+          input.value = 'false';
+          this.classList.remove('selected');
+        } else {
+          input.value = 'true';
+          this.classList.add('selected');
+        }
+      });
     });
   });
+
 </script>
 </body>
 </html>
