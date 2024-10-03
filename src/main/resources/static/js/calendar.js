@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function(){
         calendarTable = document.getElementById('calendarTable'),
         days = calendarTable.getElementsByTagName('td'),
         selectedDay,    //사용자가 선택한 날짜 정보 : Sun Oct 27 2024 00:00:00 GMT+0900 (한국 표준시)
-        setDate,        
+        setDate,
         daysLen = days.length, //<td>요소의 총 개수. 한달의 일수
         headDate = document.getElementById('head-date');    //달력 중앙 '2024년 9월' 부분
 
@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', function(){
     let dietList = document.getElementById('diet-list');
     //영양소 조회 영역
     let nutrientList = document.getElementById('nutrient-list');
+    //추천 식단 조회 영역
+    let recomTable = document.getElementById('recomTable');
 
 
 
@@ -44,12 +46,14 @@ document.addEventListener('DOMContentLoaded', function(){
         this.draw();
     }
 
-    
-    //버튼 선택 영역 : 구독 사용자에게만 보이도록 함
+
+    //버튼 선택 영역, 추천 식단 영역 : 구독 사용자에게만 보이도록 함
     if(userRole === 'ROLE_SUBSCRIBER'){
         btnDiv.style.visibility = 'visible';
+        recomTable.style.visibility = 'visible';
     } else{
         btnDiv.style.visibility = 'hidden';
+       recomTable.style.visibility = 'hidden';
     }
 
 
@@ -161,6 +165,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     listBName.innerText = calDTO.bname;
                     listLName.innerText = calDTO.lname;
                     listDName.innerText = calDTO.dname;
+
+                    recomTable.getElementsByTagName('td')[0].innerHTML = "<p>입력된 식단을 바탕으로 권장 식단을 추천해드립니다.</p>" +
+                                                                                    "<p>영양소 달력에서 날짜를 클릭해 주세요.</p>";
                 }
             },
             error : function (){
@@ -207,13 +214,19 @@ document.addEventListener('DOMContentLoaded', function(){
                     //let listRecom = nutrientList.getElementsByTagName('td')[7];
                     //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
                     listTotalKcal.innerHTML = calDTO.totalKcal;
+                    listTooMuch.style.color = 'blue';
                     listTooMuch.innerHTML = calDTO.tooMuch;
+                    listLack.style.color = 'red';
                     listLack.innerHTML = calDTO.lack;
-                    //let recomSplit = calDTO.recom.split("\n");
-                    //console.log(recomSplit);
-                    nutrientList.getElementsByTagName('td')[7].innerHTML = calDTO.recom;
+                    nutrientList.getElementsByTagName('td')[7].innerHTML = calDTO.score;
+                    let recomSplit = calDTO.recom.split(/\[|\]/);
+                    //split(/[,;:]/)
+                    console.log(recomSplit[1]);
 
-                    nutrientList.getElementsByTagName('td')[9].innerHTML = calDTO.score;
+                    let recomHighlight = recomSplit[1].replace(recomSplit[1], `<span style="background-color: yellow;">${recomSplit[1]}</span>`);
+
+                    //recomTable.getElementsByTagName('td')[0].innerHTML = calDTO.recom;
+                    recomTable.getElementsByTagName('td')[0].innerHTML = recomSplit[0]+recomHighlight+recomSplit[2];
 
                     document.getElementById('diet-list-msg').style.display = 'none';
                 }
@@ -224,6 +237,8 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         })
 
+        recomTable.getElementsByTagName('td')[0].innerHTML = "<p>입력된 식단을 바탕으로 권장 식단을 추천해드립니다.</p>" +
+                                                                        "<p>영양소 달력에서 날짜를 클릭해 주세요.</p>";
     }
 
 
@@ -289,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
     } //drawDays 함수 end
-    
+
 
     Calendar.prototype.preMonth = function() {
         if(month < 1){
