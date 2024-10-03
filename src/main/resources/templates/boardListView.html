@@ -303,6 +303,7 @@
 				$.ajax({
 					url: '/board/list',
 					method: 'GET',
+					cache: false,  // 캐싱 방지
 					data: {
 						page: page,
 						searchWord: searchWord,
