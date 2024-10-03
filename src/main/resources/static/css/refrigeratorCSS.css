@@ -307,6 +307,7 @@
     padding: 20px;
     box-sizing: border-box;
     background: #fff;
+    border : 6px solid #81c405;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
