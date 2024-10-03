@@ -208,9 +208,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     document.getElementById('diet-list-msg').style.display = 'none';
                     console.log(calDTO);
 
-                    let listTotalKcal = nutrientList.getElementsByTagName('td')[1];
-                    let listTooMuch = nutrientList.getElementsByTagName('td')[3];
-                    let listLack = nutrientList.getElementsByTagName('td')[5];
+                    let listTotalKcal = nutrientList.getElementsByTagName('td')[0];
+                    let listTooMuch = nutrientList.getElementsByTagName('td')[1];
+                    let listLack = nutrientList.getElementsByTagName('td')[2];
                     //let listRecom = nutrientList.getElementsByTagName('td')[7];
                     //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
                     listTotalKcal.innerHTML = calDTO.totalKcal;
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     listTooMuch.innerHTML = calDTO.tooMuch;
                     listLack.style.color = 'red';
                     listLack.innerHTML = calDTO.lack;
-                    nutrientList.getElementsByTagName('td')[7].innerHTML = calDTO.score;
+                    nutrientList.getElementsByTagName('td')[3].innerHTML = calDTO.score;
                     let recomSplit = calDTO.recom.split(/\[|\]/);
                     //split(/[,;:]/)
                     console.log(recomSplit[1]);

@@ -17,10 +17,7 @@
 
 h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
-    line-height: 1.5;
-    font-weight: 400;
-    font-family: "Lato", Arial, sans-serif;
-    color: #000;
+    color: black;
 }
 
 /*달력 부분 위아래 여백 설정*/
@@ -230,7 +227,7 @@ button::-moz-focus-inner,
 
 
 #diet-list td,
-#nutrient-list td,
+#nutrient-list td, th,
 #diet-list-msg td {
     width: 50px; /* 원하는 너비로 설정 */
     padding: 6px; /* 여백 추가 */
@@ -350,7 +347,7 @@ button::-moz-focus-inner,
     height: 100%;
     position: absolute;
     left: 0;
-    top: 358%;
+    top: 350%;
     /*top: 0;*/
     flex-direction: column;
     align-items: center;
@@ -365,7 +362,7 @@ button::-moz-focus-inner,
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-#nutrient-modal {
+/*#nutrient-modal {
     display: none;
     width: 100%;
     height: 100%;
@@ -383,15 +380,15 @@ button::-moz-focus-inner,
     -webkit-backdrop-filter: blur(1.5px);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-}
+}*/
 
 .cal-modal-window {
-    background: rgba(192, 192, 192, 0.87);
+    background: ivory;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(13.5px);
     -webkit-backdrop-filter: blur(13.5px);
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 2px solid #FFB524;
     z-index: 100;
 
     width: 400px;
@@ -412,17 +409,31 @@ button::-moz-focus-inner,
 
 #diet-modal .cal-modal-title h4 {
     display: inline;
-    padding-left: 30px;
+    /*padding-left: 27px;*/
+    text-align: center;
 }
 
-#diet-modal .close-btn {
-    display: inline;
+#diet-modal img {
+    /*display: inline;
     float: right;
     padding-right: 10px;
     cursor: pointer;
     text-shadow: 1px 1px 2px gray;
-    color: white;
+    color: white;*/
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
 }
+
+
+.cal-modal-window img:hover {
+    transform: scale(1.1);
+}
+
 
 #diet-modal .cal-content {
     margin-left: 30px;
