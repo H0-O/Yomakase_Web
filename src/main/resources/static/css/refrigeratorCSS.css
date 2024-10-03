@@ -330,10 +330,17 @@
 }
 
 /* 제목 스타일 */
-.modal-window h2, .modal-window h3 {
+.modal-window h2 {
     color: #FFB524;
     font-weight: bold;
     margin-bottom: 15px;
+    text-align: center;
+}
+/* 레시피 */
+.modal-window h3 {
+    color: #000000;
+    font-weight: bold;
+    margin-bottom: -10px;
     text-align: center;
 }
 
