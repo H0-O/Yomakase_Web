@@ -54,16 +54,20 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     function btnActive(){
-        dietCalBtn.style.backgroundColor = '#198754';
+        dietCalBtn.style.backgroundColor = '#FFB524';
         nutrientCalBtn.addEventListener('click', function (){
             btnActiveCheck = false;
             dietCalBtn.style.backgroundColor = '';
-            nutrientCalBtn.style.backgroundColor = '#198754';
+            nutrientCalBtn.style.backgroundColor = '#FFB524';
+            document.getElementById('nutrientCalTitle').style.display = 'block';
+            document.getElementById('dietCalTitle').style.display = 'none';
         });
         dietCalBtn.addEventListener('click', function (){
             btnActiveCheck = true;
             nutrientCalBtn.style.backgroundColor = '';
-            dietCalBtn.style.backgroundColor = '#198754';
+            dietCalBtn.style.backgroundColor = '#FFB524';
+            document.getElementById('dietCalTitle').style.display = 'block';
+            document.getElementById('nutrientCalTitle').style.display = 'none';
         })
 
     }
@@ -127,11 +131,11 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     /**
-     * 날짜 관련 함수 (while 반복문 호출용)
+     * 식단 조회 함수
+     * @param td
      */
     function dietView(td){
         //alert('식단 입력')
-
         selectedDay = new Date(year, month, td.innerHTML);
 
         calendar.drawHeader(td.innerHTML);
@@ -166,6 +170,10 @@ document.addEventListener('DOMContentLoaded', function(){
         })
     }
 
+    /**
+     * 영양소 조회 함수
+     * @param td
+     */
     function nutrientView(td){
         //alert('영양소 입력');
 
@@ -192,20 +200,22 @@ document.addEventListener('DOMContentLoaded', function(){
                     nutrientList.style.display = 'block';
                     document.getElementById('diet-list-msg').style.display = 'none';
                     console.log(calDTO);
+
                     let listTotalKcal = nutrientList.getElementsByTagName('td')[1];
                     let listTooMuch = nutrientList.getElementsByTagName('td')[3];
                     let listLack = nutrientList.getElementsByTagName('td')[5];
-                    let listRecom = nutrientList.getElementsByTagName('td')[7];
+                    //let listRecom = nutrientList.getElementsByTagName('td')[7];
                     //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
                     listTotalKcal.innerHTML = calDTO.totalKcal;
                     listTooMuch.innerHTML = calDTO.tooMuch;
                     listLack.innerHTML = calDTO.lack;
-                    listRecom.innerHTML = calDTO.recom;
-                    //listScore.innerText = calDTO.score + "점";
-                    /*     listTotalKcal.append();
-                         listTooMuch.append();
-                         listLack.append();
-                         listRecom.append();*/
+                    let recomSplit = calDTO.recom.split("\n");
+                    console.log(recomSplit);
+                    nutrientList.getElementsByTagName('td')[7].innerHTML = `${recomSplit[1]}`;
+                    nutrientList.getElementsByTagName('td')[8].innerHTML = `${recomSplit[2]}`;
+                    nutrientList.getElementsByTagName('td')[9].innerHTML = `${recomSplit[3]}`;
+                    nutrientList.getElementsByTagName('td')[11].innerHTML = calDTO.score;
+
                     document.getElementById('diet-list-msg').style.display = 'none';
                 }
             },
@@ -214,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 document.getElementById('diet-list-msg').style.display = 'block';
             }
         })
-        document.getElementById('diet-list-msg').style.display = 'none';
 
     }
 
@@ -229,10 +238,16 @@ document.addEventListener('DOMContentLoaded', function(){
         e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
         headMonth[0].innerHTML = `${monthTag[month]}월`;
         headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
+        if (selectedDay){
 
         let formattedDay = selectedDay.toLocaleDateString('en-CA')
-        //console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
+        console.log(selectedDay);
+        console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
         clickedDietDay.innerHTML = formattedDay;
+        } else {
+            console.warn('선택된 날짜가 정의되지 않음')
+            selectedDay = new Date();
+        }
 
     }; //drawHeader 함수 end
 
@@ -275,39 +290,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
     } //drawDays 함수 end
-
-
-
-
-   /* /!**
-     * 날짜 클릭 메서드
-     * @param o 클릭된 <td>요소
-     *!/
-    Calendar.prototype.clickDay = function(o) {
-        var selected = document.getElementsByClassName("selected"),
-            len = selected.length;
-        if(len !== 0){
-            selected[0].className = "";
-        }
-        o.className = "selected";
-        selectedDay = new Date(year, month, o.innerHTML);
-        //console.log(selectedDay);   //Sat Sep 07 2024 00:00:00 GMT+0900 (한국 표준시)  //클릭한 날짜로 나옴
-        this.drawHeader(o.innerHTML);
-        this.setCookie('selected_day', 1);
-
-        var headDay = document.getElementsByClassName('head-day');
-
-        // 더블 클릭 이벤트 리스너 등록
-        //Calendar.prototype.dateDoubleClick(o);
-        // function handleDoubleClick() {
-        //     alert('모달창 부분');
-        //     o.removeEventListener('dblclick', handleDoubleClick); // 이벤트 리스너 제거
-        // }
-
-        // 클릭된 요소에 대해 더블 클릭 이벤트 리스너 등록
-        //o.addEventListener('dblclick', handleDoubleClick, { once: true });
-
-    };  //clickDay 함수 end*/
+    
 
     Calendar.prototype.preMonth = function() {
         if(month < 1){
@@ -366,6 +349,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     };
 
-    var calendar = new Calendar();  //해당 부분 필수! 없으면 달력 안 그려짐
+    var calendar = new Calendar();  //해당 부분 필수! 없으면 달력이 그려지지 않음
 
 }, false);  //전체 문서 addEventListener의 함수 end

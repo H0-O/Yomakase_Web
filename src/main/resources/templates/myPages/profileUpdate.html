@@ -1,170 +1,206 @@
 <div th:fragment="profileUpdateFragment">
     <!-- 통합된 폼 -->
-    <div id="signup-form">
-        <!-- 첫 번째 화면 -->
-        <div class="first-container">
-            <div class="form-group">
-                <label for="email">이메일(수정불가)</label>
-                <!-- 사용자의 이메일을 표시하는 필드 (수정 불가) -->
-                <input type="text" id="email" name="email" th:value="${member.email}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="nickname">닉네임(수정불가)</label>
-                <!-- 사용자의 닉네임을 표시하는 필드 (수정 불가) -->
-                <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="password">비밀번호</label>
-                <!-- 사용자 비밀번호 입력 필드 -->
-                <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요">
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">비밀번호 확인</label>
-                <!-- 비밀번호 확인 입력 필드 -->
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요">
-            </div>
-            <div class="form-group">
-                <label for="birthDate">생년월일</label>
-                <!-- 사용자의 생년월일을 표시하고 수정할 수 있는 필드 -->
-                <input type="date" id="birthDate" name="birthDate" th:value="${member.birthDate}">
-            </div>
-            <div class="form-group">
-                <label for="gender">성별</label>
-                <div class="gender-toggle">
-                    <!-- 성별 버튼: 남성 선택 시 'selected' 클래스가 추가 -->
-                    <button type="button" id="male-btn" class="selected" th:classappend="${member.gender == 'M'} ? 'selected' : ''">남성</button>
-                    <!-- 성별 버튼: 여성 선택 시 'selected' 클래스가 추가 -->
-                    <button type="button" id="female-btn" th:classappend="${member.gender == 'F'} ? 'selected' : ''">여성</button>
+    <div id="modify-signup">
+        <div id="modify-signup-form">
+            <!-- 첫 번째 화면 -->
+            <div class="modify-first-container">
+                <div class="modify-form-group">
+                    <label for="email">이메일(수정불가)</label>
+                    <!-- 사용자의 이메일을 표시하는 필드 (수정 불가) -->
+                    <input type="text" id="email" name="email" th:value="${member.email}" readonly>
                 </div>
-            </div>
-            <!-- 성별 정보를 hidden 필드에 저장하여 제출할 때 사용 -->
-            <input type="hidden" id="gender" name="gender" th:value="${member.gender}">
-            <!-- 다음 버튼을 클릭하면 두 번째 화면으로 넘어감 -->
-            <button type="button" id="next-btn" class="boxbtn">다음</button>
-        </div>
-
-        <!-- 두 번째 화면 -->
-        <div class="second-container" style="display:none;">
-            <div class="form-group">
-                <label for="height">키</label>
-                <!-- 사용자의 키 정보를 입력하는 필드 -->
-                <input type="number" id="height" name="height" th:value="${member.height}">
-            </div>
-            <div class="form-group">
-                <label for="weight">몸무게</label>
-                <!-- 사용자의 몸무게 정보를 입력하는 필드 -->
-                <input type="number" id="weight" name="weight" th:value="${member.weight}">
-            </div>
-            <div class="form-group">
-                <label>알레르기 정보</label>
-                <div class="allergy-group">
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="meat-dropdown">
-                            고기류
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="meat-content">
-                            <label data-allergy="eggs">달걀류</label>
-                            <label data-allergy="pork">돼지고기</label>
-                            <label data-allergy="chicken">닭고기</label>
-                            <label data-allergy="beef">쇠고기</label>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="seafood-dropdown">
-                            해산물
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="seafood-content">
-                            <label data-allergy="mackerel">고등어</label>
-                            <label data-allergy="shrimp">새우</label>
-                            <label data-allergy="squid">오징어</label>
-                            <label data-allergy="crab">게</label>
-                            <label data-allergy="shellfish">조개류</label>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="fruit-dropdown">
-                            과채류
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="fruit-content">
-                            <label data-allergy="peach">복숭아</label>
-                            <label data-allergy="tomato">토마토</label>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="nut-dropdown">
-                            견과류
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="nut-content">
-                            <label data-allergy="peanut">땅콩</label>
-                            <label data-allergy="walnuts">호두</label>
-                            <label data-allergy="pineNut">잣</label>
-                            <label data-allergy="soybean">대두</label>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="grain-dropdown">
-                            곡물
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="grain-content">
-                            <label data-allergy="buckwheat">메밀</label>
-                            <label data-allergy="wheat">밀</label>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <div class="dropdown-label" id="dairy-dropdown">
-                            유제품
-                            <span>&#9662;</span>
-                        </div>
-                        <div class="dropdown-content" id="dairy-content">
-                            <label data-allergy="milk">우유</label>
-                        </div>
+                <div class="modify-form-group">
+                    <label for="nickname">닉네임(수정불가)</label>
+                    <!-- 사용자의 닉네임을 표시하는 필드 (수정 불가) -->
+                    <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" readonly>
+                </div>
+                <div class="modify-form-group">
+                    <label for="password">비밀번호</label>
+                    <!-- 사용자 비밀번호 입력 필드 -->
+                    <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요">
+                </div>
+                <div class="modify-form-group">
+                    <label for="confirmPassword">비밀번호 확인</label>
+                    <!-- 비밀번호 확인 입력 필드 -->
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요">
+                </div>
+                <div class="modify-form-group">
+                    <label for="birthDate">생년월일</label>
+                    <!-- 사용자의 생년월일을 표시하고 수정할 수 있는 필드 -->
+                    <input type="date" id="birthDate" name="birthDate" th:value="${member.birthDate}">
+                </div>
+                <div class="modify-form-group">
+                    <label for="gender">성별</label>
+                    <div class="modify-gender-toggle">
+                        <!-- 성별 버튼: 남성 선택 시 'selected' 클래스가 추가 -->
+                        <button type="button" id="male-btn" class="selected" th:classappend="${member.gender == 'M'} ? 'selected' : ''">남성</button>
+                        <!-- 성별 버튼: 여성 선택 시 'selected' 클래스가 추가 -->
+                        <button type="button" id="female-btn" th:classappend="${member.gender == 'F'} ? 'selected' : ''">여성</button>
                     </div>
                 </div>
+                <!-- 성별 정보를 hidden 필드에 저장하여 제출할 때 사용 -->
+                <input type="hidden" id="gender" name="gender" th:value="${member.gender}">
+                <!-- 다음 버튼을 클릭하면 두 번째 화면으로 넘어감 -->
+                <button type="button" id="next-btn" class="modify-btn">다음</button>
             </div>
-            <!-- 각 알레르기 항목의 값을 hidden 필드로 관리 -->
-            <input type="hidden" id="eggs" name="eggs" th:value="${member.isEggs()}">
-            <input type="hidden" id="milk" name="milk" th:value="${member.isMilk()}">
-            <input type="hidden" id="buckwheat" name="buckwheat" th:value="${member.isBuckwheat()}">
-            <input type="hidden" id="peanut" name="peanut" th:value="${member.isPeanut()}">
-            <input type="hidden" id="soybean" name="soybean" th:value="${member.isSoybean()}">
-            <input type="hidden" id="wheat" name="wheat" th:value="${member.isWheat()}">
-            <input type="hidden" id="mackerel" name="mackerel" th:value="${member.isMackerel()}">
-            <input type="hidden" id="crab" name="crab" th:value="${member.isCrab()}">
-            <input type="hidden" id="shrimp" name="shrimp" th:value="${member.isShrimp()}">
-            <input type="hidden" id="pork" name="pork" th:value="${member.isPork()}">
-            <input type="hidden" id="peach" name="peach" th:value="${member.isPeach()}">
-            <input type="hidden" id="tomato" name="tomato" th:value="${member.isTomato()}">
-            <input type="hidden" id="walnuts" name="walnuts" th:value="${member.isWalnuts()}">
-            <input type="hidden" id="chicken" name="chicken" th:value="${member.isChicken()}">
-            <input type="hidden" id="beef" name="beef" th:value="${member.isBeef()}">
-            <input type="hidden" id="squid" name="squid" th:value="${member.isSquid()}">
-            <input type="hidden" id="shellfish" name="shellfish" th:value="${member.isShellfish()}">
-            <input type="hidden" id="pineNut" name="pineNut" th:value="${member.isPineNut()}">
-            <!-- 이전 버튼 -->
-            <button type="button" id="back-btn" class="boxbtn">이전</button>
-            <!-- 제출 버튼 -->
-            <button type="submit" id="submit-btn" class="boxbtn">제출</button>
 
-            <!-- 모달창 -->
-            <div id="success-modal" class="modal" style="display:none;">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <p>회원정보가 수정되었습니다.</p>
+            <!-- 두 번째 화면 -->
+            <div class="modify-second-container" style="display:none;">
+                <div class="modify-form-group">
+                    <label for="height">키</label>
+                    <!-- 사용자의 키 정보를 입력하는 필드 -->
+                    <input type="number" id="height" name="height" th:value="${member.height}">
+                </div>
+                <div class="modify-form-group">
+                    <label for="weight">몸무게</label>
+                    <!-- 사용자의 몸무게 정보를 입력하는 필드 -->
+                    <input type="number" id="weight" name="weight" th:value="${member.weight}">
+                </div>
+                <div class="modify-form-group">
+                    <label>알레르기 정보</label>
+                    <div class="modify-allergy-group">
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="meat-dropdown" data-default-text="고기류" data-category="고기류">
+                                고기류
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="meat-content">
+                                <label data-allergy="eggs">달걀류</label>
+                                <label data-allergy="pork">돼지고기</label>
+                                <label data-allergy="chicken">닭고기</label>
+                                <label data-allergy="beef">쇠고기</label>
+                            </div>
+                        </div>
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="seafood-dropdown" data-default-text="해산물" data-category="해산물">
+                                해산물
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="seafood-content">
+                                <label data-allergy="mackerel">고등어</label>
+                                <label data-allergy="shrimp">새우</label>
+                                <label data-allergy="squid">오징어</label>
+                                <label data-allergy="crab">게</label>
+                                <label data-allergy="shellfish">조개류</label>
+                            </div>
+                        </div>
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="fruit-dropdown" data-default-text="과채류" data-category="과채류">
+                                과채류
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="fruit-content">
+                                <label data-allergy="peach">복숭아</label>
+                                <label data-allergy="tomato">토마토</label>
+                            </div>
+                        </div>
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="nut-dropdown" data-default-text="견과류" data-category="견과류">
+                                견과류
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="nut-content">
+                                <label data-allergy="peanut">땅콩</label>
+                                <label data-allergy="walnuts">호두</label>
+                                <label data-allergy="pineNut">잣</label>
+                                <label data-allergy="soybean">대두</label>
+                            </div>
+                        </div>
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="grain-dropdown" data-default-text="곡물" data-category="곡물">
+                                곡물
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="grain-content">
+                                <label data-allergy="buckwheat">메밀</label>
+                                <label data-allergy="wheat">밀</label>
+                            </div>
+                        </div>
+                        <div class="modify-dropdown">
+                            <div class="modify-dropdown-label" id="dairy-dropdown" data-default-text="유제품" data-category="유제품">
+                                유제품
+                                <span>&#9662;</span>
+                            </div>
+                            <div class="modify-dropdown-content" id="dairy-content">
+                                <label data-allergy="milk">우유</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 각 알레르기 항목의 값을 hidden 필드로 관리 -->
+                <input type="hidden" id="eggs" name="eggs" th:value="${member.isEggs()}">
+                <input type="hidden" id="milk" name="milk" th:value="${member.isMilk()}">
+                <input type="hidden" id="buckwheat" name="buckwheat" th:value="${member.isBuckwheat()}">
+                <input type="hidden" id="peanut" name="peanut" th:value="${member.isPeanut()}">
+                <input type="hidden" id="soybean" name="soybean" th:value="${member.isSoybean()}">
+                <input type="hidden" id="wheat" name="wheat" th:value="${member.isWheat()}">
+                <input type="hidden" id="mackerel" name="mackerel" th:value="${member.isMackerel()}">
+                <input type="hidden" id="crab" name="crab" th:value="${member.isCrab()}">
+                <input type="hidden" id="shrimp" name="shrimp" th:value="${member.isShrimp()}">
+                <input type="hidden" id="pork" name="pork" th:value="${member.isPork()}">
+                <input type="hidden" id="peach" name="peach" th:value="${member.isPeach()}">
+                <input type="hidden" id="tomato" name="tomato" th:value="${member.isTomato()}">
+                <input type="hidden" id="walnuts" name="walnuts" th:value="${member.isWalnuts()}">
+                <input type="hidden" id="chicken" name="chicken" th:value="${member.isChicken()}">
+                <input type="hidden" id="beef" name="beef" th:value="${member.isBeef()}">
+                <input type="hidden" id="squid" name="squid" th:value="${member.isSquid()}">
+                <input type="hidden" id="shellfish" name="shellfish" th:value="${member.isShellfish()}">
+                <input type="hidden" id="pineNut" name="pineNut" th:value="${member.isPineNut()}">
+                <div class="modify-button-container">
+                    <button type="button" id="back-btn" class="modify-btn">이전</button>
+                    <button type="submit" id="submit-btn" class="modify-btn">제출</button>
                 </div>
             </div>
-
         </div>
     </div>
-
+    <!-- 모달창 -->
+    <div id="success-modal" class="modify-modal" style="display:none;">
+        <div class="modify-modal-content">
+            <p>회원정보가 수정되었습니다.</p>
+        </div>
+    </div>
     <style>
-        /* 모달 창 스타일 */
-        .mypages-modal-content {
+        .modify-modal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed; /* 화면의 중앙에 모달을 고정 */
+            z-index: 1; /* 화면의 최상위에 위치 */
+            left: 0;
+            top: 0;
+            width: 100%; /* 전체 화면을 덮음 */
+            height: 100%;
+            overflow: auto; /* 콘텐츠가 길어지면 스크롤 */
+            background-color: rgba(0, 0, 0, 0.4); /* 투명한 검은색 배경 */
+        }
+
+        /* 모달 콘텐츠 박스 */
+        .modify-modal-content {
+            background-color: #fefefe; /* 흰색 배경 */
+            margin: 25% auto; /* 화면 중앙에 배치 */
+            padding: 50px;
+            border: 1px solid #888;
+            width: 80%; /* 모달의 너비 설정 */
+            max-width: 400px; /* 최대 너비 설정 */
+            border-radius: 10px; /* 테두리를 둥글게 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+            animation: modalFadeIn 0.3s ease-in-out; /* 모달이 서서히 나타나게 애니메이션 */
+        }
+
+        /* 닫기 버튼 스타일 */
+        .modify-modal-content .close {
+            position: absolute; /* 부모 요소 안에서 절대 위치 */
+            top: 10px;
+            right: 15px; /* 모달 콘텐츠 박스의 오른쪽 끝으로 정렬 */
+            color: #aaa; /* 회색 */
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer; /* 클릭 가능한 커서 */
+        }
+
+
+        #modify-signup{
             font-family: 'Arial', sans-serif;
+            height: 650px;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             margin: 20px auto;
@@ -173,160 +209,43 @@
             max-width: 900px;
             text-align: center;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 박스 쉐도우 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .mypages-modal-content h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        .mypages-modal-content .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .mypages-modal-content .form-group label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .mypages-modal-content .form-group input,
-        .mypages-modal-content .form-group select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .mypages-modal-content .form-group input[type="submit"] {
-            background-color: #81c405;
-            color: white;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        .mypages-modal-content .form-group input[type="submit"]:hover {
-            background-color: #6aa003;
-        }
-
-        /* 기존 모달창을 대체할 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
+        #modify-signup-form {
+            margin: 0 auto;
+            width: 80%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* 배경 투명도 */
-        }
-
-        .modal-content {
-            background-color: white;
-            border: 2px solid #FFB524;
-            margin: 10% auto;
-            padding: 20px;
-            width: 90%;
             max-width: 500px;
-            text-align: center;
-            border-radius: 10px;
-            color: #81c405;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-content .close {
-            color: #81c405;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .modal-content .close:hover {
-            color: #FFB524;
-        }
-
-        /* 닫기 버튼 hover 스타일 */
-        .modal-content .close:hover {
-            color: #FFB524; /* 닫기 버튼 hover 시 색상 변경 */
-        }
-
-        /* 박스 */
-        #signup-form {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            width: 100%;
-            height: 100%;
-            max-width: 900px;
-            max-height: 400px;
+            max-height: 650px;
             text-align: center;
             border-radius: 10px;
             position: relative;
-            transform: translateX(50px);
         }
-
-        .first-container, .second-container {
-            position: absolute;
+        .modify-first-container, .modify-second-container {
             padding: 20px;
             top: 0;
             left: 0;
-            width: 80%;
-            height: 80%;
+            width: 100%;
+            height: 100%;
             max-width: 500px;
-            max-height: 400px;
+            max-height: 600px;
             transition: opacity 0.5s, transform 0.5s;
         }
 
-        .first-container {
-            z-index: 2;
-            opacity: 1;
-            transform: translateX(0);
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .first-container.hidden {
-            opacity: 0;
-            transform: translateX(-100%);
-            z-index: 1;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .second-container {
-            display: none;
-        }
-
-        /* 버튼 스타일 */
-        .btn, .boxbtn {
-            padding: 5px 10px;
-            margin: 5px;
-            background-color: #81c405;
-            color: white;
-            border: none;
-            border-radius: 1px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #555;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
+        .modify-form-group {
+            margin-bottom: 15px;
             text-align: left;
+
         }
 
-        .form-group input {
+        .modify-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modify-form-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -335,8 +254,63 @@
             box-sizing: border-box;
         }
 
-        .allergy-group {
-            max-height: 250px;
+        .modify-gender-toggle {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            position: relative;
+        }
+
+        .modify-gender-toggle button {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            background-color: #fff;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 15px;
+        }
+
+        .modify-gender-toggle button.selected {
+            background-color: #81c405;
+            color: white;
+        }
+
+        .modify-btn {
+            padding: 10px 20px;
+            margin: 50px auto;
+            background-color: #81c405;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .modify-button-container {
+            display: flex;
+            justify-content: space-between; /* 버튼 사이에 여백을 추가 */
+            align-items: center; /* 세로 중앙 정렬 */
+            margin: 20px auto;
+            width: fit-content;
+            .modify-btn {
+                padding: 10px 20px;
+                margin: 0 10px !important;
+                background-color: #81c405;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                font-size: 15px;
+            }
+        }
+
+        .modify-allergy-group {
+            max-height: 330px;
             overflow-y: auto;
             margin-bottom: 15px;
             padding: 10px;
@@ -344,13 +318,13 @@
             border-radius: 5px;
         }
 
-        .dropdown {
+        .modify-dropdown {
             position: relative;
             text-align: left;
             margin-bottom: 10px;
         }
 
-        .dropdown-label {
+        .modify-dropdown-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -363,84 +337,40 @@
             color: #333;
             transition: background-color 0.3s;
         }
-
-        .dropdown-label:hover {
+        .modify-dropdown-label:hover {
             background-color: #ddd;
         }
-
-        .dropdown-content {
+        .modify-dropdown-content {
             display: none;
-            position: relative;
+            position: relative; /* 수정된 부분: 드롭다운 메뉴가 부모 요소 안에서 위치하도록 */
             width: 100%;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 5px;
-            overflow: hidden;
+            z-index: 1;
+            margin-top: 5px; /* 드롭다운 메뉴와 레이블 사이에 간격 추가 */
+            overflow: hidden; /* 내부 스크롤 제거 */
         }
 
-        .dropdown-content.show {
+        .modify-dropdown-content.show {
             display: block;
         }
-
-        .dropdown-content label {
+        .modify-dropdown-content label {
             display: block;
             padding: 10px;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
         }
 
-        .dropdown-content label:last-child {
+        .modify-dropdown-content label:last-child {
             border-bottom: none;
         }
 
-        .dropdown-content label.selected {
+        .modify-dropdown-content label.selected {
             background-color: #81c405;
             color: white;
         }
-
-        .gender-toggle {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .gender-toggle button {
-            padding: 3px 8px;
-            margin: 2px;
-            background-color: #f1f1f1;
-            color: #333;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            cursor: pointer;
-            min-width: 60px;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .gender-toggle button.selected {
-            background-color: #81c405;
-            color: white;
-        }
-
-        .gender-toggle button:hover {
-            background-color: #ddd;
-        }
-
-        #next-btn, #back-btn, #submit-btn {
-            display: block;
-            margin: 10px auto;
-            padding: 5px 15px;
-            font-size: 0.9rem;
-            background-color: #81c405;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
     </style>
 
     <script>
@@ -451,15 +381,11 @@
             const backBtn = document.getElementById('back-btn');
             const submitBtn = document.getElementById('submit-btn');
             const modal = document.getElementById('success-modal'); // 모달창 요소
-            const closeModal = document.querySelector('.close');    // 모달 닫기 버튼
 
             function showSuccessModal() {
                 modal.style.display = 'block';
             }
 
-            closeModal.addEventListener('click', function () {
-                modal.style.display = 'none';
-            });
 
             // 성별 버튼 클릭 이벤트 설정
             if (maleBtn) {
@@ -489,57 +415,76 @@
                         return;
                     }
 
-                    const firstContainer = document.querySelector('.first-container');
-                    firstContainer.style.display = 'none';
+                    const firstContainer = document.querySelector('.modify-first-container');
+                    firstContainer.style.opacity = '1'; // 첫 번째 컨테이너의 투명도 초기화
+                    firstContainer.style.transition = 'opacity 0.5s ease-in-out'; // 전환 효과 설정
+                    firstContainer.style.opacity = '0'; // 서서히 투명해지도록 설정
 
-                    const secondContainer = document.querySelector('.second-container');
-                    secondContainer.style.display = 'block';
-                    secondContainer.style.opacity = '0';
                     setTimeout(() => {
-                        secondContainer.style.transition = 'opacity 0.5s ease-in-out';
-                        secondContainer.style.opacity = '1';
-                    }, 0);
+                        firstContainer.style.display = 'none'; // 투명화 후 화면에서 제거
+                        const secondContainer = document.querySelector('.modify-second-container');
+                        secondContainer.style.display = 'block'; // 두 번째 컨테이너 표시
+                        secondContainer.style.opacity = '0'; // 처음엔 투명하게 설정
+                        secondContainer.style.transition = 'opacity 0.5s ease-in-out'; // 전환 효과 설정
+                        setTimeout(() => {
+                            secondContainer.style.opacity = '1'; // 서서히 보이게 설정
+                        }, 0);
+                    }, 500); // 첫 번째 컨테이너가 서서히 사라지는데 걸리는 시간
                 });
             }
 
-            // '이전' 버튼 클릭 이벤트
+// '이전' 버튼 클릭 이벤트
             if (backBtn) {
                 backBtn.addEventListener('click', function () {
-                    const secondContainer = document.querySelector('.second-container');
-                    secondContainer.style.opacity = '0';
-                    setTimeout(() => {
-                        secondContainer.style.display = 'none';
-                    }, 500);
+                    const secondContainer = document.querySelector('.modify-second-container');
+                    secondContainer.style.opacity = '1'; // 두 번째 컨테이너의 투명도 초기화
+                    secondContainer.style.transition = 'opacity 0.5s ease-in-out'; // 전환 효과 설정
+                    secondContainer.style.opacity = '0'; // 서서히 투명해지도록 설정
 
-                    const firstContainer = document.querySelector('.first-container');
-                    firstContainer.style.display = 'block';
+                    setTimeout(() => {
+                        secondContainer.style.display = 'none'; // 투명화 후 화면에서 제거
+                        const firstContainer = document.querySelector('.modify-first-container');
+                        firstContainer.style.display = 'block'; // 첫 번째 컨테이너 표시
+                        firstContainer.style.opacity = '0'; // 처음엔 투명하게 설정
+                        firstContainer.style.transition = 'opacity 0.5s ease-in-out'; // 전환 효과 설정
+                        setTimeout(() => {
+                            firstContainer.style.opacity = '1'; // 서서히 보이게 설정
+                        }, 0);
+                    }, 500); // 두 번째 컨테이너가 서서히 사라지는데 걸리는 시간
                 });
             }
 
             // 드롭다운 라벨 클릭 이벤트
-            document.querySelectorAll('.dropdown-label').forEach(function (label) {
+            document.querySelectorAll('.modify-dropdown-label').forEach(function (label) {
                 label.addEventListener('click', function () {
                     const content = this.nextElementSibling;
                     content.style.display = (content.style.display === 'block') ? 'none' : 'block';
                 });
             });
 
-            // 드롭다운 항목 클릭 시 알레르기 값을 설정하는 이벤트
-            document.querySelectorAll('.dropdown-content label').forEach(function (label) {
+
+            // 드롭다운 항목 클릭 시 라벨 업데이트 및 알레르기 값을 설정하는 이벤트
+            document.querySelectorAll('.modify-dropdown-content label').forEach(label => {
                 label.addEventListener('click', function () {
-                    const allergy = this.getAttribute('data-allergy');
-                    const input = document.getElementById(allergy);
+                    const dropdownLabel = this.closest('.modify-dropdown').querySelector('.modify-dropdown-label');
+                    const isSelected = this.classList.toggle('selected');
 
-                    if (input.value === 'true') {
-                        input.value = 'false';
-                        this.classList.remove('selected');
-                    } else {
-                        input.value = 'true';
-                        this.classList.add('selected');
-                    }
+                    const selectedItems = Array.from(this.closest('.modify-dropdown').querySelectorAll('.modify-dropdown-content label.selected'))
+                        .map(el => el.textContent.trim());
 
+                    updateDropdownLabel(dropdownLabel, selectedItems);
                 });
             });
+
+            // 드롭다운 라벨을 업데이트하는 함수
+            function updateDropdownLabel(dropdownLabel, selectedItems) {
+                const category = dropdownLabel.getAttribute('data-category');
+                if (selectedItems.length > 0) {
+                    dropdownLabel.innerHTML = `${category} : ${selectedItems.join(', ')}`;
+                } else {
+                    dropdownLabel.innerHTML = dropdownLabel.getAttribute('data-default-text');
+                }
+            }
 
             // 폼 제출 이벤트 처리
             submitBtn.addEventListener('click', function (event) {
@@ -606,3 +551,5 @@
 
     </script>
 </div>
+
+

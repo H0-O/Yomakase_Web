@@ -72,4 +72,14 @@ public class SavedRecipeService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    // foodName을 기준으로 레시피 삭제
+    public void deleteRecipeByIndexNum(int indexNum) {
+        // indexNum에 해당하는 레시피가 존재하는지 확인
+        if (savedRecipeRepository.existsById(indexNum)) {
+            savedRecipeRepository.deleteById(indexNum); // 레시피 삭제
+        } else {
+            throw new IllegalArgumentException("해당 레시피를 찾을 수 없습니다. indexNum: " + indexNum);
+        }
+    }
 }

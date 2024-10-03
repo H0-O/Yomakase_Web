@@ -59,7 +59,7 @@ function calBackgroundChange() {
 
 
 // 영양소 모달 관련 자바스크립트
-    let nutrientModal = document.getElementById("nutrient-modal");
+  /*  let nutrientModal = document.getElementById("nutrient-modal");
 
 
     function modalNutrientOn() {
@@ -91,7 +91,7 @@ function calBackgroundChange() {
         if (isModalNutrientOn() && e.key === "Escape") {
             modalNutrientOff();
         }
-    })
+    })*/
 
 
 

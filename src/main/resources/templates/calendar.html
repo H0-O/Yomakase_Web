@@ -4,8 +4,8 @@
     <div class="container">
       <div class="row justify-content-center"></div>
       <div class="cal-title">
-        <h3 id="dietCalTitle" style="display: block">식단 달력</h3>
-        <h3 id="nutrientCalTitle" style="display: none">영양소 달력</h3>
+        <h3 id="dietCalTitle" style="display: block; font-weight: bold">식단 달력</h3>
+        <h3 id="nutrientCalTitle" style="display: none; font-weight: bold">영양소 달력</h3>
       </div>
       <div id="cal-title-btn" style="visibility: hidden">
         <button id="dietCalBtn">식단</button><button id="nutrientCalBtn">영양소</button>
@@ -52,7 +52,17 @@
                         <td></td>
                       </tr>
                       <tr>
-                        <td>추천 식단</td>
+                        <td rowspan="3">추천 식단</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td>식단 점수</td>
                         <td></td>
                       </tr>
                     </table>
@@ -196,7 +206,7 @@
 
 
   <!--영양소 점수출력 모달 부분-->
-  <div id="nutrient-modal" class="cal-modal-overlay" style="visibility: hidden">
+ <!-- <div id="nutrient-modal" class="cal-modal-overlay" style="visibility: hidden">
     <div class="cal-modal-window" >
       <div class="cal-content">
         <table id="nutrient-modal-table">
@@ -211,7 +221,7 @@
         </table>
       </div>
     </div>
-  </div>
+  </div>-->
 
   <!--  <script src="/jq/jquery-3.7.1.min.js"></script>-->
   <script src="/js/calendar.js"></script>
@@ -239,7 +249,7 @@
       let dietArr = [bName, lName, dName, clickedDietDay];
       //서버로 비동기적인 요청
       $.ajax({
-        url : '/cal/dietSave',		//여기로 갔다가 올때까지 신경X 그 다음을 실행함. 함수의 뒷부분 저 부분
+        url : '/localhost:7777/nutrition',  //파이썬 api코드로 작동. 키가 없어서 여기서 실제로 작동하지는 않음
         type : 'post',
         data : {dietArr : dietArr},
         success : function(){
@@ -256,8 +266,6 @@
 
     }
   </script>
-
-
 
 
 

@@ -55,6 +55,9 @@
             </li>
         </ul>
     </div>
+    <div id="index-footer" style="font-size: 15px; color: white;">
+    <span>(주)요마카세<br>이용문의 : T. 02-000-0000</span>
+    </div>
 </nav>
 
 <!-- 광고 오버레이 및 더미 광고 영역 -->
@@ -125,19 +128,6 @@
         </section>
     </div>
     <hr class="m-0" />
-    <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6;">
-        <div style="margin-bottom: 10px;">
-            <a href="#" style="margin-right: 15px; color: #6c757d; text-decoration: none;">이용약관</a>
-            <a href="#" style="color: #6c757d; text-decoration: none;">개인정보취급방침</a>
-        </div>
-        <div style="margin-bottom: 10px; color: #6c757d;">
-            (주)요마카세 서울 강남구 영동대로 513 | T. 02-000-0000 | F. 031-000-0000
-            이용문의 : T. 02-000-0000
-        </div>
-        <div style="color: #adb5bd;">
-            Copyright よまかせ 2024. All Rights Reserved.
-        </div>
-    </footer>
 </div>
 </body>
 <!-- Jquery JS-->
@@ -176,6 +166,24 @@
         document.querySelector('.ad-button').addEventListener('click', () => {
             closeAd(); // 광고를 닫고
             window.location.href = clickedHref; // 저장된 href로 이동
+        });
+        // 네브 바 클릭 했을때 배경 색 주기
+        document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 모든 nav-item에서 active 클래스 제거
+                document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+
+                // 클릭된 항목에 active 클래스 추가
+                this.classList.add('active');
+            });
+        });
+        // 로고 클릭 시 네브바의 모든 항목에서 active 클래스 제거
+        document.querySelector('.navbar-brand').addEventListener('click', function() {
+            document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
         });
     });
 
