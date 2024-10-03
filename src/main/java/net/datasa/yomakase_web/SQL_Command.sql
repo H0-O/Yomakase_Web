@@ -225,4 +225,12 @@ UPDATE cal SET b_kcal = 330, l_kcal = 740 ,d_kcal = 700, total_kcal = 1770, scor
 저녁: 그릴 연어 스테이크, 콩 샐러드, 구운 채소'
 WHERE member_num = 2 and input_date = '2024-10-01';
 
-
+INSERT INTO `saved_recipe` (`member_num`, `food_name`, `recipe_url`, `saved_recipe`) VALUES
+                                                                                         (8, '김치찌개', 'https://www.youtube.com/watch?v=qWbHSOplcvY', '재료: 김치, 돼지고기, 두부, 대파\n1. 김치를 잘게 썰어 냄비에 넣고 볶아주세요.\n2. 돼지고기를 넣고 함께 볶다가 물을 넣고 끓여줍니다.\n3. 두부와 대파를 넣고 한소끔 더 끓여 마무리합니다.'),
+                                                                                         (8, '비빔밥', 'https://www.youtube.com/watch?v=Jq2SwKMw8vI', '재료: 밥, 고사리, 시금치, 당근, 계란, 고추장\n1. 밥 위에 다양한 나물과 볶은 야채를 올립니다.\n2. 계란 후라이를 올리고 고추장을 넣어 비벼 드세요.'),
+                                                                                         (8, '된장찌개', 'https://www.youtube.com/watch?v=ffuakdFmuh4', '재료: 된장, 감자, 두부, 애호박, 표고버섯\n1. 냄비에 된장을 풀고 물을 넣어 끓입니다.\n2. 감자, 두부, 애호박, 표고버섯을 넣고 익을 때까지 끓입니다.\n3. 필요하면 소금으로 간을 맞추고 마무리합니다.'),
+                                                                                         (8, '불고기', 'https://www.youtube.com/watch?v=abcdEfghijk', '재료: 소고기, 양파, 대파, 간장, 설탕\n1. 소고기를 얇게 썰어 양파, 대파와 함께 양념에 재웁니다.\n2. 프라이팬에 재워둔 고기를 볶습니다.\n3. 완전히 익으면 불고기를 접시에 담아냅니다.'),
+                                                                                         (8, '떡볶이', 'https://www.youtube.com/watch?v=lmnoPqrstuv', '재료: 떡, 어묵, 고추장, 설탕, 대파\n1. 냄비에 고추장과 설탕을 넣고 물을 붓고 끓입니다.\n2. 떡과 어묵, 대파를 넣고 졸입니다.\n3. 소스가 걸쭉해지면 불을 끄고 먹습니다.'),
+                                                                                         (8, '콩나물국', 'https://www.youtube.com/watch?v=wxyzUvWxyz', '재료: 콩나물, 대파, 소금, 마늘\n1. 냄비에 물을 넣고 끓인 후 콩나물을 넣습니다.\n2. 마늘과 소금을 넣고 한소끔 끓입니다.\n3. 대파를 넣고 마무리합니다.'),
+                                                                                         (8, '순두부찌개', 'https://www.youtube.com/watch?v=opqrStuvwx', '재료: 순두부, 돼지고기, 고추장, 대파, 계란\n1. 냄비에 고추장과 돼지고기를 넣고 볶습니다.\n2. 순두부와 물을 넣고 끓입니다.\n3. 마지막으로 계란을 풀어 넣고 마무리합니다.'),
+                                                                                         (8, '갈비찜', 'https://www.youtube.com/watch?v=mnopQrstuvw', '재료: 갈비, 간장, 설탕, 배, 대파\n1. 갈비를 물에 담가 핏물을 뺍니다.\n2. 간장, 설탕, 배를 섞어 양념장을 만듭니다.\n3. 갈비를 양념에 재운 후 천천히 끓여 익힙니다.');
