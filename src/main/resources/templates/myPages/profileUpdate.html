@@ -382,6 +382,7 @@
             const submitBtn = document.getElementById('submit-btn');
             const modal = document.getElementById('success-modal'); // 모달창 요소
 
+
             function showSuccessModal() {
                 modal.style.display = 'block';
             }
@@ -536,8 +537,9 @@
                         }
                     })
                     .then(result => {
-                        console.log("회원정보 수정 성공:", result);
                         showSuccessModal(); // 성공 시 모달창 표시
+                        localStorage.setItem('selectedTab', 'profileUpdate');
+
                         setTimeout(() => {
                             window.location.reload(); // 페이지 새로고침
                         }, 1000);
@@ -546,7 +548,6 @@
                         console.error('오류 발생:', error);
                     });
             });
-
         });
 
     </script>

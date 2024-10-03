@@ -12,6 +12,24 @@
                 transform: translateZ(0);
             }
         }
+        /* 흔들흔들거리는 애니메이션 정의 */
+        @keyframes shake {
+            0% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(7deg);
+            }
+            50% {
+                transform: rotate(0deg);
+            }
+            75% {
+                transform: rotate(-7deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
 
         #box {
             display: flex;
@@ -23,9 +41,10 @@
         }
 
         #logo-image {
-            max-width: 45%;
-            height: auto;
+            width: 45%;
+
         }
+
 
         .home-wrapper {
             display: flex;
@@ -36,7 +55,7 @@
 
         .home-title {
             opacity: 0;
-            animation: smoothAppear 1s forwards;
+            animation: smoothAppear 1s forwards, shake 2s infinite ease-in-out; /* smoothAppear에 shake 추가 */
             animation-delay: 0.5s;
             margin: 10px 0;
             font-size: 2.3rem;
@@ -90,9 +109,14 @@
     </style>
     <div id="box">
         <img id="logo-image" src="img/logo_home.png" alt="Logo">
+<!--        <div id="logo-image">-->
+<!--            <img id="logo-home-label" src="/img/logo_home_label.png" alt="Logo">-->
+<!--            <img id="logo-home-image" src="/img/logo_home_img.png" alt="Logo">-->
+
+<!--        </div>-->
         <div class="home-wrapper">
             <div class="home-title">
-                <img src="img/slogan.png" alt="Logo" style="width: 80%">
+                <img src="/img/slogan.png" alt="Logo" style="width: 80%">
             </div>
             <div class="home-contents">
                 ❖ 영수증 사진으로 재료를 간편하게 등록할 수 있습니다️ ❖
