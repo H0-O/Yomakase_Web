@@ -30,7 +30,7 @@
 </head>
 <body id="page-top">
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav"  sec:authorize="isAuthenticated()">
     <a class="navbar-brand js-scroll-trigger" href="#page-top">
         <span class="d-block d-lg-none">よまかせ</span>
         <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/img/logo.png" alt="..." /></span>
@@ -199,6 +199,7 @@
         document.getElementById('ads-overlay').style.display = 'none'; // 오버레이 숨김
         document.getElementById('dummy-ads-container').style.display = 'none'; // 광고 컨테이너 숨김
     }
+
 </script>
 
 <style>

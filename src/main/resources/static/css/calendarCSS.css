@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5,
 
 #calendarTable td:hover:after, .selected:after {
     background: #2a3246; /* 배경색을 어두운 색으로 변경 */
-} /*todo : 존재하지 않는 날짜에는 배경색도 바뀌지 않게 조정*/
+}
 
 /*button:not(:disabled),
 [type="button"]:not(:disabled),
@@ -209,20 +209,25 @@ button::-moz-focus-inner,
    /* padding-bottom: 30%*/
 }
 
-/*#list-div {
-    margin: auto !important;
-}*/
+#diet-list,
+#nutrient-list,
+#diet-list-msg {
+    margin: auto;
+    width: 95%;
+    background-color: #ffffff;
+    border-radius: 30px;
+}
+
 #diet-list table,
 #nutrient-list table,
 #diet-list-msg table {
     width: 100%; /* 전체 너비로 설정 */
     border-collapse: collapse; /* 경계선 겹치기 방지 */
     table-layout: fixed; /* 고정 레이아웃 설정 */
-    margin-top: 45%;
+    margin-top: 42%;
+    color: black;
 }
-#nutrient-list table {
-    margin-top: 20%; /*영양소는 내용이 많아서 더 위쪽에서 출력*/
-}
+
 
 #diet-list td,
 #nutrient-list td,
@@ -262,8 +267,16 @@ button::-moz-focus-inner,
     display: inline-block;
     /*padding: 10px;*/
     margin : 2px;
+}
 
+#recomTable {
+    padding : 2em;
+    margin-left: 90px;
+    margin-right: 90px;
+}
 
+#recomTable tr{
+    width: 90%;
 }
 /*
 #diet-list, #nutrient-list, #diet-list-msg td {

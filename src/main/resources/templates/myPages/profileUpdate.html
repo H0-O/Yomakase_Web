@@ -33,7 +33,7 @@
                     <label for="gender">성별</label>
                     <div class="modify-gender-toggle">
                         <!-- 성별 버튼: 남성 선택 시 'selected' 클래스가 추가 -->
-                        <button type="button" id="male-btn" class="selected" th:classappend="${member.gender == 'M'} ? 'selected' : ''">남성</button>
+                        <button type="button" id="male-btn" th:classappend="${member.gender == 'M'} ? 'selected' : ''">남성</button>
                         <!-- 성별 버튼: 여성 선택 시 'selected' 클래스가 추가 -->
                         <button type="button" id="female-btn" th:classappend="${member.gender == 'F'} ? 'selected' : ''">여성</button>
                     </div>
@@ -310,7 +310,7 @@
         }
 
         .modify-allergy-group {
-            max-height: 330px;
+            max-height: 342px;
             overflow-y: auto;
             margin-bottom: 15px;
             padding: 10px;
@@ -373,7 +373,7 @@
         }
     </style>
 
-    <script>
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const maleBtn = document.getElementById('male-btn');
             const femaleBtn = document.getElementById('female-btn');
@@ -382,6 +382,63 @@
             const submitBtn = document.getElementById('submit-btn');
             const modal = document.getElementById('success-modal'); // 모달창 요소
 
+            // 성별 초기화 함수
+            function initializeGenderSelection() {
+                const gender = document.getElementById('gender').value; // 서버에서 가져온 성별 값
+
+                if (gender === 'M') {
+                    maleBtn.classList.add('selected');
+                    femaleBtn.classList.remove('selected');
+                } else if (gender === 'F') {
+                    femaleBtn.classList.add('selected');
+                    maleBtn.classList.remove('selected');
+                }
+            }
+
+            initializeGenderSelection(); // 페이지 로드 시 성별 선택 초기화
+// 알레르기 정보 초기화 함수
+            function initializeAllergySelections() {
+                const allergies = {
+                    eggs: /*[[${member.isEggs()}]]*/,
+                    milk: /*[[${member.isMilk()}]]*/,
+                    buckwheat: /*[[${member.isBuckwheat()}]]*/,
+                    peanut: /*[[${member.isPeanut()}]]*/,
+                    soybean: /*[[${member.isSoybean()}]]*/,
+                    wheat: /*[[${member.isWheat()}]]*/,
+                    mackerel: /*[[${member.isMackerel()}]]*/,
+                    crab: /*[[${member.isCrab()}]]*/,
+                    shrimp: /*[[${member.isShrimp()}]]*/,
+                    pork: /*[[${member.isPork()}]]*/,
+                    peach: /*[[${member.isPeach()}]]*/,
+                    tomato: /*[[${member.isTomato()}]]*/,
+                    walnuts: /*[[${member.isWalnuts()}]]*/,
+                    chicken: /*[[${member.isChicken()}]]*/,
+                    beef: /*[[${member.isBeef()}]]*/,
+                    squid: /*[[${member.isSquid()}]]*/,
+                    shellfish: /*[[${member.isShellfish()}]]*/,
+                    pineNut: /*[[${member.isPineNut()}]]*/
+                };
+
+                // 각 알레르기 정보를 체크하고 선택된 항목에 selected 클래스를 추가
+                Object.keys(allergies).forEach(allergyKey => {
+                    const isSelected = allergies[allergyKey];
+                    if (isSelected) {
+                        const label = document.querySelector(`label[data-allergy="${allergyKey}"]`);
+                        if (label) {
+                            label.classList.add('selected');
+                        }
+                    }
+                });
+
+                // 초기 드롭다운 라벨 업데이트
+                document.querySelectorAll('.modify-dropdown').forEach(dropdown => {
+                    const selectedItems = Array.from(dropdown.querySelectorAll('.modify-dropdown-content label.selected'))
+                        .map(label => label.textContent.trim());
+                    const dropdownLabel = dropdown.querySelector('.modify-dropdown-label');
+                    updateDropdownLabel(dropdownLabel, selectedItems);
+                });
+            }
+            initializeAllergySelections(); // 페이지 로드 시 알레르기 선택 초기화
 
             function showSuccessModal() {
                 modal.style.display = 'block';
@@ -434,7 +491,7 @@
                 });
             }
 
-// '이전' 버튼 클릭 이벤트
+            // '이전' 버튼 클릭 이벤트
             if (backBtn) {
                 backBtn.addEventListener('click', function () {
                     const secondContainer = document.querySelector('.modify-second-container');
@@ -469,6 +526,10 @@
                 label.addEventListener('click', function () {
                     const dropdownLabel = this.closest('.modify-dropdown').querySelector('.modify-dropdown-label');
                     const isSelected = this.classList.toggle('selected');
+
+                    // 해당 알레르기 항목의 hidden 필드 업데이트
+                    const allergyType = this.getAttribute('data-allergy');
+                    document.getElementById(allergyType).value = isSelected ? 'true' : 'false';
 
                     const selectedItems = Array.from(this.closest('.modify-dropdown').querySelectorAll('.modify-dropdown-content label.selected'))
                         .map(el => el.textContent.trim());
@@ -521,6 +582,9 @@
                     shellfish: document.getElementById('shellfish').value === 'true',
                     pineNut: document.getElementById('pineNut').value === 'true'
                 };
+
+                console.log('폼 데이터:', data);
+
                 // JSON 데이터를 서버로 전송
                 fetch('/member/update', {
                     method: 'POST',
