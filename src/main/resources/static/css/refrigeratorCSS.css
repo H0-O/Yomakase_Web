@@ -68,9 +68,12 @@
     white-space: nowrap;
     display: inline-block;
     box-sizing: content-box;
-    max-width: 100%;
-    word-wrap: break-word;
+    max-height: 500px;
     font-size: 18px;
+    word-wrap: break-word; /* 긴 단어도 줄바꿈 처리 */
+    overflow-wrap: break-word; /* 긴 단어가 넘치지 않도록 처리 */
+    overflow: hidden; /* 텍스트가 모달을 넘지 않도록 처리 */
+    word-break: break-all; /* 긴 단어를 중간에 잘라서 줄바꿈 */
 }
 
 .ingredient:hover .ingredient-text {
