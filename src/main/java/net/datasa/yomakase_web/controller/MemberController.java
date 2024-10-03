@@ -40,7 +40,7 @@ public class MemberController {
     public String join(@ModelAttribute("member") MemberDTO dto) {
         log.debug("전달된 회원정보: {}", dto);
         memberService.saveMember(dto);
-        return "redirect:/";
+        return "loginForm";
     }
 
     // ID 중복 확인 폼을 보여주는 메소드

@@ -4,21 +4,25 @@
   <meta charset="UTF-8">
   <title>회원가입</title>
   <style>
-    /* 기존 CSS 내용 유지 */
-    .modal-content {
-      background-color: white;
+    /* 모달 스타일 설정 */
+    .signup-modal-content {
       margin: 5% auto;
       padding: 20px;
       width: 80%;
-      height: 100%;
+      height: 700px;
       max-width: 500px;
       max-height: 650px;
       text-align: center;
       border-radius: 10px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       position: relative;
     }
 
-    .first-container, .second-container {
+    /* 컨테이너 스타일 설정 */
+    .signup-container {
       position: absolute;
       padding: 20px;
       top: 0;
@@ -30,105 +34,48 @@
       transition: opacity 0.5s, transform 0.5s;
     }
 
-    .first-container {
-      z-index: 2;
-      opacity: 1;
-      transform: translateX(0);
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .first-container.hidden {
+    .signup-container.hidden {
       opacity: 0;
       transform: translateX(-100%);
       z-index: 1;
       visibility: hidden;
-      pointer-events: none;
     }
 
-    .second-container {
-      opacity: 0;
-      transform: translateX(100%);
-      z-index: 1;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .second-container.active {
+    .signup-container.active {
       opacity: 1;
       transform: translateX(0);
       z-index: 2;
       visibility: visible;
-      pointer-events: auto;
     }
 
-    .btn {
+    /* 다음 버튼의 가운데 정렬 및 스타일 */
+    .signup-btn {
       padding: 10px 20px;
-      margin: 10px;
       background-color: #81c405;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 25px;
       cursor: pointer;
+      font-size: 15px;
+      display: block;
+      margin: 0 auto; /* 다음 버튼을 가운데 정렬 */
     }
 
-    .btn:hover {
+    .signup-btn:hover {
       background-color: #555;
     }
 
-    .btn:active {
+    .signup-btn:active {
       background-color: #FFB524;
     }
 
-    .Checkbtn {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #81c405;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-      text-align: left;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    .allergy-group {
-      max-height: 250px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    .dropdown {
+    /* 드롭다운 스타일 설정 */
+    .signup-dropdown {
       position: relative;
-      text-align: left;
       margin-bottom: 10px;
     }
 
-    .dropdown-label {
+    .signup-dropdown-label {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -139,139 +86,195 @@
       border-radius: 5px;
       font-weight: bold;
       color: #333;
-      transition: background-color 0.3s;
     }
 
-    .dropdown-label:hover {
-      background-color: #ddd;
-    }
-
-    .dropdown-content {
+    .signup-dropdown-content {
       display: none;
       position: relative;
       width: 100%;
       background-color: white;
       border: 1px solid #ddd;
       border-radius: 5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       margin-top: 5px;
-      overflow: hidden;
     }
 
-    .dropdown-content.show {
+    .signup-dropdown-content.show {
       display: block;
     }
 
-    .dropdown-content label {
+    .signup-dropdown-content label {
       display: block;
       padding: 10px;
       border-bottom: 1px solid #ddd;
       cursor: pointer;
     }
 
-    .dropdown-content label:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-content label.selected {
+    .signup-dropdown-content label.selected {
       background-color: #81c405;
       color: white;
     }
 
-    .gender-toggle button {
-      padding: 10px 20px;
-      margin: 5px;
+    /* 성별 선택 토글과 다음 버튼 사이 간격 추가 */
+    .signup-gender-toggle {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
       background-color: #f1f1f1;
+      position: relative;
+      margin-top: 20px;
+      margin-bottom: 20px; /* 추가: 다음 버튼과 간격을 주기 위해 */
+    }
+
+    .signup-gender-toggle button {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      background-color: #fff;
       color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 15px;
+    }
+
+    .signup-gender-toggle button.selected {
+      background-color: #81c405;
+      color: white;
+    }
+
+    /* 버튼 컨테이너 */
+    .signup-button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .signup-button-container .signup-btn {
+      flex: 1;
+      margin: 0 10px;
+      border-radius: 25px;
+    }
+
+    /* signup-form-group 스타일 추가 */
+    .signup-form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .signup-form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .signup-form-group input {
+      width: 100%;
+      padding: 10px;
       border: 1px solid #ddd;
       border-radius: 5px;
-      cursor: pointer;
+      font-size: 1rem;
+      box-sizing: border-box;
     }
 
-    .gender-toggle button.selected {
-      background-color: #81c405;
-      color: white;
+    .signup-allergy-group {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
     }
 
-    .gender-toggle button:hover {
-      background-color: #ddd;
-    }
   </style>
 </head>
 <body>
 <div id="box">
-  <div class="modal-content">
-    <!-- 통합된 폼 -->
+  <div class="signup-modal-content">
+    <!-- 회원가입 폼 -->
     <form id="signup-form" action="signupForm" method="post">
-      <!-- 첫 번째 화면  -->
-      <div class="first-container">
+      <!-- 첫 번째 화면 (기본 정보 입력) -->
+      <div class="signup-container" id="first-container">
         <div class="header">
-          <div class="custom-heading"><h2>회원가입</h2></div>
+          <h2>회원가입</h2>
         </div>
-        <div class="form-group">
+        <!-- 이메일 입력 -->
+        <div class="signup-form-group">
           <label for="email">이메일</label>
           <input type="email" id="email" name="email" required>
-          <div id="id-check-result" style="margin-top: 10px; color: red;"></div> <!-- 결과를 표시하는 영역 -->
+          <div id="id-check-result" style="margin-top: 10px; color: red;"></div>
         </div>
-        <div class="form-group">
+        <!-- 닉네임 입력 -->
+        <div class="signup-form-group">
           <label for="nickname">닉네임</label>
           <input type="text" id="nickname" name="nickname" required>
         </div>
-        <div class="form-group">
+        <!-- 비밀번호 입력 -->
+        <div class="signup-form-group">
           <label for="password">비밀번호</label>
           <input type="password" id="password" name="password" autocomplete="new-password" required>
         </div>
-        <div class="form-group">
+        <!-- 비밀번호 확인 -->
+        <div class="signup-form-group">
           <label for="confirm_password">비밀번호 확인</label>
           <input type="password" id="confirm_password" name="confirm_password" required>
         </div>
-        <div class="form-group">
+        <!-- 생년월일 입력 -->
+        <div class="signup-form-group">
           <label for="birthDate">생년월일</label>
           <input type="date" id="birthDate" name="birthDate" required>
         </div>
+        <!-- 성별 선택 -->
         <label for="gender"></label>
-        <div class="gender-toggle">
+        <div class="signup-gender-toggle">
           <button type="button" id="male-btn" class="selected">남성</button>
           <button type="button" id="female-btn">여성</button>
         </div>
         <input type="hidden" id="gender" name="gender" value="M">
-        <button type="button" id="next-btn" class="btn">다음</button>
+        <!-- 다음 버튼 -->
+        <button type="button" id="next-btn" class="signup-btn">다음</button>
       </div>
 
-      <!-- 두 번째 화면 -->
-      <div class="second-container">
+      <!-- 두 번째 화면 (추가 정보 입력) -->
+      <div class="signup-container hidden" id="second-container">
         <div class="header">
-          <div class="custom-heading"><h2>회원가입 - 추가 정보</h2></div>
+          <h2>회원가입 - 추가 정보</h2>
         </div>
-        <div class="form-group">
+        <!-- 키 입력 -->
+        <div class="signup-form-group">
           <label for="height">키</label>
           <input type="text" id="height" name="height" placeholder="cm">
         </div>
-        <div class="form-group">
+        <!-- 몸무게 입력 -->
+        <div class="signup-form-group">
           <label for="weight">몸무게</label>
           <input type="text" id="weight" name="weight" placeholder="kg">
         </div>
-        <div class="form-group">
+        <!-- 알레르기 정보 드롭다운 -->
+        <div class="signup-form-group">
           <label>알레르기 정보</label>
-          <div class="allergy-group">
-            <div class="dropdown">
-              <div class="dropdown-label" id="meat-dropdown">
-                고기류
-                <span>&#9662;</span>
+          <div class="signup-allergy-group">
+            <!-- 고기류 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="고기류" data-default-text="고기류 : 선택 안함" id="meat-dropdown">
+                고기류 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="meat-content">
+              <div class="signup-dropdown-content" id="meat-content">
                 <label data-allergy="eggs">달걀류</label>
                 <label data-allergy="pork">돼지고기</label>
                 <label data-allergy="chicken">닭고기</label>
                 <label data-allergy="beef">쇠고기</label>
               </div>
             </div>
-            <div class="dropdown">
-              <div class="dropdown-label" id="seafood-dropdown">
-                해산물
-                <span>&#9662;</span>
+            <!-- 해산물 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="해산물" data-default-text="해산물 : 선택 안함" id="seafood-dropdown">
+                해산물 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="seafood-content">
+              <div class="signup-dropdown-content" id="seafood-content">
                 <label data-allergy="mackerel">고등어</label>
                 <label data-allergy="shrimp">새우</label>
                 <label data-allergy="squid">오징어</label>
@@ -279,44 +282,48 @@
                 <label data-allergy="shellfish">조개류</label>
               </div>
             </div>
-            <div class="dropdown">
-              <div class="dropdown-label" id="fruit-dropdown">
-                과채류
-                <span>&#9662;</span>
+
+            <!-- 과채류 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="과채류" data-default-text="과채류 : 선택 안함" id="fruit-dropdown">
+                과채류 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="fruit-content">
+              <div class="signup-dropdown-content" id="fruit-content">
                 <label data-allergy="peach">복숭아</label>
                 <label data-allergy="tomato">토마토</label>
               </div>
             </div>
-            <div class="dropdown">
-              <div class="dropdown-label" id="nut-dropdown">
-                견과류
-                <span>&#9662;</span>
+
+            <!-- 견과류 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="견과류" data-default-text="견과류 : 선택 안함" id="nut-dropdown">
+                견과류 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="nut-content">
+              <div class="signup-dropdown-content" id="nut-content">
                 <label data-allergy="peanut">땅콩</label>
                 <label data-allergy="walnuts">호두</label>
                 <label data-allergy="pineNut">잣</label>
                 <label data-allergy="soybean">대두</label>
               </div>
             </div>
-            <div class="dropdown">
-              <div class="dropdown-label" id="grain-dropdown">
-                곡물
-                <span>&#9662;</span>
+
+            <!-- 곡물 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="곡물" data-default-text="곡물 : 선택 안함" id="grain-dropdown">
+                곡물 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="grain-content">
+              <div class="signup-dropdown-content" id="grain-content">
                 <label data-allergy="buckwheat">메밀</label>
                 <label data-allergy="wheat">밀</label>
               </div>
             </div>
-            <div class="dropdown">
-              <div class="dropdown-label" id="dairy-dropdown">
-                유제품
-                <span>&#9662;</span>
+
+            <!-- 유제품 드롭다운 -->
+            <div class="signup-dropdown">
+              <div class="signup-dropdown-label" data-category="유제품" data-default-text="유제품 : 선택 안함" id="dairy-dropdown">
+                유제품 : 선택 안함<span>&#9662;</span>
               </div>
-              <div class="dropdown-content" id="dairy-content">
+              <div class="signup-dropdown-content" id="dairy-content">
                 <label data-allergy="milk">우유</label>
               </div>
             </div>
@@ -340,8 +347,10 @@
         <input type="hidden" id="squid" name="squid" value="false">
         <input type="hidden" id="shellfish" name="shellfish" value="false">
         <input type="hidden" id="pineNut" name="pineNut" value="false">
-        <button type="button" id="back-btn" class="btn">이전</button>
-        <button type="submit" class="btn">제출</button>
+        <div class="signup-button-container">
+          <button type="button" id="back-btn" class="signup-btn">이전</button>
+          <button type="submit" class="signup-btn">제출</button>
+        </div>
       </div>
     </form>
   </div>
@@ -349,7 +358,7 @@
 <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
 <script>
   $(document).ready(function() {
-// 필수 필드 입력 체크 함수
+    // 필수 필드 체크 함수
     function checkRequiredFields() {
       var email = $('#email').val();
       var nickname = $('#nickname').val();
@@ -358,7 +367,6 @@
       var birthDate = $('#birthDate').val();
       var idCheckResult = $('#id-check-result').text();
 
-// 필수 항목이 비어 있거나 ID가 중복되었는지 확인
       if (!email || !nickname || !password || !confirmPassword || !birthDate) {
         alert('모든 필수 항목을 입력해주세요.');
         return false;
@@ -377,22 +385,20 @@
       return true;
     }
 
-// 이메일 체크 AJAX (디바운스 적용)
+    // 이메일 중복 체크 (디바운스 적용)
     let debounceTimer;
     $('#email').on('keyup', function () {
       clearTimeout(debounceTimer);
       let email = $(this).val();
 
       if (!email) {
-        $('#id-check-result').html('이메일을 입력해주세요.');
-        $('#id-check-result').css('color', 'red');
+        $('#id-check-result').html('이메일을 입력해주세요.').css('color', 'red');
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        $('#id-check-result').html('올바른 이메일 형식이 아닙니다.');
-        $('#id-check-result').css('color', 'red');
+        $('#id-check-result').html('올바른 이메일 형식이 아닙니다.').css('color', 'red');
         return;
       }
 
@@ -403,7 +409,6 @@
           data: { searchId: email },
           success: function (data) {
             $('#id-check-result').html(data);
-
             if (data.includes('사용가능한')) {
               $('#id-check-result').css('color', 'green');
             } else {
@@ -411,61 +416,79 @@
             }
           },
           error: function () {
-            $('#id-check-result').html('ID 중복 확인 중 오류가 발생했습니다.');
-            $('#id-check-result').css('color', 'red');
+            $('#id-check-result').html('ID 중복 확인 중 오류가 발생했습니다.').css('color', 'red');
           }
         });
       }, 500);
     });
 
-// 다음 버튼 클릭 시
+    // 드롭다운 라벨 업데이트 함수
+    function updateDropdownLabel(dropdownLabel, selectedItems) {
+      const category = dropdownLabel.getAttribute('data-category');
+      if (selectedItems.length > 0) {
+        dropdownLabel.innerHTML = `${category} : ${selectedItems.join(', ')}`;
+      } else {
+        dropdownLabel.innerHTML = dropdownLabel.getAttribute('data-default-text');
+      }
+    }
+
+    // 드롭다운 라벨을 클릭했을 때 드롭다운을 표시/숨김 처리
+    $('.signup-dropdown-label').on('click', function() {
+      const dropdownContent = $(this).next('.signup-dropdown-content');
+      dropdownContent.toggleClass('show'); // 드롭다운의 표시 여부 토글
+    });
+
+    // 드롭다운에서 알레르기 항목을 선택하는 이벤트 처리
+    $('.signup-dropdown-content label').on('click', function() {
+      const allergy = $(this).data('allergy');
+      const input = $('#' + allergy);
+      const dropdownLabel = $(this).closest('.signup-dropdown').find('.signup-dropdown-label')[0];
+
+      // 선택 상태 업데이트
+      if (input.val() === 'true') {
+        input.val('false');
+        $(this).removeClass('selected');
+      } else {
+        input.val('true');
+        $(this).addClass('selected');
+      }
+
+      // 선택된 항목들을 배열로 저장
+      const selectedItems = $(this).closest('.signup-dropdown-content').find('label.selected').map(function() {
+        return $(this).text();
+      }).get();
+
+      // 드롭다운 라벨 업데이트
+      updateDropdownLabel(dropdownLabel, selectedItems);
+    });
+
+    // 성별 선택 처리
+    $('#male-btn').click(function() {
+      $('#male-btn').addClass('selected');
+      $('#female-btn').removeClass('selected');
+      $('#gender').val('M');
+    });
+
+    $('#female-btn').click(function() {
+      $('#female-btn').addClass('selected');
+      $('#male-btn').removeClass('selected');
+      $('#gender').val('F');
+    });
+
+    // 다음 버튼 클릭 시 화면 전환
     $('#next-btn').click(function() {
-// 필수 항목 체크
       if (checkRequiredFields()) {
-// 모든 필드가 유효할 때만 다음 단계로 전환
-        $('.first-container').addClass('hidden');
-        $('.second-container').addClass('active');
+        $('#first-container').addClass('hidden');
+        $('#second-container').addClass('active');
       }
     });
 
-// 성별 버튼 클릭 이벤트
-    document.getElementById('male-btn').addEventListener('click', function() {
-      document.getElementById('male-btn').classList.add('selected');
-      document.getElementById('female-btn').classList.remove('selected');
-      document.getElementById('gender').value = 'M';
-    });
-
-    document.getElementById('female-btn').addEventListener('click', function() {
-      document.getElementById('female-btn').classList.add('selected');
-      document.getElementById('male-btn').classList.remove('selected');
-      document.getElementById('gender').value = 'F';
-    });
-
-// 드롭다운 라벨을 클릭하면 해당 컨텐츠를 표시하거나 숨기는 이벤트 처리
-    document.querySelectorAll('.dropdown-label').forEach(label => {
-      label.addEventListener('click', function() {
-        const content = this.nextElementSibling;
-        content.classList.toggle('show');
-      });
-    });
-
-// 드롭다운에서 알레르기 항목 선택 시, 숨겨진 input에 값을 설정
-    document.querySelectorAll('.dropdown-content label').forEach(label => {
-      label.addEventListener('click', function() {
-        const allergy = this.getAttribute('data-allergy');
-        const input = document.getElementById(allergy);
-
-        if (input.value === 'true') {
-          input.value = 'false';
-          this.classList.remove('selected');
-        } else {
-          input.value = 'true';
-          this.classList.add('selected');
-        }
-      });
+    // 이전 버튼 클릭 시 첫 번째 화면으로 돌아가기
+    $('#back-btn').click(function() {
+      $('#second-container').addClass('hidden');
+      $('#first-container').removeClass('hidden');
     });
   });
-
 </script>
 </body>
 </html>
