@@ -25,21 +25,32 @@
 
 		<!-- 검색폼 -->
 		<form id="pagingForm" method="get" th:action="@{/board/list}">
-		<div class="searchBox">
-			<input type="hidden" name="page" id="page">
-			<select id="searchType" name="searchType">
-				<option value="title" th:selected="${searchType == 'title'}">제목</option>
-				<option value="contents" th:selected="${searchType == 'contents'}">내용</option>
-				<option value="name" th:selected="${searchType == 'name'}">작성자</option>
-			</select>
-			<input type="text" id="searchWord" name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요" size="30">
-			<input type="submit" value="검색">
-		</div>
+			<div class="searchBox">
+				<input type="hidden" name="page" id="page">
+				<select id="searchType" name="searchType">
+					<option value="title" th:selected="${searchType == 'title'}">제목</option>
+					<option value="contents" th:selected="${searchType == 'contents'}">내용</option>
+					<option value="name" th:selected="${searchType == 'name'}">작성자</option>
+				</select>
+				<input type="text" id="searchWord" name="searchWord" th:value="${searchWord}" placeholder="검색어를 입력하세요" size="30">
+				<input type="submit" value="검색">
+			</div>
 		</form>
 
 	</div>
 
 	<style>
+		#searchType option:checked {
+			background-color: #ffb524;
+		}
+
+		#searchType option:hover {
+			background-color: #ffb524; !important;
+		}
+
+		#searchType option:focus {
+			background-color: #ffb524;
+		}
 
 		h3{
 			text-align: center;
@@ -106,6 +117,10 @@
 			transition: background-color 0.3s ease; /* 부드러운 색상 전환 */
 		}
 
+		#boardWriteBt:hover {
+			background-color: #ffb524;
+		}
+
 		#userInfo{
 			padding-right: 5%;
 			margin-bottom: 20px;
@@ -159,6 +174,8 @@
 
 		.boardContent {
 			overflow: visible !important;
+
+			position: relative; /* 부모 컨테이너에 상대적인 위치를 지정합니다. */
 		}
 
 		#pagingForm{
@@ -217,6 +234,11 @@
 			display: flex;
 			justify-content: center;
 			margin-top: 30px;
+
+			position: absolute; /* 위치를 절대적으로 지정 */
+			top: 550px;
+			left: 50%;
+			transform: translateX(-50%); /* 중앙 정렬을 위해 왼쪽으로 50% 이동 */
 		}
 
 		.paginationButton{
@@ -227,6 +249,11 @@
 		.searchBox{
 			display: flex;
 			justify-content: center;
+
+			position: absolute; /* 위치를 절대적으로 지정 */
+			top: 650px;
+			left: 50%;
+			transform: translateX(-50%); /* 중앙 정렬을 위해 왼쪽으로 50% 이동 */
 		}
 
 		#searchWord{

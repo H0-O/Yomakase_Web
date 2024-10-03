@@ -5055,13 +5055,12 @@
     /*padding-bottom: 5rem;*/
   }
 
-  html, button, .btn, div {
+  html, button, div, h1, h2, h3, h4, h5, h6, p, span, a, option, input, select, textarea {
     font-family: "Noto Sans KR", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
-    font-weight: normal;
   }
-  button, .btn {
+  button {
     letter-spacing: 1px !important;
     font-weight: bolder;
   }
