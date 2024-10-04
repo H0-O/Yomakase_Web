@@ -24,7 +24,6 @@ h1, h2, h3, h4, h5,
 .ftco-section {
     padding: 2em 0; }
 
-
 .img {
     background-size: cover; /*배경 이미지 크기를 요소 크기에 맞춤*/
     background-repeat: no-repeat;
@@ -75,32 +74,61 @@ h1, h2, h3, h4, h5,
     font-size: 18px; }
 
 .pre-button {
-    left: 5px; }
+    left: 20px;
+    grid-column: 1;
+    grid-row: 1; /* 첫 번째 행에 위치 */}
 
 .next-button {
-    right: 5px; }
+    justify-self: end;
+    grid-column: 3;
+    grid-row: 1; /* 첫 번째 행에 위치 */}
 
 .button-wrap {
     position: relative;
-    top: -5px;}
+    top: -5px;
+    display: grid;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    padding: 0 5px; /* 버튼 사이에 여백 추가 */
+
+    grid-template-columns:  1fr 2fr 1fr;; /* 3개의 열을 같은 크기로 설정 */
+    grid-template-rows: auto; /* 행의 크기를 자동으로 설정 */
+    gap: 10px;
+}
+
+.head-date {
+    grid-column: 2;
+    grid-row: 1; /* 첫 번째 행에 위치 */
+}
+
 .button-wrap .pre-button, .button-wrap .next-button {
     cursor: pointer;
     width: 2em;
     height: 1em;
     line-height: 1em;
     border-radius: 50%;
-    position: absolute;
-    top: 0;
-    text-align: right;
-    font-size: 18px;}
+    position: relative;
+  /*  top: 0;*/
+    font-size: 18px;
 
+    transition: transform 0.2s ease-in-out;
+}
+
+.button-wrap .pre-button:hover {
+
+    transform: scale(2.5); /* 왼쪽으로 이동하면서 확대 */
+}
+
+.button-wrap .next-button:hover {
+    transform: translateX(50px) scale(2.5); /* 오른쪽으로 이동하면서 확대 */
+}
 .button-wrap .pre-button i, .button-wrap .next-button i {
     color: #cccccc; /* 아이콘 색상을 연한 회색으로 설정 */
 }
-.button-wrap .pre-button {
+/*.button-wrap .pre-button {
     left: 20px; }
 .button-wrap .next-button {
-    right: 20px; }
+    right: 20px; }*/
 
 /*달력 테이블 크기 설정*/
 #calendarTable {
@@ -276,16 +304,6 @@ button::-moz-focus-inner,
 #recomTable tr{
     width: 90%;
 }
-/*
-#diet-list, #nutrient-list, #diet-list-msg td {
-    width: 30px; !* td의 가로 길이를 150px로 설정 *!
-    padding: 10px; !* 여백 추가 *!
-}
-
-#diet-list, #nutrient-list, #diet-list-msg tr {
-    width: 50px; !* td의 가로 길이를 150px로 설정 *!
-    padding: 10px; !* 여백 추가 *!
-}*/
 
 
 .calendar-wrap {
