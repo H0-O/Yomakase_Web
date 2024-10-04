@@ -34,7 +34,6 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
                 .memberNum(entity.getMemberNum())
                 .roleName(entity.getUserRole())  // 역할(권한) 설정
                 .enabled(entity.getEnabled())  // 계정 활성화 여부 설정
-                .memberNum(entity.getMemberNum())  // memberNum 추가
                 .build();
 
         if (userDetails.getMemberNum() == null) {
