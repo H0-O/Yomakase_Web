@@ -358,6 +358,48 @@
 <script th:src="@{/jq/jquery-3.7.1.min.js}"></script>
 <script>
   $(document).ready(function() {
+    $('.signup-button-container button[type="submit"]').on('click', function(event) {
+      event.preventDefault(); // 기본 제출 방지
+
+      // 필수 필드 체크
+      if (checkRequiredFields()) {
+        // 회원가입 양식 데이터 수집
+        const formData = {
+          email: $('#email').val(),
+          nickname: $('#nickname').val(),
+          password: $('#password').val(),
+          confirm_password: $('#confirm_password').val(),
+          birthDate: $('#birthDate').val(),
+          gender: $('#gender').val(),
+          height: $('#height').val(),
+          weight: $('#weight').val(),
+          eggs: $('#eggs').val(),
+          milk: $('#milk').val(),
+          buckwheat: $('#buckwheat').val(),
+          peanut: $('#peanut').val(),
+          soybean: $('#soybean').val(),
+          wheat: $('#wheat').val(),
+          mackerel: $('#mackerel').val(),
+          crab: $('#crab').val(),
+          shrimp: $('#shrimp').val(),
+          pork: $('#pork').val(),
+          peach: $('#peach').val(),
+          tomato: $('#tomato').val(),
+          walnuts: $('#walnuts').val(),
+          chicken: $('#chicken').val(),
+          beef: $('#beef').val(),
+          squid: $('#squid').val(),
+          shellfish: $('#shellfish').val(),
+          pineNut: $('#pineNut').val()
+        };
+
+        // 콘솔에 출력
+        console.log("회원가입 데이터:", formData);
+
+        // 서버로 전송하는 로직 추가
+        // ...
+      }
+    });
     // 필수 필드 체크 함수
     function checkRequiredFields() {
       var email = $('#email').val();
