@@ -144,9 +144,11 @@ public class CalendarService {
         //log.debug("캘린더복합키 조회: {}", calId);      //CalendarId(inputDate=2024-09-27, memberNum=1)
 
         // calendarRepository에서 복합키로 CalendarEntity 찾기
-        CalendarEntity calEntity = calendarRepository.findById(calId)
-                .orElseThrow(() ->  new EntityNotFoundException("CalendarEntity not found : diet select"));
-
+        CalendarEntity calEntity = calendarRepository.findById(calId).orElse(null);
+        if (calEntity == null) {
+            log.warn("No nutrient data found for calendar ID: {}", calId);
+            return null;  // 데이터가 없을 경우 null 반환
+        }
         //log.debug("식단 조회 서비스 : {}", calEntity);
 
         // 날짜와 memberNum으로 찾은 데이터를 CalendarDTO로 반환

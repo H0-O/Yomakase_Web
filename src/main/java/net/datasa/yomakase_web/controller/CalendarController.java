@@ -8,6 +8,7 @@ import net.datasa.yomakase_web.domain.dto.CalendarDTO;
 import net.datasa.yomakase_web.domain.entity.CalendarEntity;
 import net.datasa.yomakase_web.security.AuthenticatedUser;
 import net.datasa.yomakase_web.service.CalendarService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 캘린더 ajax요청을 처리하는 컨트롤러
@@ -28,27 +31,63 @@ public class CalendarController {
 
     private final CalendarService calendarService;
 
-    /**
-     * 식단 저장 메소드
-     * @param arr
-     * @param user 사용자 인증 정보
-     */
-    @PostMapping("dietSave")
-    public void dietInputMethod(@RequestParam("dietArr") String[] arr, @AuthenticationPrincipal AuthenticatedUser user) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
-        LocalDate date = LocalDate.parse(arr[3], formatter);
+    @PostMapping("/dietSave")
+    public ResponseEntity<String> dietInputMethod(
+            @RequestBody Map<String, Object> dietData,
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        log.info("Received diet data: {}", user);  // 이 라인이 출력되는지 확인
 
-        CalendarDTO calDTO = new CalendarDTO();
-        calDTO.setBName(arr[0]);
-        calDTO.setLName(arr[1]);
-        calDTO.setDName(arr[2]);
-        calDTO.setInputDate(date);
+        try {
+            // 날짜 파싱
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+            LocalDate date = LocalDate.parse((String) dietData.get("date"), formatter);
 
-        log.debug("식단 저장 배열: {},{},{},{}", arr[0], arr[1], arr[2], date);
-        calendarService.mealSave(calDTO, user);
+            // 식단 정보 추출
+            String breakfast = (String) dietData.get("breakfast");
+            String lunch = (String) dietData.get("lunch");
+            String dinner = (String) dietData.get("dinner");
 
+            // 칼로리 정보 추출 (kal map)
+            Map<String, Object> kalMap = (Map<String, Object>) dietData.get("kal");
+            int breakfastCalories = (int) kalMap.get("b");
+            int lunchCalories = (int) kalMap.get("l");
+            int dinnerCalories = (int) kalMap.get("d");
+            int totalCalories = (int) kalMap.get("t");
+
+            // 과다 및 부족 영양소 정보 추출
+            List<String> overNutrients = (List<String>) dietData.get("over");
+            List<String> lackNutrients = (List<String>) dietData.get("lack");
+            String recommendation = (String) dietData.get("rec");
+            int score = (int) dietData.get("score");
+
+            // CalendarDTO에 데이터 설정
+            CalendarDTO calDTO = new CalendarDTO();
+            calDTO.setInputDate(date);
+            calDTO.setBName(breakfast);
+            calDTO.setLName(lunch);
+            calDTO.setDName(dinner);
+            calDTO.setBKcal(breakfastCalories);
+            calDTO.setLKcal(lunchCalories);
+            calDTO.setDKcal(dinnerCalories);
+            calDTO.setTotalKcal(totalCalories);
+            calDTO.setTooMuch(String.join(",", overNutrients));
+            calDTO.setLack(String.join(",", lackNutrients));
+            calDTO.setRecom(recommendation);
+            calDTO.setScore(score);
+
+            // 서비스 메서드를 통해 데이터 저장
+            calendarService.mealSave(calDTO, user.getId());
+
+            log.info("Meal saved successfully for user: {}", user.getUsername());
+            return new ResponseEntity<>("식단이 성공적으로 저장되었습니다!", HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("식단 저장 실패: {}", e.getMessage());
+            return new ResponseEntity<>("저장에 실패했습니다: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     /**
      * 날짜, 사용자 인증정보로 DB에 저장된 식단을 찾는 메소드
