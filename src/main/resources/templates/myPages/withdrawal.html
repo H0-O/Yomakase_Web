@@ -186,9 +186,8 @@
                         throw new Error('탈퇴 실패');
                     }
                 })
-                .then(message => {
-                    // alert(message); // 서버로부터 받은 성공 메시지 출력
-                    showSuccessModal(); // 성공 시 모달창 표시
+                .then(() => {
+                    // 이미 모달을 열고 있으므로 추가 함수 호출 불필요
                     setTimeout(() => {
                         window.location.href = '/'; // 탈퇴 후 홈으로 리다이렉트
                     }, 1000);
@@ -197,6 +196,5 @@
                     alert('회원 탈퇴 중 오류가 발생했습니다: ' + error.message);
                 });
         }
-
     </script>
 </div>
