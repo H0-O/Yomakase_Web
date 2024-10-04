@@ -15,13 +15,35 @@
         <div id="withdrawal-container" style="display: none;">
             <p>정말로 회원을 탈퇴하시겠습니까?</p>
             <button class="withdrawal-cancelNoButton" onclick="cancelDelete()">아니오</button>
-            <button id="withdrawal-cancelYesButton" class="withdrawal-cancelYesButton" onclick="deleteAccount()">예</button>
+            <button id="withdrawal-cancelYesButton" class="withdrawal-cancelYesButton" onclick="deleteAccount()">예
+            </button>
         </div>
     </div>
 
     <style>
         .withdrawalBtn {
             margin: 18px;
+        }
+
+        #mypages-deleteAccount-info div {
+            display: flex;
+            align-items: center;
+            margin: 30px;
+        }
+
+        .withdrawalBtn {
+            justify-content: center;
+        }
+
+        .withdrawalBtn input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .withdrawalBtn input {
+            transform: scale(1.5); /* 체크박스 크기 조절 */
         }
 
         #mypages-deleteAccount-info, #withdrawal-container {
@@ -66,7 +88,7 @@
             display: inline-block;
         }
 
-        withdrawal-cancelNoButton:hover, .withdrawal-cancelYesButton:hover {
+        #withdrawal-container button:hover {
             background-color: #ffb524;
         }
 
@@ -93,6 +115,7 @@
                 box.style.display = 'none';
             }
         }
+
         function cancelDelete() {
             const checkbox = document.getElementById('agreeCheckbox');
             checkbox.checked = false;
@@ -100,6 +123,7 @@
             box.style.display = 'none';
             alert("회원 탈퇴를 중단했습니다.");
         }
+
         function deleteAccount() {
             console.log("클릭됨");
             // 서버에 회원 탈퇴 요청을 보내는 함수

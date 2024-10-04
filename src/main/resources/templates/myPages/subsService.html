@@ -27,8 +27,8 @@
 
     <!-- 가짜 결제 모달 창 -->
     <div id="paymentModal" class="modal-overlay">
-        <div class="myrecipe-modal-content">
-            <button class="close-button" onclick="closeModal()">X</button>
+        <div class="payment-modal-content">
+            <img src="/img/closeIcon.png" onclick="closeModal()" id="payment-close" alt="닫기">
             <h3>가상 결제 화면</h3>
             <p>구독 서비스 결제를 진행해 주세요.</p>
             <p>결제 금액: 490원</p>
@@ -50,40 +50,41 @@
             z-index: 9999;
         }
 
-        .myrecipe-modal-content {
-            background: white !important; /* 배경색을 흰색으로 설정 */
-            color: #81C405 !important; /* 텍스트 색을 #81C405로 설정 */
+        .payment-modal-content {
+            background: white; /* 배경색을 흰색으로 설정 */
+            color: #81C405; /* 텍스트 색을 #81C405로 설정 */
+            font-size: 20px;
             padding: 20px;
             border-radius: 8px;
-            width: 400px;
+            border-color: #FFB524;
+            width: 450px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             position: relative;
-            display: flex;
             flex-direction: column;
-            align-items: center; /* 자식 요소를 수직 가운데 정렬 */
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            color : #FFB524;
         }
 
         #confirmPaymentButton {
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #FFB524;
+            margin-left: 150px;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             align-self: center; /* 버튼을 가로 가운데 정렬 */
+        }
+        #confirmPaymentButton:hover{
+            background-color: #81C405;
+        }
+        #payment-close {
+            color: #FFB524;
+            float: right;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
         }
     </style>
 

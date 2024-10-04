@@ -115,9 +115,13 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px; /* 폰트 크기 줄이기 */
+
+        }
+        #logoutBtn:hover {
+            background-color: #FFB524;
         }
 
-        .btn {
+        #signupBtn,#loginBtn {
             padding: 10px 20px;
             margin: 0; /* 버튼 주변 여백 제거 */
             background-color: #81c405;
@@ -127,7 +131,7 @@
             cursor: pointer;
         }
 
-        .btn:hover {
+        #signupBtn:hover,#loginBtn:hover {
             background-color: #FFB524;
         }
     </style>
@@ -165,6 +169,25 @@
                     <form action="logout" method="post">
                         <button id="logoutBtn" class="btn">로그아웃</button>
                     </form>
+                <div class="button-container">
+                    <!-- 회원가입과 로그인 버튼: GET 요청으로 각각의 컨트롤러 호출 -->
+                    <div sec:authorize="not isAuthenticated()" style="display: flex; gap: 10px;">
+                        <!-- 회원가입 버튼 -->
+                        <form action="signupForm" method="get">
+                            <button id="signupBtn">회원가입</button>
+                        </form>
+                        <!-- 로그인 버튼 -->
+                        <form action="loginForm" method="get">
+                            <button id="loginBtn">로그인</button>
+                        </form>
+                    </div>
+                    <!-- 로그인 상태일 때: 로그아웃 버튼 표시 -->
+                    <div sec:authorize="isAuthenticated()">
+                        <!-- 로그아웃 버튼 -->
+                        <form action="logout" method="post">
+                            <button id="logoutBtn">로그아웃</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
