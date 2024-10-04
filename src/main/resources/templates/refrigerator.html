@@ -131,7 +131,13 @@
     </script>
     <script>
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';  // 모달 닫기
+                document.body.style.overflow = '';  // 스크롤 다시 활성화
+            } else {
+                console.error('모달이 존재하지 않습니다:', modalId);
+            }
         }
 
         $(document).ready(function () {
@@ -436,8 +442,7 @@
                     // 동영상 URL이 없을 경우, iframe을 숨기고 src를 초기화
                     $('#recipe-video').hide();
                     $('#recipe-video').attr('src', ''); // src 초기화
-                    $('#recipe-details').after('<p id="no-video-message" style="color:red;">관련 영상이 없습니다</p>');
-                }
+                    $('.responsive-video-container').append('<p id="no-video-message" style="color:red; text-align: center;">관련 영상이 없습니다</p>');                }
 
                 // 모달을 화면에 표시
                 toggleModalVisibility('RecipeModal', true);
