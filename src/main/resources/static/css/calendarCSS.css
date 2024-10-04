@@ -346,10 +346,9 @@ button::-moz-focus-inner,
     display: none;
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     left: 0;
-    top: 350%;
-    /*top: 0;*/
+    top: 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -363,25 +362,6 @@ button::-moz-focus-inner,
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/*#nutrient-modal {
-    display: none;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 358%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(1.5px);
-    -webkit-backdrop-filter: blur(1.5px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}*/
 
 .cal-modal-window {
     background: #ffffff;
@@ -394,8 +374,8 @@ button::-moz-focus-inner,
 
     width: 400px;
     height: 300px;
-    position: absolute;
-    top: 28%;
+    position: fixed;
+    top: 30%;
     left: 40%;
     padding: 10px;
     text-align: center;
