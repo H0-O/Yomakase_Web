@@ -382,8 +382,19 @@
                 inputGroup.remove();
                 validateInputs();
             });
-            nameInput.addEventListener('input', validateInputs);
+
+            // 이벤트 리스너 추가
+            nameInput.addEventListener('change', function() {
+                if (existingIngredients.includes(nameInput.value)) {
+                    nameInput.style.color = 'red'; // 이미 존재하는 재료면 빨간색
+                } else {
+                    nameInput.style.color = 'black'; // 존재하지 않으면 검정색
+                }
+                validateInputs();
+            });
+
             expirationInput.addEventListener('input', validateInputs);
+
             inputGroup.appendChild(nameInput);
             inputGroup.appendChild(expirationInput);
             inputGroup.appendChild(deleteButton);
@@ -409,7 +420,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const ingredientsList = document.getElementById('ingredients-list');
-                    //ingredientsList.innerHTML = ''; // 기존 목록을 초기화
+                    ingredientsList.innerHTML = ''; // 기존 목록을 초기화
 
                     // ingredients-list에서 모든 input 그룹을 가져옴
                     const inputGroups = document.querySelectorAll('#ingredients-list .input-group');
@@ -430,6 +441,14 @@
                         const inputGroup = createInputGroup(ingredientName, expiration);
                         ingredientsList.appendChild(inputGroup);
                     });
+
+                    // OCR로 입력된 값들에 대해 중복 검사를 수동으로 실행
+                    const ingredientInputs = document.querySelectorAll('input[name="ingredients[]"]');
+                    ingredientInputs.forEach(input => {
+                        const event = new Event('change'); // change 이벤트 수동 트리거
+                        input.dispatchEvent(event); // 각 input 필드에 change 이벤트 트리거
+                    });
+
                 })
                 .catch(error => console.error('Error:', error))
                 .finally(() => {
