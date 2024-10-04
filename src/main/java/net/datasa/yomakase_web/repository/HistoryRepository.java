@@ -15,10 +15,11 @@ import java.util.List;
 @Repository
 public interface HistoryRepository extends JpaRepository<HistoryEntity, Integer> {
 
-    // 각 재료별로 소비와 버림의 횟수를 기간 내에서 집계하는 쿼리
+    // 기존 메서드에 memberNum을 필터로 추가
     @Query("SELECT h.ingredientName, h.type, COUNT(h) " +
             "FROM HistoryEntity h " +
             "WHERE h.date BETWEEN :startDate AND :endDate " +
+            "AND h.memberNum = :memberNum " +
             "GROUP BY h.ingredientName, h.type")
-    List<Object[]> countByIngredientAndType(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<Object[]> countByIngredientAndTypeAndMemberNum(LocalDate startDate, LocalDate endDate, Integer memberNum);
 }
