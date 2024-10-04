@@ -44,8 +44,7 @@
         </style>
     </head>
     <body>
-
-    <div class="chart-container">
+    <div class="chart-container" th:data-member-num="${member.memberNum}">
         <div class="button-group">
             <button id="weekly-btn" onclick="loadData('weekly', this)">1주일</button>
             <button id="monthly-btn" onclick="loadData('monthly', this)">1개월</button>
