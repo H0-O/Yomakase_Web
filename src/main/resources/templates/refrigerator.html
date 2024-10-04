@@ -161,7 +161,7 @@
                 if (daysLeft > 0) {
                     return `D-${daysLeft}`; // 남은 일수가 있을 경우 D-형식
                 } else if (daysLeft === 0) {
-                    return 'D-Day'; // 오늘이 소비기한일 경우
+                    return 'D-DAY'; // 오늘이 소비기한일 경우
                 } else {
                     return `D+${Math.abs(daysLeft)}`; // 소비기한이 지난 경우 D+형식
                 }
