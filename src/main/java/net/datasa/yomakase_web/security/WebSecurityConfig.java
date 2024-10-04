@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 // @Configuration : 클래스를 설정 클래스(configuration class)로 지정하는 데 사용됩니다.
 // 설정 클래스는 스프링 IoC 컨테이너가 애플리케이션 컨텍스트를 구성하는 데 필요한 빈(bean) 정의를 포함하는 클래스입니다.
@@ -79,5 +81,11 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
+    @Bean
+    public HttpFirewall allowCookieHeaderFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        // 필요한 경우 다른 헤더나 값도 허용할 수 있음
+        firewall.setAllowedHeaderValues(header -> !header.equalsIgnoreCase("cookie") || header.contains("JSESSIONID"));
+        return firewall;
+    }
 }

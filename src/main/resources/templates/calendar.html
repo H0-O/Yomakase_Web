@@ -203,7 +203,12 @@
       </div>
     </div>
   </div>
-
+  <div id="diet-loading-modal">
+    <div class="loading-modal-content">
+      <p>식단 입력 중...</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
 
   <!--영양소 점수출력 모달 부분-->
  <!-- <div id="nutrient-modal" class="cal-modal-overlay" style="visibility: hidden">
@@ -227,47 +232,168 @@
   <script src="/js/calendar.js"></script>
   <script src="/js/diet-cal-modal_js.js"></script>
 
+
   <!--식단 저장 기능-->
-  <script>
-    window.onload = function(){
+  <script th:inline="javascript">
+    let memberData = {
+      birthDate: /*[[${member.birthDate}]]*/,  // 날짜 데이터
+      gender: /*[[${member.gender}]]*/,  // 문자열 데이터
+      height: /*[[${member.height}]]*/,  // 숫자 데이터
+      weight: /*[[${member.weight}]]*/  // 숫자 데이터
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
       let dietBtn = document.getElementById('dietBtn');
       dietBtn.addEventListener('click', dietInput);
-    }
+    });
 
     function dietInput(){
       let bName = document.getElementById('bName').value;
       let lName = document.getElementById('lName').value;
       let dName = document.getElementById('dName').value;
-      let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0].value;
-      //console.log(bName, lName, dName);
+      let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0].textContent;
 
       if(bName.length === 0 && lName.length === 0 && dName.length === 0) {
         alert("식단을 입력해 주세요.");
         document.getElementById('bName').focus();
         return;
       }
-      let dietArr = [bName, lName, dName, clickedDietDay];
-      //서버로 비동기적인 요청
+      let age = calculateAge(memberData.birthDate);
+      let dietData = {
+        breakfast: bName,
+        lunch: lName,
+        dinner: dName,
+        age: age,
+        gender: memberData.gender,
+        height: memberData.height,
+        weight: memberData.weight,
+        date: clickedDietDay
+      };
+      document.getElementById('diet-loading-modal').style.display = 'flex';
       $.ajax({
-        url : '/localhost:7777/nutrition',  //파이썬 api코드로 작동. 키가 없어서 여기서 실제로 작동하지는 않음
-        type : 'post',
-        data : {dietArr : dietArr},
-        success : function(){
-          alert('식단이 저장되었습니다.');
-          document.getElementById('bName').value = "";
-          document.getElementById('lName').value = "";
-          document.getElementById('dName').value = "";
-        },
-        error : function(){		//예외가 발생하면 여기로
-          alert('diet save error');		//아예 요청을 받지 않을 때 (ex.404 오류)
-        }
+        url: 'http://localhost:8000/nutrition',  // FastAPI 엔드포인트
+        type: 'POST',
+        contentType: 'application/json',  // JSON 형식으로 데이터 전송
+        data: JSON.stringify(dietData),  // FastAPI로 보낼 데이터를 JSON 형식으로 직렬화
+        success: function(responseData) {
+          // 'rec' 필드에서 대괄호를 제거하여 단순 문자열로 처리
+          if (responseData.rec) {
+            responseData.rec = responseData.rec.replace(/\[/g, "\\[").replace(/\]/g, "\\]");  // 대괄호를 이스케이프 처리
+          }
 
+          // 'kal' 객체가 존재하는지 확인
+          if (responseData.kal) {
+            let springRequestData = {
+              date: dietData.date,  // 사용자가 선택한 날짜
+              breakfast: dietData.breakfast ? dietData.breakfast : null,  // 아침 식단
+              lunch: dietData.lunch ? dietData.lunch : null,  // 점심 식단
+              dinner: dietData.dinner ? dietData.dinner : null,  // 저녁 식단
+              kal: {
+                b: responseData.kal.b || 0,  // 아침 칼로리
+                l: responseData.kal.l || 0,  // 점심 칼로리
+                d: responseData.kal.d || 0,  // 저녁 칼로리
+                t: responseData.kal.t || 0,  // 총 칼로리
+                RDI: responseData.kal.RDI || 0.0  // 권장 섭취량
+              },
+              over: responseData.over || [],  // 과다 섭취된 영양소 리스트
+              lack: responseData.lack || [],  // 부족한 영양소 리스트
+              rec: responseData.rec || "",  // 영양 추천
+              score: responseData.score || 0  // 식단 점수
+            };
+
+            // 스프링 서버로 전송
+            $.ajax({
+              url: '/cal/dietSave',  // 스프링 서버 엔드포인트
+              type: 'POST',
+              contentType: 'application/json',  // JSON 형식으로 데이터 전송
+              data: JSON.stringify(springRequestData),  // 스프링 서버로 보낼 데이터를 직렬화
+              success: function() {
+                console.log("식단이 스프링 서버에 성공적으로 저장되었습니다.");
+                document.getElementById('diet-loading-modal').style.display = 'none';
+                document.getElementById('diet-modal').style.display = 'none';
+
+                window.location.href = "/#calendar";  // 달력 페이지로 리다이렉트
+              },
+              error: function(xhr, status, error) {
+                console.log("에러 발생:", xhr.responseText);  // 에러 발생 시 콘솔에 출력
+                document.getElementById('diet-loading-modal').style.display = 'none';
+              }
+            });
+          } else {
+            // kal 데이터가 없을 경우 경고창 출력
+            alert("칼로리 데이터를 가져오지 못했습니다. 다시 시도해 주세요.");
+            document.getElementById('diet-loading-modal').style.display = 'none';  // 로딩 모달 숨기기
+          }
+
+        },
+        error: function() {
+          alert('FastAPI 서버에서 데이터를 받는 데 실패했습니다.');
+          document.getElementById('diet-loading-modal').style.display = 'none';
+        }
       });
 
+
+
+      function calculateAge(birthDate) {
+        let today = new Date();
+        let birthDateObj = new Date(birthDate);
+        let age = today.getFullYear() - birthDateObj.getFullYear();
+        let monthDiff = today.getMonth() - birthDateObj.getMonth();
+
+        // 생일이 지나지 않았다면 나이를 1살 줄임
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+          age--;
+        }
+
+        return age;
+      }
     }
   </script>
 
+<style>
+  /* 로딩 모달 스타일 */
+  #diet-loading-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none; /* 기본적으로 숨김 */
+  }
+  .loading-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #81c405 !important;
+    border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
 
+  }
+  .spinner {
+    width: 17.6px;
+    height: 17.6px;
+    border-radius: 17.6px;
+    box-shadow: 44px 0px 0 0 rgba(255, 181, 36, 0.2),
+    35.6px 26px 0 0 rgba(255, 181, 36, 0.4),
+    13.64px 41.8px 0 0 rgba(255, 181, 36, 0.6),
+    -13.64px 41.8px 0 0 rgba(255, 181, 36, 0.8),
+    -35.6px 26px 0 0 #ffb524;
+    animation: spinner-b87k6z 1s infinite linear;
+    margin: 80px auto; /* 스피너 위치 조정 */
+  }
+
+  @keyframes spinner-b87k6z {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
 
   <link rel="stylesheet" href="/css/calendarCSS.css">
 </div>  <!--fragment 용-->
