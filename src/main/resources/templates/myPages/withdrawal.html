@@ -19,8 +19,49 @@
             </button>
         </div>
     </div>
+    <!-- 모달창 -->
+    <div id="withdrawalStop-modal" class="withdrawal-stop-modal" style="display:none;">
+        <div class="withdrawalStop-modal-content">
+            <p>회원 탈퇴를 중단했습니다.</p>
+        </div>
+    </div>
+
+    <div id="withdrawalKeep-modal" class="withdrawal-keep-modal" style="display:none;">
+        <div class="withdrawalKeep-modal-content">
+            <p>회원 탈퇴되었습니다.</p>
+        </div>
+    </div>
 
     <style>
+        .withdrawal-stop-modal, .withdrawal-keep-modal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed; /* 화면의 중앙에 모달을 고정 */
+            z-index: 1; /* 화면의 최상위에 위치 */
+            left: 0;
+            top: 0;
+            width: 100%; /* 전체 화면을 덮음 */
+            height: 100%;
+            overflow: auto; /* 콘텐츠가 길어지면 스크롤 */
+            background-color: rgba(0, 0, 0, 0.4); /* 투명한 검은색 배경 */
+        }
+
+        /* 모달 콘텐츠 박스 */
+        .withdrawalStop-modal-content, .withdrawalKeep-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #81c405 !important;
+            border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
+            margin: 25% auto; /* 화면 중앙에 배치 */
+            width: 80%; /* 모달의 너비 설정 */
+            max-width: 500px; /* 최대 너비 설정 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 */
+            animation: modalFadeIn 0.3s ease-in-out; /* 모달이 서서히 나타나게 애니메이션 */
+        }
+
         #mypages-deleteAccount-info div {
             display: flex;
             align-items: center;
@@ -118,11 +159,19 @@
             checkbox.checked = false;
             const box = document.getElementById('withdrawal-container');
             box.style.display = 'none';
-            alert("회원 탈퇴를 중단했습니다.");
+            const modal = document.getElementById('withdrawalStop-modal'); // 모달창 요소
+            modal.style.display = 'block'; // 성공 시 모달창 표시
+            setTimeout(() => {
+                window.location.reload(); // 페이지 새로고침
+            }, 1000);
         }
 
         function deleteAccount() {
             console.log("클릭됨");
+
+            const modal = document.getElementById('withdrawalKeep-modal'); // 모달창 요소
+            modal.style.display = 'block'; // 성공 시 모달창 표시
+
             // 서버에 회원 탈퇴 요청을 보내는 함수
             fetch('/member/delete', {
                 method: 'DELETE',
@@ -138,8 +187,11 @@
                     }
                 })
                 .then(message => {
-                    alert(message); // 서버로부터 받은 성공 메시지 출력
-                    window.location.href = '/'; // 탈퇴 후 홈으로 리다이렉트
+                    // alert(message); // 서버로부터 받은 성공 메시지 출력
+                    showSuccessModal(); // 성공 시 모달창 표시
+                    setTimeout(() => {
+                        window.location.href = '/'; // 탈퇴 후 홈으로 리다이렉트
+                    }, 1000);
                 })
                 .catch(error => {
                     alert('회원 탈퇴 중 오류가 발생했습니다: ' + error.message);

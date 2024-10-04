@@ -12,9 +12,21 @@
         <button id="mypages-cancelNoButton" onclick="cancelNo()">아니오</button>
         <button id="mypages-cancelYesButton" onclick="unsubscribe()">예</button>
     </div>
+    <!-- 모달창 -->
+    <div id="subsCancel-modal" class="subs-cancel-modal" style="display:none;">
+        <div class="subsCancel-modal-content">
+            <p>구독이 취소되었습니다.</p>
+        </div>
+    </div>
     <script>
         function cancelNo() {
             alert("구독 취소를 중단했습니다.");
+        }
+
+        const modal = document.getElementById('subsCancel-modal'); // 모달창 요소
+
+        function showSuccessModal() {
+            modal.style.display = 'block';
         }
 
         function unsubscribe() {
@@ -35,8 +47,10 @@
                     })
                     .then(data => {
                         console.log('Success:', data);
-                        alert('구독이 취소되었습니다.');
-                        window.location.reload(); // 페이지 새로고침하여 상태 반영
+                        showSuccessModal(); // 성공 시 모달창 표시
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
