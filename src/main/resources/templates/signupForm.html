@@ -485,8 +485,8 @@
 
     // 이전 버튼 클릭 시 첫 번째 화면으로 돌아가기
     $('#back-btn').click(function() {
-      $('#second-container').addClass('hidden');
-      $('#first-container').removeClass('hidden');
+      $('#second-container').removeClass('active').addClass('hidden'); // 두 번째 화면 숨기기
+      $('#first-container').removeClass('hidden').addClass('active');  // 첫 번째 화면 활성화
     });
   });
 </script>
