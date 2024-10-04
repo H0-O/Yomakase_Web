@@ -193,7 +193,7 @@
 }
 
 .table-container tbody::-webkit-scrollbar-track, #RecipeModal .modal-window::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: white;
 }
 
 .modal-overlay {
@@ -309,7 +309,7 @@
     overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
-    background: #fff;
+    background: white;
     border : 6px solid #81c405;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -364,7 +364,7 @@
     text-align: left; /* 왼쪽 정렬 */
     margin-bottom: 15px; /* 아래쪽 여백 */
     padding: 10px; /* 텍스트 주변 간격 */
-    background-color: #f9f9f9; /* 읽기 쉽게 배경색 추가 */
+    background-color: white; /* 읽기 쉽게 배경색 추가 */
     border-radius: 5px; /* 부드러운 모서리 */
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05); /* 안쪽 그림자 */
     font-weight: bold;

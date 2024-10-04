@@ -74,6 +74,21 @@
             background-color: #FFB524;
         }
 
+        .slider-delete-btn {
+            background-color: #81C405;
+            color: white;
+            border: none;
+            padding: 8px 16px; /* 버튼 크기를 줄이기 위해 패딩을 줄임 */
+            cursor: pointer;
+            margin-left: 160px;
+            border-radius: 25px;
+            display: block; /* 버튼을 블록 요소로 변경하여 가로 중앙 정렬이 가능하도록 설정 */
+            width: fit-content; /* 버튼 크기를 내용에 맞게 설정 */
+        }
+
+        .slider-delete-btn:hover {
+            background-color: #FFB524;
+        }
         /* 슬라이더 버튼 가운데 정렬 */
         .slider-btn-container {
             text-align: center;
@@ -98,7 +113,8 @@
         .recipe-modal-content {
             background-color: white; /* 흰색 배경 */
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
+            border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
             width: 80%;
             max-width: 500px;
             text-align: center;
@@ -108,9 +124,12 @@
         .recipe-close {
             color: #FFB524;
             float: right;
-            font-size: 28px;
+            font-size: 20px;
             font-weight: bold;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
+            transition: transform 0.2s ease-in-out;
         }
 
         .recipe-close:hover {
@@ -168,12 +187,12 @@
     <!-- Modal Section -->
     <div id="recipeModal" class="recipe-modal">
         <div class="recipe-modal-content">
-            <span class="recipe-close">&times;</span>
+            <img src="/img/closeIcon.png" class="recipe-close" alt="닫기">
             <h3 id="recipeModalFoodName"></h3>
             <p id="recipeModalSavedRecipe"></p>
             <iframe id="recipeModalUrl" class="recipe-modal-youtube-frame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <!-- 삭제 버튼 추가 -->
-            <button id="deleteRecipeBtn" class="slider-btn">레시피 삭제</button>
+            <button id="deleteRecipeBtn" class="slider-delete-btn">레시피 삭제</button>
         </div>
     </div>
 
