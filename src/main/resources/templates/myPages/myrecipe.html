@@ -192,7 +192,7 @@
     </style>
 
     <!-- 레시피 슬라이더 섹션 -->
-    <div class="recipe-carousel-container">
+    <div class="recipe-carousel-container" th:data-member-num="${member.memberNum}">
         <!-- th:each로 레시피 리스트를 루프 -->
         <div th:each="recipe : ${recipes}" class="recipe-carousel-item">
             <div class="recipe-card"
@@ -325,19 +325,13 @@
             // 삭제 버튼 클릭 시
             deleteBtn.addEventListener('click', function() {
                 const indexNum = deleteBtn.getAttribute('data-index-num'); // 저장된 indexNum 가져오기
+                const memberNum = document.querySelector('.recipe-carousel-container').getAttribute('data-member-num'); // memberNum 가져오기
 
-                // 삭제 여부를 확인하는 창
                 const confirmDelete = confirm(`레시피를 정말 삭제하시겠습니까?`);
 
-                const modal = document.getElementById('myrecipe-modal'); // 모달창 요소
-
-                function showSuccessModal() {
-                    modal.style.display = 'block';
-                }
-
                 if (confirmDelete) {
-                    // 서버로 삭제 요청을 보냄 (indexNum을 사용)
-                    fetch(`/deleteRecipe/${indexNum}`, {
+                    // 서버로 삭제 요청을 보냄 (indexNum과 memberNum을 함께 전송)
+                    fetch(`/deleteRecipe/${indexNum}?memberNum=${memberNum}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',

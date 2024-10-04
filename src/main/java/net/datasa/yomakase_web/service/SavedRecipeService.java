@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,8 +62,8 @@ public class SavedRecipeService {
     }
 
     // 레시피 불러오기
-    public List<SavedRecipeDTO> getSavedRecipes() {
-        return savedRecipeRepository.findAll().stream()
+    public List<SavedRecipeDTO> getSavedRecipes(Integer memberNum) {
+        return savedRecipeRepository.findByMemberMemberNum(memberNum).stream() // memberNum을 기준으로 조회
                 .map(recipe -> SavedRecipeDTO.builder()
                         .indexNum(recipe.getIndexNum())
                         .memberNum(recipe.getMember().getMemberNum())
@@ -73,13 +74,20 @@ public class SavedRecipeService {
                 .collect(Collectors.toList());
     }
 
-    // foodName을 기준으로 레시피 삭제
-    public void deleteRecipeByIndexNum(int indexNum) {
-        // indexNum에 해당하는 레시피가 존재하는지 확인
-        if (savedRecipeRepository.existsById(indexNum)) {
-            savedRecipeRepository.deleteById(indexNum); // 레시피 삭제
-        } else {
-            throw new IllegalArgumentException("해당 레시피를 찾을 수 없습니다. indexNum: " + indexNum);
+    // indexNum과 memberNum을 기준으로 레시피를 삭제
+    public boolean deleteRecipeByIndexNumAndMemberNum(Integer indexNum, Integer memberNum) {
+        Optional<SavedRecipeEntity> recipeOpt = savedRecipeRepository.findById(indexNum);
+
+        if (recipeOpt.isPresent()) {
+            SavedRecipeEntity recipe = recipeOpt.get();
+
+            // 해당 레시피가 사용자의 것인지 확인
+            if (recipe.getMember().getMemberNum().equals(memberNum)) {
+                savedRecipeRepository.deleteById(indexNum); // 레시피 삭제
+                return true; // 삭제 성공
+            }
         }
+
+        return false; // 레시피가 존재하지 않거나 권한이 없음
     }
 }
