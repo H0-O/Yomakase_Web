@@ -154,13 +154,13 @@
         </div>
     </div>
     <!-- 모달창 -->
-    <div id="success-modal" class="modify-modal" style="display:none;">
-        <div class="modify-modal-content">
+    <div id="profile-update-modal" class="profile-modify-modal" style="display:none;">
+        <div class="profile-modal-content">
             <p>회원정보가 수정되었습니다.</p>
         </div>
     </div>
     <style>
-        .modify-modal {
+        .profile-modify-modal {
             display: none; /* 기본적으로 숨김 */
             position: fixed; /* 화면의 중앙에 모달을 고정 */
             z-index: 1; /* 화면의 최상위에 위치 */
@@ -173,7 +173,7 @@
         }
 
         /* 모달 콘텐츠 박스 */
-        .modify-modal-content {
+        .profile-modal-content {
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -383,7 +383,7 @@
             const nextBtn = document.getElementById('next-btn');
             const backBtn = document.getElementById('back-btn');
             const submitBtn = document.getElementById('submit-btn');
-            const modal = document.getElementById('success-modal'); // 모달창 요소
+            const modal = document.getElementById('profile-update-modal'); // 모달창 요소
 
             // 성별 초기화 함수
             function initializeGenderSelection() {

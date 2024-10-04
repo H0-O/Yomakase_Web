@@ -44,7 +44,41 @@
             <div class="spinner"></div>
         </div>
     </div>
+    <!-- 모달창 -->
+    <div id="ingredient-input-modal" class="ingre-save-modal" style="display:none;">
+        <div class="ingre-modal-content">
+            <p>식재료가 저장되었습니다.</p>
+        </div>
+    </div>
     <style>
+        .ingre-save-modal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed; /* 화면의 중앙에 모달을 고정 */
+            z-index: 1; /* 화면의 최상위에 위치 */
+            left: 0;
+            top: 0;
+            width: 100%; /* 전체 화면을 덮음 */
+            height: 100%;
+            overflow: auto; /* 콘텐츠가 길어지면 스크롤 */
+            background-color: rgba(0, 0, 0, 0.4); /* 투명한 검은색 배경 */
+        }
+
+        /* 모달 콘텐츠 박스 */
+        .ingre-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #81c405 !important;
+            border: 2px solid #FFB524; /* 밝은 주황색 테두리 */
+            margin: 25% auto; /* 화면 중앙에 배치 */
+            width: 80%; /* 모달의 너비 설정 */
+            max-width: 500px; /* 최대 너비 설정 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 */
+            animation: modalFadeIn 0.3s ease-in-out; /* 모달이 서서히 나타나게 애니메이션 */
+        }
 
         button {
             display: block;
@@ -390,6 +424,12 @@
 
             console.log("Sending data:", data); // 서버로 전송하기 전 데이터 확인용 로그
 
+            const modal = document.getElementById('ingredient-input-modal'); // 모달창 요소
+
+            function showSuccessModal() {
+                modal.style.display = 'block';
+            }
+
             // 서버로 데이터 전송
             fetch('/stock/save', {
                 method: 'POST',
@@ -398,11 +438,14 @@
                 },
                 body: JSON.stringify(data) // JSON 형식으로 변환하여 보냄
             })
+
                 .then(response => {
                     console.log("Response status:", response.status); // 응답 상태 로그
                     if (response.ok) {
-                        alert('저장되었습니다!');
-                        location.reload(); // 페이지 새로고침
+                        showSuccessModal();
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
                     } else {
                         return response.text().then(errorMessage => {
                             console.error("Error message:", errorMessage); // 에러 메시지 로그
