@@ -135,7 +135,6 @@
             background-color: #FFB524;
         }
     </style>
-    <!--    <div id="image-container">-->
     <div id="box">
         <img id="logo-image" src="img/logo_home.png" alt="Logo">
         <!--        <div id="logo-image">-->
@@ -173,58 +172,56 @@
             </div>
         </div>
     </div>
-</div>
-<!--    </div>-->
-<script>
-    // 이미지 경로 및 파일 배열
-    const imageContainer = document.getElementById('image-container');
-    const imagePath = '/img/'; // 이미지 경로
-    const imageFiles = [
-        'ingre1.png',
-        'ingre2.png',
-        'ingre3.png',
-        'ingre4.png',
-        'ingre5.png',
-        'ingre6.png',
-        'ingre7.png',
-        'ingre8.png',
-        'ingre9.png',
-        'ingre10.png',
-        'ingre11.png',
-        'ingre12.png',
-        'ingre14.png',
-        'ingre15.png',
-        'ingre16.png'
-    ]; // 사용할 이미지 파일들
+    <script>
+        // 이미지 경로 및 파일 배열
+        const imageContainer = document.getElementById('image-container');
+        const imagePath = '/img/'; // 이미지 경로
+        const imageFiles = [
+            'ingre1.png',
+            'ingre2.png',
+            'ingre3.png',
+            'ingre4.png',
+            'ingre5.png',
+            'ingre6.png',
+            'ingre7.png',
+            'ingre8.png',
+            'ingre9.png',
+            'ingre10.png',
+            'ingre11.png',
+            'ingre12.png',
+            'ingre14.png',
+            'ingre15.png',
+            'ingre16.png'
+        ]; // 사용할 이미지 파일들
 
-    // 무작위 이미지를 생성하는 함수
-    function createFallingImage() {
-        const img = document.createElement('img');
-        const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)]; // 무작위 이미지 선택
-        img.src = `${imagePath}${randomImage}`;
-        img.className = 'falling-image';
+        // 무작위 이미지를 생성하는 함수
+        function createFallingImage() {
+            const img = document.createElement('img');
+            const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)]; // 무작위 이미지 선택
+            img.src = `${imagePath}${randomImage}`;
+            img.className = 'falling-image';
 
-        // 무작위 위치 계산
-        const randomX = Math.random() * (window.innerWidth - 50);
-        img.style.left = `${randomX}px`;
+            // 무작위 위치 계산
+            const randomX = Math.random() * (window.innerWidth - 50);
+            img.style.left = `${randomX}px`;
 
-        // 무작위 회전 방향 결정 (-1: 왼쪽으로, 1: 오른쪽으로)
-        const randomDirection = Math.random() < 0.5 ? -1 : 1;
-        img.style.setProperty('--rotation-direction', randomDirection);
+            // 무작위 회전 방향 결정 (-1: 왼쪽으로, 1: 오른쪽으로)
+            const randomDirection = Math.random() < 0.5 ? -1 : 1;
+            img.style.setProperty('--rotation-direction', randomDirection);
 
-        // 페이지의 최상단에 추가
-        document.getElementById('page-top').appendChild(img);
+            // 페이지의 최상단에 추가
+            document.getElementById('page-top').appendChild(img);
 
-        imageContainer.appendChild(img);
+            imageContainer.appendChild(img);
 
-        // 애니메이션 후 이미지 제거
-        setTimeout(() => {
-            img.remove();
-        }, 5000); // 애니메이션 시간과 동일하게 설정
-    }
+            // 애니메이션 후 이미지 제거
+            setTimeout(() => {
+                img.remove();
+            }, 5000); // 애니메이션 시간과 동일하게 설정
+        }
 
-    // 주기적으로 이미지 생성
-    setInterval(createFallingImage, 800); // 0.8초
-</script>
+        // 주기적으로 이미지 생성
+        setInterval(createFallingImage, 800); // 0.8초
+    </script>
 </div>
 </html>
