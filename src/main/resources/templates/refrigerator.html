@@ -407,8 +407,7 @@
                     // 동영상 URL이 없을 경우, iframe을 숨기고 src를 초기화
                     $('#recipe-video').hide();
                     $('#recipe-video').attr('src', ''); // src 초기화
-                    $('#recipe-details').after('<p id="no-video-message" style="color:red;">관련 영상이 없습니다</p>');
-                }
+                    $('.responsive-video-container').append('<p id="no-video-message" style="color:red; text-align: center;">관련 영상이 없습니다</p>');                }
 
                 // 모달을 화면에 표시
                 toggleModalVisibility('RecipeModal', true);
