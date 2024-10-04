@@ -106,7 +106,13 @@
     </script>
     <script>
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';  // 모달 닫기
+                document.body.style.overflow = '';  // 스크롤 다시 활성화
+            } else {
+                console.error('모달이 존재하지 않습니다:', modalId);
+            }
         }
 
         $(document).ready(function () {
