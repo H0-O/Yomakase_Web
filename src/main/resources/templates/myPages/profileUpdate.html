@@ -605,8 +605,6 @@
                     })
                     .then(result => {
                         showSuccessModal(); // 성공 시 모달창 표시
-                        localStorage.setItem('selectedTab', 'profileUpdate');
-
                         setTimeout(() => {
                             window.location.reload(); // 페이지 새로고침
                         }, 1000);
