@@ -18,26 +18,27 @@ public class HistoryService {
     @Autowired
     private HistoryRepository historyRepository;
 
-    public Map<String, Object> getWeeklyHistory() {
+    public Map<String, Object> getWeeklyHistory(Integer memberNum) {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(7);
-        return getHistoryData(startDate, endDate);
+        return getHistoryData(startDate, endDate, memberNum);
     }
 
-    public Map<String, Object> getMonthlyHistory() {
+    public Map<String, Object> getMonthlyHistory(Integer memberNum) {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusMonths(1);
-        return getHistoryData(startDate, endDate);
+        return getHistoryData(startDate, endDate, memberNum);
     }
 
-    public Map<String, Object> getYearlyHistory() {
+    public Map<String, Object> getYearlyHistory(Integer memberNum) {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusYears(1);
-        return getHistoryData(startDate, endDate);
+        return getHistoryData(startDate, endDate, memberNum);
     }
 
-    private Map<String, Object> getHistoryData(LocalDate startDate, LocalDate endDate) {
-        List<Object[]> data = historyRepository.countByIngredientAndType(startDate, endDate);
+    private Map<String, Object> getHistoryData(LocalDate startDate, LocalDate endDate, Integer memberNum) {
+        // memberNum을 조건으로 추가하여 해당 사용자의 데이터만 가져옴
+        List<Object[]> data = historyRepository.countByIngredientAndTypeAndMemberNum(startDate, endDate, memberNum);
         Map<String, Long> consumptionData = new HashMap<>();
         Map<String, Long> discardData = new HashMap<>();
         Set<String> ingredients = new HashSet<>();
