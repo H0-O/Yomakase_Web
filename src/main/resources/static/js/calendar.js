@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function(){
     let recomTable = document.getElementById('recomTable');
 
 
-
     /**
      * Calendar 객체 생성자 함수 정의
      * @param selector
@@ -77,6 +76,9 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     btnActive();
 
+    dietView(day);  //오늘날짜에 입력된 식단이 있다면 페이지가 로드되고 나서 바로 식단을 출력
+
+
     /**
      * 달력을 계속 새로 그리는 함수
      */
@@ -103,13 +105,16 @@ document.addEventListener('DOMContentLoaded', function(){
         });
 
 
+
         //페이지의 모든 <td>요소에 이벤트를 등록하는 반복문
         while (daysLen--) {
             days[daysLen].addEventListener('click', function () {
+                const dayNumber = parseInt(this.innerHTML, 10); // 숫자로 변환
+                console.log(dayNumber);
                 if(btnActiveCheck) {
-                    dietView(this);
+                    dietView(dayNumber);
                 } else{
-                    nutrientView(this);
+                    nutrientView(dayNumber);
                 }
             });
 
@@ -118,6 +123,8 @@ document.addEventListener('DOMContentLoaded', function(){
                     modalOn();
                 }
             });
+
+
 
             /*days[daysLen].addEventListener('mouseover', function () {
                 if(!btnActiveCheck){
@@ -132,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
         }
+
     }
 
     /**
@@ -140,10 +148,12 @@ document.addEventListener('DOMContentLoaded', function(){
      */
     function dietView(td){
         //alert('식단 입력')
-        selectedDay = new Date(year, month, td.innerHTML);
+        console.log('실행됨'+td);
+        
+        selectedDay = new Date(year, month, td);
 
-        calendar.drawHeader(td.innerHTML);
-        calendar.setCookie('selected_day', 1);
+        //calendar.drawHeader(td);
+        //calendar.setCookie('selected_day', 1);
 
         $.ajax({
             url : '/cal/dietList',
@@ -184,9 +194,9 @@ document.addEventListener('DOMContentLoaded', function(){
     function nutrientView(td){
         //alert('영양소 입력');
 
-        selectedDay = new Date(year, month, td.innerHTML);
+        selectedDay = new Date(year, month, td);
 
-        calendar.drawHeader(td.innerHTML);
+        calendar.drawHeader(td);
         calendar.setCookie('selected_day', 1);
 
         $.ajax({
@@ -243,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     /**
-     * @param e 사용자가 클릭해서 선택한 날짜(일)
+     * @param e 사용자가 클릭해서 선택한 날짜(일), 타입 숫자
      */
     Calendar.prototype.drawHeader = function(e) {
         var headDay = document.getElementsByClassName('head-day'),
@@ -255,8 +265,8 @@ document.addEventListener('DOMContentLoaded', function(){
         if (selectedDay){
 
         let formattedDay = selectedDay.toLocaleDateString('en-CA')
-        console.log(selectedDay);
-        console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
+        //console.log(selectedDay);
+        //console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
         clickedDietDay.innerHTML = formattedDay;
         } else {
             console.warn('선택된 날짜가 정의되지 않음')
@@ -292,6 +302,9 @@ document.addEventListener('DOMContentLoaded', function(){
                 if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
                     this.drawHeader(day);
                     days[j].id = "today";
+                   /* console.log(day);
+                    dietView(day);*/
+
                 }
             }
             if(selectedDay){
@@ -304,6 +317,8 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
     } //drawDays 함수 end
+
+
 
 
     Calendar.prototype.preMonth = function() {

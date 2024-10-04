@@ -80,7 +80,7 @@
             <div class="calendar-wrap">
               <div class="w-100 button-wrap">
                 <div class="pre-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-left"></i></div>
-                <div id="head-date" style="cursor: pointer;"></div> <!-- 2024년 9월 -->
+                <div id="head-date" style="font-weight: bold;"></div> <!-- 2024년 9월 -->
                 <div class="head-month" ></div>
                 <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
               </div>
@@ -236,11 +236,15 @@
   <!--식단 저장 기능-->
   <script th:inline="javascript">
     let memberData = {
-      birthDate: /*[[${member.birthDate}]]*/,  // 날짜 데이터
-      gender: /*[[${member.gender}]]*/,  // 문자열 데이터
-      height: /*[[${member.height}]]*/,  // 숫자 데이터
-      weight: /*[[${member.weight}]]*/  // 숫자 데이터
+      birthDate: '[[${member.birthDate}]]',  // 날짜 데이터
+      gender: '[[${member.gender}]]',  // 문자열 데이터
+      height: '[[${member.height}]]',  // 숫자 데이터
+      weight: '[[${member.weight}]]'  // 숫자 데이터
     };
+    console.log(memberData);
+    console.log('[[${member.height}]]');
+    console.log([[${member.height}]]);
+
 
     document.addEventListener('DOMContentLoaded', function() {
       let dietBtn = document.getElementById('dietBtn');

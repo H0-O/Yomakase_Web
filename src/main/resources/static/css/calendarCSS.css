@@ -85,12 +85,13 @@ h1, h2, h3, h4, h5,
     top: -5px;}
 .button-wrap .pre-button, .button-wrap .next-button {
     cursor: pointer;
-    width: 1em;
+    width: 2em;
     height: 1em;
     line-height: 1em;
     border-radius: 50%;
     position: absolute;
     top: 0;
+    text-align: right;
     font-size: 18px;}
 
 .button-wrap .pre-button i, .button-wrap .next-button i {
@@ -383,7 +384,7 @@ button::-moz-focus-inner,
 }*/
 
 .cal-modal-window {
-    background: ivory;
+    background: #ffffff;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(13.5px);
     -webkit-backdrop-filter: blur(13.5px);
