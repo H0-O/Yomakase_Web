@@ -1,6 +1,30 @@
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:fragment="home">
     <style>
+        /* 떨어지는 애니메이션 */
+        #image-container {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* 전체 화면 높이 */
+        }
+
+        .falling-image {
+            position: absolute;
+            top: 0;
+            width: 100px; /* 이미지 크기 조정 */
+            height: auto; /* 비율 유지 */
+            animation: fall 5s linear forwards; /* 속도를 느리게 */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(100vh); /* 화면 아래로 떨어짐 */
+            }
+        }
+
         @keyframes smoothAppear {
             from {
                 opacity: 0;
@@ -10,24 +34,6 @@
             to {
                 opacity: 1;
                 transform: translateZ(0);
-            }
-        }
-        /* 흔들흔들거리는 애니메이션 정의 */
-        @keyframes shake {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(7deg);
-            }
-            50% {
-                transform: rotate(0deg);
-            }
-            75% {
-                transform: rotate(-7deg);
-            }
-            100% {
-                transform: rotate(0deg);
             }
         }
 
@@ -108,42 +114,75 @@
             background-color: #FFB524;
         }
     </style>
-    <div id="box">
-        <img id="logo-image" src="img/logo_home.png" alt="Logo">
-<!--        <div id="logo-image">-->
-<!--            <img id="logo-home-label" src="/img/logo_home_label.png" alt="Logo">-->
-<!--            <img id="logo-home-image" src="/img/logo_home_img.png" alt="Logo">-->
+    <div id="image-container">
+        <div id="box">
+            <img id="logo-image" src="img/logo_home.png" alt="Logo">
+            <!--        <div id="logo-image">-->
+            <!--            <img id="logo-home-label" src="/img/logo_home_label.png" alt="Logo">-->
+            <!--            <img id="logo-home-image" src="/img/logo_home_img.png" alt="Logo">-->
 
-<!--        </div>-->
-        <div class="home-wrapper">
-            <div class="home-title">
-                <img src="/img/slogan.png" alt="Logo" style="width: 80%">
-            </div>
-            <div class="home-contents">
-                ❖ 영수증 사진으로 재료를 간편하게 등록할 수 있습니다️ ❖
-            </div>
-
-            <div class="button-container">
-                <!-- 회원가입과 로그인 버튼: GET 요청으로 각각의 컨트롤러 호출 -->
-                <div sec:authorize="not isAuthenticated()" style="display: flex; gap: 10px;">
-                    <!-- 회원가입 버튼 -->
-                    <form action="signupForm" method="get">
-                        <button id="signupBtn" class="btn">회원가입</button>
-                    </form>
-                    <!-- 로그인 버튼 -->
-                    <form action="loginForm" method="get">
-                        <button id="loginBtn" class="btn">로그인</button>
-                    </form>
+            <!--        </div>-->
+            <div class="home-wrapper">
+                <div class="home-title">
+                    <img src="/img/slogan.png" alt="Logo" style="width: 80%">
                 </div>
-                <!-- 로그인 상태일 때: 로그아웃 버튼 표시 -->
-                <div sec:authorize="isAuthenticated()">
-                    <!-- 로그아웃 버튼 -->
-                    <form action="logout" method="post">
-                        <button id="logoutBtn" class="btn">로그아웃</button>
-                    </form>
+                <div class="home-contents">
+                    ❖ 영수증 사진으로 재료를 간편하게 등록할 수 있습니다️ ❖
+                </div>
+
+                <div class="button-container">
+                    <!-- 회원가입과 로그인 버튼: GET 요청으로 각각의 컨트롤러 호출 -->
+                    <div sec:authorize="not isAuthenticated()" style="display: flex; gap: 10px;">
+                        <!-- 회원가입 버튼 -->
+                        <form action="signupForm" method="get">
+                            <button id="signupBtn" class="btn">회원가입</button>
+                        </form>
+                        <!-- 로그인 버튼 -->
+                        <form action="loginForm" method="get">
+                            <button id="loginBtn" class="btn">로그인</button>
+                        </form>
+                    </div>
+                    <!-- 로그인 상태일 때: 로그아웃 버튼 표시 -->
+                    <div sec:authorize="isAuthenticated()">
+                        <!-- 로그아웃 버튼 -->
+                        <form action="logout" method="post">
+                            <button id="logoutBtn" class="btn">로그아웃</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        // 이미지 경로 및 파일 배열
+        const imageContainer = document.getElementById('image-container');
+        const imagePath = '/img/'; // 이미지 경로
+        const imageFiles = ['ingre1.png', 'ingre2.png', 'ingre3.png', 'ingre4.png', 'ingre5.png']; // 사용할 이미지 파일들
+
+        // 무작위 이미지를 생성하는 함수
+        function createFallingImage() {
+            const img = document.createElement('img');
+            const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)]; // 무작위 이미지 선택
+            img.src = `${imagePath}${randomImage}`;
+            img.className = 'falling-image';
+
+            // 무작위 위치 계산
+            const randomX = Math.random() * (window.innerWidth - 50);
+            img.style.left = `${randomX}px`;
+
+            // 항상 맨 앞에 배치되도록 z-index를 크게 설정 (예: 999)
+            img.style.zIndex = 999;
+
+            imageContainer.appendChild(img);
+
+            // 애니메이션 후 이미지 제거
+            setTimeout(() => {
+                img.remove();
+            }, 5000); // 애니메이션 시간과 동일하게 설정
+        }
+
+        // 주기적으로 이미지 생성
+        setInterval(createFallingImage, 1000); // 1초마다 이미지 생성
+    </script>
 </div>
 </html>
