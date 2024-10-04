@@ -76,7 +76,45 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     btnActive();
 
-    dietView(day);  //오늘날짜에 입력된 식단이 있다면 페이지가 로드되고 나서 바로 식단을 출력
+    //오늘날짜에 입력된 식단이 있다면 페이지가 로드되고 나서 바로 식단을 출력
+    dietViewFirstPage(day);
+    function dietViewFirstPage(td){
+        //alert('식단 입력')
+        console.log('실행됨'+td);
+        selectedDay = new Date(year, month, td);
+
+        $.ajax({
+            url : '/cal/dietList',
+            type : 'post',
+            data : {selectedDay: selectedDay.toLocaleDateString('en-CA')} ,    // o.toISOString().split('T')[0] T를 기준으로 자르고 첫번째 배열의 요소를 선택하는 방법. 이렇게 하니까 날짜가 선택한 날짜보다 하루 적게 나옴.
+            dataType : 'json',
+            success : function(calDTO){
+                nutrientList.style.display = 'none';
+                dietList.style.display = 'block';
+                document.getElementById('diet-list-msg').style.display = 'none';
+                //console.log(calDTO); //{"id":"alpha@yomakase.test","memberNum":1,"inputDate":"2024-08-02","dname":"손말이고기","lname":"부대찌개","bname":"맥심 커피"}
+                if(!calDTO.bname && !calDTO.lname && !calDTO.dname){
+                    dietList.style.display = 'none';
+                    document.getElementById('diet-list-msg').style.display = 'block';
+                } else{
+                    let listBName = dietList.getElementsByTagName('td')[1];
+                    let listLName = dietList.getElementsByTagName('td')[3];
+                    let listDName = dietList.getElementsByTagName('td')[5];
+                    listBName.innerText = calDTO.bname;
+                    listLName.innerText = calDTO.lname;
+                    listDName.innerText = calDTO.dname;
+
+
+                    recomTable.getElementsByTagName('td')[0].innerHTML = "<p>입력된 식단을 바탕으로 권장 식단을 추천해드립니다.</p>" +
+                        "<p>영양소 달력에서 날짜를 클릭해 주세요.</p>";
+                }
+            },
+            error : function (){
+                dietList.style.display = 'none';
+                document.getElementById('diet-list-msg').style.display = 'block';
+            }
+        })
+    }
 
 
     /**
@@ -86,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function(){
         this.getCookie('selected_day');
         this.getOptions();
         this.drawDays();
+
         var that = this,
             //리셋 버튼
             reset = document.getElementById('reset'),
@@ -124,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-
-
             /*days[daysLen].addEventListener('mouseover', function () {
                 if(!btnActiveCheck){
                     modalNutrientOn();
@@ -152,8 +189,9 @@ document.addEventListener('DOMContentLoaded', function(){
         
         selectedDay = new Date(year, month, td);
 
-        //calendar.drawHeader(td);
-        //calendar.setCookie('selected_day', 1);
+        calendar.drawHeader(td);
+        calendar.setCookie('selected_day', 1);
+
 
         $.ajax({
             url : '/cal/dietList',
@@ -176,6 +214,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     listLName.innerText = calDTO.lname;
                     listDName.innerText = calDTO.dname;
 
+                    document.getElementById('bName').value = calDTO.bname;
+                    document.getElementById('lName').value = calDTO.lname;
+                    document.getElementById('dName').value = calDTO.dname;
                     recomTable.getElementsByTagName('td')[0].innerHTML = "<p>입력된 식단을 바탕으로 권장 식단을 추천해드립니다.</p>" +
                                                                                     "<p>영양소 달력에서 날짜를 클릭해 주세요.</p>";
                 }
@@ -260,6 +301,12 @@ document.addEventListener('DOMContentLoaded', function(){
             headMonth = document.getElementsByClassName('head-month');
 
         e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
+        /*if(!e){
+            headDay[0].innerHTML = day
+        } else {
+            headDay[0].innerHTML = e + "일"
+        }*/
+        //headDay[0].innerHTML = `${e}일`;
         headMonth[0].innerHTML = `${monthTag[month]}월`;
         headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
         if (selectedDay){
