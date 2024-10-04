@@ -5055,12 +5055,7 @@
     /*padding-bottom: 5rem;*/
   }
 
-  .table-wrapper td, h1, h2, h3, h4, h5, h6 {
-    font-family: "Do Hyeon", sans-serif;
-    font-style: normal;
-  }
-
-  .home-contents {
+  .home-contents, .table-wrapper td, h1, h2, h3, h4, h5, h6 {
     font-family: "Jua", sans-serif;
     font-style: normal;
     font-weight: normal;
