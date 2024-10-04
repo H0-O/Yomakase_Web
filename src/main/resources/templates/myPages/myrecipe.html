@@ -329,6 +329,12 @@
 
                 const confirmDelete = confirm(`레시피를 정말 삭제하시겠습니까?`);
 
+                const modal = document.getElementById('myrecipe-modal'); // 모달창 요소
+
+                function showSuccessModal() {
+                    modal.style.display = 'block';
+                }
+
                 if (confirmDelete) {
                     // 서버로 삭제 요청을 보냄 (indexNum과 memberNum을 함께 전송)
                     fetch(`/deleteRecipe/${indexNum}?memberNum=${memberNum}`, {

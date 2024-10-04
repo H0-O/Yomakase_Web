@@ -203,7 +203,7 @@
     font-size: 16px; /* 텍스트 크기 조절 */
 }
 
-.subs-cancel-modal {
+.subs-cancel-modal, .subsCancel-stop-modal {
     display: none; /* 기본적으로 숨김 */
     position: fixed; /* 화면의 중앙에 모달을 고정 */
     z-index: 1; /* 화면의 최상위에 위치 */
@@ -216,7 +216,7 @@
 }
 
 /* 모달 콘텐츠 박스 */
-.subsCancel-modal-content {
+.subsCancel-modal-content, .subsCancelStop-modal-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
