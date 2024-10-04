@@ -173,6 +173,10 @@
         </div>
     </div>
     <script>
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // localStorage 비우기
+            localStorage.clear();
+        });
         // 이미지 경로 및 파일 배열
         const imageContainer = document.getElementById('image-container');
         const imagePath = '/img/'; // 이미지 경로

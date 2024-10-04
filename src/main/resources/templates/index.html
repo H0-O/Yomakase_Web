@@ -44,19 +44,19 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="nav-item" id="nav-myRefrigerator">
                     <a class="nav-link js-scroll-trigger" href="#myRefrigerator">나의냉장고</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="nav-ingredientInput">
                     <a class="nav-link js-scroll-trigger" href="#ingredientInput">재료입력</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="nav-calendar">
                     <a class="nav-link js-scroll-trigger" href="#calendar">달력</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="nav-board">
                     <a class="nav-link js-scroll-trigger" href="#board">게시판</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="nav-myPages">
                     <a class="nav-link js-scroll-trigger" href="#myPages">마이페이지</a>
                 </li>
             </ul>
@@ -151,6 +151,32 @@
 
     // 페이지가 로드되면 실행되는 함수 - DOMContentLoaded 이벤트 핸들러
     document.addEventListener('DOMContentLoaded', function() {
+        // 로컬 저장소에 저장된 활성화된 nav-item의 id를 가져옴
+        const activeNavItemId = localStorage.getItem('activeNavItem');
+
+        // id가 저장되어 있다면 해당 항목을 활성화
+        if (activeNavItemId) {
+            const activeNavItem = document.getElementById(activeNavItemId);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+        }
+
+        // 기존의 nav-item 클릭 이벤트 설정
+        document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 모든 nav-item에서 active 클래스 제거
+                document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+
+                // 클릭된 항목에 active 클래스 추가
+                this.classList.add('active');
+
+                // 선택된 항목의 id를 localStorage에 저장
+                localStorage.setItem('activeNavItem', this.id);
+            });
+        });
         // userRole 값 가져오기
         const userRole = document.getElementById('userRole').value;
         console.log("User Role:", userRole); // userRole 값을 콘솔에 출력 (디버깅용)
