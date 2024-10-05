@@ -35,11 +35,12 @@ public class IndexController {
                 // 이메일로 사용자 정보를 조회
                 MemberDTO member = memberService.getUserByEmail(username);
                 Map<String, Boolean> allergy = memberInfoService.getAllergyByEmail(username);
-                List<SavedRecipeDTO> recipes = savedRecipeService.getSavedRecipes();
+
                 if (member == null) {
                     // 만약 사용자를 찾을 수 없다면, 오류 처리 또는 리다이렉트
                     return "redirect:/";
                 }
+                List<SavedRecipeDTO> recipes = savedRecipeService.getSavedRecipes(member.getMemberNum());
 
                 // 모델에 사용자 정보를 추가하여 템플릿에서 접근 가능하게 함
                 model.addAttribute("member", member);

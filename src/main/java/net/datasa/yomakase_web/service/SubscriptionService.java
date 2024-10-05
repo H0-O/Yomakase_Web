@@ -6,6 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.entity.MemberEntity;
 import net.datasa.yomakase_web.domain.entity.SubscriptionEntity;
 import net.datasa.yomakase_web.repository.SubscriptionRepository;
+import net.datasa.yomakase_web.security.AuthenticatedUserDetailsService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +25,7 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final MemberService memberService;
     private final PaymentService paymentService; // 결제 상태 확인을 위한 서비스 추가
-
+    private final AuthenticatedUserDetailsService authenticatedUserDetailsService;
     @Transactional
     public void subscribeUser(String userEmail) {
         MemberEntity member = memberService.findByEmail(userEmail);
@@ -33,6 +38,8 @@ public class SubscriptionService {
 
         subscriptionRepository.save(subscription);
         log.info("구독 정보 저장 완료 - 사용자 이메일: {}", userEmail);
+
+        updateUserRoles(member);
     }
 
     @Transactional
@@ -43,6 +50,8 @@ public class SubscriptionService {
         Optional<SubscriptionEntity> subscription = subscriptionRepository.findByMember(member);
         subscription.ifPresent(subscriptionRepository::delete);
         log.info("구독 정보 삭제 완료 - 사용자 이메일: {}", userEmail);
+
+        updateUserRoles(member);
     }
 
     // 구독 자동 갱신 시도
@@ -72,7 +81,17 @@ public class SubscriptionService {
             log.error("구독 갱신 중 오류 발생 - 사용자 이메일: {}, 오류: {}", userEmail, e.getMessage(), e);
         }
     }
+    // 사용자 권한을 즉시 업데이트하는 메서드
+    private void updateUserRoles(MemberEntity member) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = authenticatedUserDetailsService.loadUserByUsername(member.getId());
 
+        // 새로운 권한으로 인증 정보 생성
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+        log.info("사용자 권한 업데이트 완료 - 사용자 이메일: {}", member.getId());
+    }
     public List<SubscriptionEntity> findAllSubscriptions() {
         // 구독 정보를 모두 조회하여 반환
         return subscriptionRepository.findAll();

@@ -16,9 +16,14 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <!-- google fonts -->
+    <!-- 깔끔 가독성 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+    <!-- 둥근 귀여운 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <script>
         // selected_day를 설정할 때 한글 및 특수문자 인코딩
         document.cookie = "selected_day=" + encodeURIComponent("Tue Sep 10 2024 00:00:00 GMT+0900 (한국 표준시)");
@@ -28,106 +33,108 @@
         document.cookie = "selected_day=" + new Date().toUTCString();
     </script>
 </head>
-<body id="page-top">
-<!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav"  sec:authorize="isAuthenticated()">
-    <a class="navbar-brand js-scroll-trigger" href="#page-top">
-        <span class="d-block d-lg-none">よまかせ</span>
-        <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/img/logo.png" alt="..." /></span>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#myRefrigerator">나의냉장고</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#ingredientInput">재료입력</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#calendar">달력</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#board">게시판</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#myPages">마이페이지</a>
-            </li>
-        </ul>
-    </div>
-    <div id="index-footer" style="font-size: 15px; color: white;">
-    <span>(주)요마카세<br>이용문의 : T. 02-000-0000</span>
-    </div>
-</nav>
-
-<!-- 광고 오버레이 및 더미 광고 영역 -->
-<div id="ads-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999;"></div>
-<div id="dummy-ads-container" style="display: none; border: 1px solid #ddd; padding: 20px; background: #fff; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; text-align: center;">
-    <h3>광고</h3>
-    <p>이곳은 더미 광고 영역입니다. 실제 광고가 여기 표시될 것입니다.</p>
-    <img th:src="@{/img/dummyAd.png}" alt="더미 광고 이미지" style="width: 320px; height: 100px;">
-    <!-- 버튼들을 감싸는 컨테이너 -->
-    <div class="button-container">
-        <button class="ad-button" onclick="closeAd()">광고 닫기</button>
-    </div>
-</div>
-
-
-<!--=== 본문 부분 ===-->
-<div class="container-fluid p-0">
-    <!-- 홈 화면 -->
-    <section class="resume-section" id="about">
-        <div class="resume-section-content" id="homeContent">
-            <div th:insert="~{home :: home}">
-            </div>
+<body id="image-container">
+<div id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav"  sec:authorize="isAuthenticated()">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <span class="d-block d-lg-none">よまかせ</span>
+            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/img/logo.png" alt="..." /></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav">
+                <li class="nav-item" id="nav-myRefrigerator">
+                    <a class="nav-link js-scroll-trigger" href="#myRefrigerator">나의냉장고</a>
+                </li>
+                <li class="nav-item" id="nav-ingredientInput">
+                    <a class="nav-link js-scroll-trigger" href="#ingredientInput">재료입력</a>
+                </li>
+                <li class="nav-item" id="nav-calendar">
+                    <a class="nav-link js-scroll-trigger" href="#calendar">달력</a>
+                </li>
+                <li class="nav-item" id="nav-board">
+                    <a class="nav-link js-scroll-trigger" href="#board">게시판</a>
+                </li>
+                <li class="nav-item" id="nav-myPages">
+                    <a class="nav-link js-scroll-trigger" href="#myPages">마이페이지</a>
+                </li>
+            </ul>
         </div>
-    </section>
-    <div sec:authorize="isAuthenticated()">
-        <hr class="m-0" />
-        <!-- 나의 냉장고 -->
-        <section class="resume-section" id="myRefrigerator">
-            <div class="resume-section-content">
-                <div th:insert="~{refrigerator :: refrigerator}">
-                </div>
-            </div>
-        </section>
-        <hr class="m-0" />
+        <div id="index-footer" style="font-size: 15px; color: white;">
+            <span>(주)요마카세<br>이용문의 : T. 02-000-0000</span>
+        </div>
+    </nav>
 
-        <!-- 재료 입력 -->
-        <section class="resume-section" id="ingredientInput">
-            <div class="resume-section-content">
-                <div th:insert="~{ingredientInput :: ingredientInput}">
-                </div>
-            </div>
-        </section>
-        <hr class="m-0" />
-        <!-- 달력 -->
-        <section class="resume-section" id="calendar">
-            <div class="resume-section-content">
-                <div th:insert="~{calendar :: calendar}">
-                </div>
-            </div>
-        </section>
-        <hr class="m-0" />
-
-        <!-- 게시판 -->
-        <section class="resume-section" id="board">
-            <div class="resume-section-content">
-                <div th:insert="~{boardListView :: boardListView}">
-                </div>
-            </div>
-        </section>
-        <hr class="m-0" />
-
-        <!-- 마이 페이지 -->
-        <section class="resume-section" id="myPages">
-            <div class="resume-section-content">
-                <div th:replace="~{myPages :: myPages}">
-                </div>
-            </div>
-        </section>
+    <!-- 광고 오버레이 및 더미 광고 영역 -->
+    <div id="ads-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999;"></div>
+    <div id="dummy-ads-container" style="display: none; border: 1px solid #ddd; padding: 20px; background: #fff; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; text-align: center;">
+        <h3>광고</h3>
+        <p>이곳은 더미 광고 영역입니다. 실제 광고가 여기 표시될 것입니다.</p>
+        <img th:src="@{/img/dummyAd.png}" alt="더미 광고 이미지" style="width: 320px; height: 100px;">
+        <!-- 버튼들을 감싸는 컨테이너 -->
+        <div class="button-container">
+            <button class="ad-button" onclick="closeAd()">광고 닫기</button>
+        </div>
     </div>
-    <hr class="m-0" />
+
+
+    <!--=== 본문 부분 ===-->
+    <div class="container-fluid p-0">
+        <!-- 홈 화면 -->
+        <section class="resume-section" id="about">
+            <div class="resume-section-content" id="homeContent">
+                <div th:insert="~{home :: home}">
+                </div>
+            </div>
+        </section>
+        <div sec:authorize="isAuthenticated()">
+            <hr class="m-0" />
+            <!-- 나의 냉장고 -->
+            <section class="resume-section" id="myRefrigerator">
+                <div class="resume-section-content">
+                    <div th:insert="~{refrigerator :: refrigerator}">
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+
+            <!-- 재료 입력 -->
+            <section class="resume-section" id="ingredientInput">
+                <div class="resume-section-content">
+                    <div th:insert="~{ingredientInput :: ingredientInput}">
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- 달력 -->
+            <section class="resume-section" id="calendar">
+                <div class="resume-section-content">
+                    <div th:insert="~{calendar :: calendar}">
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+
+            <!-- 게시판 -->
+            <section class="resume-section" id="board">
+                <div class="resume-section-content">
+                    <div th:insert="~{boardListView :: boardListView}">
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+
+            <!-- 마이 페이지 -->
+            <section class="resume-section" id="myPages">
+                <div class="resume-section-content">
+                    <div th:replace="~{myPages :: myPages}">
+                    </div>
+                </div>
+            </section>
+        </div>
+        <hr class="m-0" />
+    </div>
 </div>
 </body>
 <!-- Jquery JS-->
@@ -144,6 +151,32 @@
 
     // 페이지가 로드되면 실행되는 함수 - DOMContentLoaded 이벤트 핸들러
     document.addEventListener('DOMContentLoaded', function() {
+        // 로컬 저장소에 저장된 활성화된 nav-item의 id를 가져옴
+        const activeNavItemId = localStorage.getItem('activeNavItem');
+
+        // id가 저장되어 있다면 해당 항목을 활성화
+        if (activeNavItemId) {
+            const activeNavItem = document.getElementById(activeNavItemId);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+        }
+
+        // 기존의 nav-item 클릭 이벤트 설정
+        document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 모든 nav-item에서 active 클래스 제거
+                document.querySelectorAll('#sideNav .navbar-collapse .navbar-nav .nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+
+                // 클릭된 항목에 active 클래스 추가
+                this.classList.add('active');
+
+                // 선택된 항목의 id를 localStorage에 저장
+                localStorage.setItem('activeNavItem', this.id);
+            });
+        });
         // userRole 값 가져오기
         const userRole = document.getElementById('userRole').value;
         console.log("User Role:", userRole); // userRole 값을 콘솔에 출력 (디버깅용)
@@ -203,6 +236,11 @@
 </script>
 
 <style>
+    #page-top {
+        position: relative; /* position을 relative로 설정하여 자식 요소의 절대 위치를 기준으로 합니다. */
+        overflow: hidden;   /* 자식 요소가 영역을 넘어갈 경우 숨기기 위해 overflow를 hidden으로 설정합니다. */
+    }
+
     /* 광고 영역 스타일 */
     #dummy-ads-container {
         border-radius: 10px;

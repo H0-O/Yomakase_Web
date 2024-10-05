@@ -100,13 +100,44 @@
                 </div>
             </div>
         </div>
+        <!-- 모달창 -->
+        <div id="useByDate-modal" class="useByDate-modify-modal" style="display:none;">
+            <div class="useByDate-modal-content">
+                <p>소비기한이 수정되었습니다.</p>
+            </div>
+        </div>
+
+        <div id="ingredientC-modal" class="ingre-consume-modal" style="display:none;">
+            <div class="ingredientC-modal-content">
+                <p>식재료를 소비했습니다.</p>
+            </div>
+        </div>
+
+        <div id="ingredientB-modal" class="ingre-discard-modal" style="display:none;">
+            <div class="ingredientB-modal-content">
+                <p>식재료를 버렸습니다.</p>
+            </div>
+        </div>
+
+        <div id="recipeSave-modal" class="recipe-save-modal" style="display:none;">
+            <div class="recipeSave-modal-content">
+                <p>레시피가 저장되었습니다.</p>
+            </div>
+        </div>
+
     </section>
     <script th:inline="javascript">
         var memberAllergies = /*[[${allergy}]]*/ [];
     </script>
     <script>
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';  // 모달 닫기
+                document.body.style.overflow = '';  // 스크롤 다시 활성화
+            } else {
+                console.error('모달이 존재하지 않습니다:', modalId);
+            }
         }
 
         $(document).ready(function () {
@@ -161,7 +192,7 @@
                 if (daysLeft > 0) {
                     return `D-${daysLeft}`; // 남은 일수가 있을 경우 D-형식
                 } else if (daysLeft === 0) {
-                    return 'D-Day'; // 오늘이 소비기한일 경우
+                    return 'D-DAY'; // 오늘이 소비기한일 경우
                 } else {
                     return `D+${Math.abs(daysLeft)}`; // 소비기한이 지난 경우 D+형식
                 }
@@ -213,6 +244,12 @@
                     useByDate: useByDate
                 };
 
+                const modal = document.getElementById('useByDate-modal'); // 모달창 요소
+
+                function showSuccessModal() {
+                    modal.style.display = 'block';
+                }
+
                 // 서버로 POST 요청 전송
                 fetch('/rest/stockDate', {
                     method: 'POST',
@@ -223,7 +260,11 @@
                 })
                     .then(response => response.text())  // .json() 대신 .text()로 변경
                     .then(data => {
-                        alert(data);  // 서버에서 전달한 메시지를 그대로 출력
+                        // alert(data);  // 서버에서 전달한 메시지를 그대로 출력
+                        showSuccessModal(); // 성공 시 모달창 표시
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
 
                         // 모달 닫기 및 데이터 갱신
                         toggleModalVisibility('modifyDateModal', false);
@@ -401,17 +442,11 @@
                     // 동영상 URL이 없을 경우, iframe을 숨기고 src를 초기화
                     $('#recipe-video').hide();
                     $('#recipe-video').attr('src', ''); // src 초기화
-                    $('#recipe-details').after('<p id="no-video-message" style="color:red;">관련 영상이 없습니다</p>');
-                }
+                    $('.responsive-video-container').append('<p id="no-video-message" style="color:red; text-align: center;">관련 영상이 없습니다</p>');                }
 
                 // 모달을 화면에 표시
                 toggleModalVisibility('RecipeModal', true);
             }
-
-
-
-
-
 
 
             // 소비/버림 버튼을 가진 삭제 모달 표시 함수
@@ -441,7 +476,7 @@
                 })
                     .then(response => response.text()) // 문자열 응답을 처리
                     .then(data => {
-                        alert(data); // 서버에서 전달한 메시지를 그대로 출력
+                        // alert(data); // 서버에서 전달한 메시지를 그대로 출력
 
                         // 모달 닫기 및 데이터 갱신
                         toggleModalVisibility('deleteModal', false);
@@ -459,12 +494,24 @@
             $('#consume-btn').on('click', function () {
                 const ingredientName = $(this).data('ingredient-name');
                 handleConsumeOrDiscard(ingredientName, 'c'); // 'c'는 소비를 의미
+
+                const modal = document.getElementById('ingredientC-modal'); // 모달창 요소
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    window.location.reload(); // 페이지 새로고침
+                }, 1000);
             });
 
             // 버림 버튼 클릭 시
             $('#discard-btn').on('click', function () {
                 const ingredientName = $(this).data('ingredient-name');
                 handleConsumeOrDiscard(ingredientName, 'b'); // 'b'는 버림을 의미
+
+                const modal = document.getElementById('ingredientB-modal'); // 모달창 요소
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    window.location.reload(); // 페이지 새로고침
+                }, 1000);
             });
 
 
@@ -481,6 +528,12 @@
 
             console.log('Saving recipe:', recipeData);
 
+            const modal = document.getElementById('recipeSave-modal'); // 모달창 요소
+
+            function showSuccessModal() {
+                modal.style.display = 'block';
+            }
+
             // 서버로 레시피 데이터를 POST 요청으로 전송
             fetch('/recipes/save', {
                 method: 'POST',
@@ -491,8 +544,12 @@
             })
                 .then(response => response.text())  // 응답을 텍스트로 처리
                 .then(data => {
-                    if (data === '레시피가 성공적으로 저장되었습니다.') {
-                        alert(data);  // 서버에서 전달한 메시지를 그대로 출력
+                    if (data === "레시피가 성공적으로 저장되었습니다.") {
+                        // alert(data);  // 서버에서 전달한 메시지를 그대로 출력
+                        showSuccessModal(); // 성공 시 모달창 표시
+                        setTimeout(() => {
+                            window.location.reload(); // 페이지 새로고침
+                        }, 1000);
                     } else {
                         alert('레시피 저장에 실패했습니다.');
                     }

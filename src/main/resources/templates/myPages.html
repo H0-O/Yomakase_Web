@@ -102,6 +102,22 @@
                 $("#myrecipe").show();
                 $('.mypagesNavbar ul li:first').addClass('active');
             }
+            // 탭을 클릭할 때 해당 탭 정보를 localStorage에 저장
+            $('.mypagesNavbar ul li a').on('click', function () {
+                // 현재 탭을 감지
+                const tabId = $(this).attr('onclick').match(/'(.*?)'/)[1];
+
+                // 모든 탭을 숨기고 선택된 탭을 보임
+                $(".tab-content").hide();
+                $(`#${tabId}`).show();
+
+                // 탭 스타일 초기화 후 현재 탭을 활성화
+                $('.mypagesNavbar ul li').removeClass('active');
+                $(this).closest('li').addClass('active');
+
+                // 선택된 탭을 localStorage에 저장
+                localStorage.setItem('selectedTab', tabId);
+            });
         });
     </script>
 

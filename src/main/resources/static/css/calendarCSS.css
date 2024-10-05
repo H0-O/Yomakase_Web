@@ -24,7 +24,6 @@ h1, h2, h3, h4, h5,
 .ftco-section {
     padding: 2em 0; }
 
-
 .img {
     background-size: cover; /*배경 이미지 크기를 요소 크기에 맞춤*/
     background-repeat: no-repeat;
@@ -68,38 +67,69 @@ h1, h2, h3, h4, h5,
     width: 1em;
     height: 1em;
     line-height: 1em;
-   /* border-radius: 50%;*/
+    /* border-radius: 50%;*/
     position: absolute;
     top: 20px;
     transform: translateY(-50%);
     font-size: 18px; }
 
 .pre-button {
-    left: 5px; }
+    left: 10px;
+    grid-column: 1;
+    grid-row: 1; /* 첫 번째 행에 위치 */}
 
 .next-button {
-    right: 5px; }
+    justify-self: end;
+    grid-column: 3;
+    grid-row: 1; /* 첫 번째 행에 위치 */
+    padding-left: 20px}
 
 .button-wrap {
     position: relative;
-    top: -5px;}
+    top: -5px;
+    display: grid;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    padding: 0 4px; /* 버튼 사이에 여백 추가 */
+
+    grid-template-columns:  1fr 2fr 1fr;; /* 3개의 열을 같은 크기로 설정 */
+    grid-template-rows: auto; /* 행의 크기를 자동으로 설정 */
+    gap: 10px;
+}
+
+.head-date {
+    grid-column: 2;
+    grid-row: 1; /* 첫 번째 행에 위치 */
+}
+
 .button-wrap .pre-button, .button-wrap .next-button {
     cursor: pointer;
-    width: 1em;
+    width: 2em;
     height: 1em;
     line-height: 1em;
     border-radius: 50%;
-    position: absolute;
-    top: 0;
-    font-size: 18px;}
+    position: relative;
+    /*  top: 0;*/
+    font-size: 18px;
 
+    transition: transform 0.2s ease-in-out;
+}
+
+.button-wrap .pre-button:hover {
+
+    transform: scale(2.2);
+}
+
+.button-wrap .next-button:hover {
+    transform: scale(2.2);
+}
 .button-wrap .pre-button i, .button-wrap .next-button i {
     color: #cccccc; /* 아이콘 색상을 연한 회색으로 설정 */
 }
-.button-wrap .pre-button {
+/*.button-wrap .pre-button {
     left: 20px; }
 .button-wrap .next-button {
-    right: 20px; }
+    right: 20px; }*/
 
 /*달력 테이블 크기 설정*/
 #calendarTable {
@@ -203,7 +233,7 @@ button::-moz-focus-inner,
     float: left;
     padding-left: 25%;
     padding-top: 20%;
-   /* padding-bottom: 30%*/
+    /* padding-bottom: 30%*/
 }
 
 #diet-list,
@@ -275,16 +305,6 @@ button::-moz-focus-inner,
 #recomTable tr{
     width: 90%;
 }
-/*
-#diet-list, #nutrient-list, #diet-list-msg td {
-    width: 30px; !* td의 가로 길이를 150px로 설정 *!
-    padding: 10px; !* 여백 추가 *!
-}
-
-#diet-list, #nutrient-list, #diet-list-msg tr {
-    width: 50px; !* td의 가로 길이를 150px로 설정 *!
-    padding: 10px; !* 여백 추가 *!
-}*/
 
 
 .calendar-wrap {
@@ -311,7 +331,7 @@ button::-moz-focus-inner,
         display: flex !important;
     }
 
-    #reset {
+    /*#reset {
         display: block;
         position: absolute;
         right: 0.5em;
@@ -325,16 +345,16 @@ button::-moz-focus-inner,
         transition: all 0.3s ease;
         text-transform: uppercase;
         font-size: 11px;
-    }
+    }*/
 
-    #reset:hover {
-        color: #fff;
-        border-color: #fff;
-    }
+    /* #reset:hover {
+         color: #fff;
+         border-color: #fff;
+     }
 
-    #reset:active {
-        transform: scale(0.8);
-    }
+     #reset:active {
+         transform: scale(0.8);
+     }*/
 
 
 }
@@ -345,10 +365,9 @@ button::-moz-focus-inner,
     display: none;
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     left: 0;
-    top: 350%;
-    /*top: 0;*/
+    top: 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -362,28 +381,9 @@ button::-moz-focus-inner,
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/*#nutrient-modal {
-    display: none;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 358%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(1.5px);
-    -webkit-backdrop-filter: blur(1.5px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}*/
 
 .cal-modal-window {
-    background: ivory;
+    background: #ffffff;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(13.5px);
     -webkit-backdrop-filter: blur(13.5px);
@@ -393,8 +393,8 @@ button::-moz-focus-inner,
 
     width: 400px;
     height: 300px;
-    position: absolute;
-    top: 28%;
+    position: fixed;
+    top: 30%;
     left: 40%;
     padding: 10px;
     text-align: center;
@@ -443,7 +443,7 @@ button::-moz-focus-inner,
     width: 100%;
 }
 #diet-modal-table th, tr, td {
-   /* padding : 5px;*/
+    /* padding : 5px;*/
     border-collapse: collapse;
     border-spacing: 0;
     /*table-layout: auto;*/

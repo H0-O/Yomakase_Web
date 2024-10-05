@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function(){
         setDate,
         daysLen = days.length, //<td>요소의 총 개수. 한달의 일수
         headDate = document.getElementById('head-date');    //달력 중앙 '2024년 9월' 부분
+        //이전 버튼
+    var pre = document.getElementsByClassName('pre-button'),
+        //다음 버튼
+        next = document.getElementsByClassName('next-button');
 
     let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0];
 
@@ -33,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function(){
     //추천 식단 조회 영역
     let recomTable = document.getElementById('recomTable');
 
+    //초기화면 확인
+    let firstPageCheck = true;  //초기화면일 때 true, 사용자가 클릭을 했다면 false
 
 
     /**
@@ -65,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function(){
             nutrientCalBtn.style.backgroundColor = '#FFB524';
             document.getElementById('nutrientCalTitle').style.display = 'block';
             document.getElementById('dietCalTitle').style.display = 'none';
+            nutrientView(selectedDay.getDate());
         });
         dietCalBtn.addEventListener('click', function (){
             btnActiveCheck = true;
@@ -72,10 +79,19 @@ document.addEventListener('DOMContentLoaded', function(){
             dietCalBtn.style.backgroundColor = '#FFB524';
             document.getElementById('dietCalTitle').style.display = 'block';
             document.getElementById('nutrientCalTitle').style.display = 'none';
+            dietView(selectedDay.getDate());
         })
 
     }
     btnActive();
+
+  /*  function monthChange(){
+        pre.addEventListener('click', function (){
+
+        });
+        next
+    }*/
+
 
     /**
      * 달력을 계속 새로 그리는 함수
@@ -83,35 +99,56 @@ document.addEventListener('DOMContentLoaded', function(){
     Calendar.prototype.draw  = function() {
         this.getCookie('selected_day');
         this.getOptions();
+        //this.drawHeader();
         this.drawDays();
-        var that = this,
+
+        var that = this
             //리셋 버튼
-            reset = document.getElementById('reset'),
-            //이전 버튼
-            pre = document.getElementsByClassName('pre-button'),
-            //다음 버튼
-            next = document.getElementsByClassName('next-button');
+            /*reset = document.getElementById('reset'),*/
+
 
         pre[0].addEventListener('click', function () {
             that.preMonth();
+            if(btnActiveCheck) {
+                dietView(selectedDay.getDate());
+            } else{
+                nutrientView(selectedDay.getDate());
+            }
+
         });
         next[0].addEventListener('click', function () {
             that.nextMonth();
+            if(btnActiveCheck) {
+                dietView(selectedDay.getDate());
+            } else{
+                nutrientView(selectedDay.getDate());
+            }
         });
-        reset.addEventListener('click', function () {
+        /*reset.addEventListener('click', function () {
             that.reset();
-        });
+        });*/
 
 
         //페이지의 모든 <td>요소에 이벤트를 등록하는 반복문
         while (daysLen--) {
             days[daysLen].addEventListener('click', function () {
+                const dayNumber = parseInt(this.innerHTML, 10); // 숫자로 변환
+                console.log(dayNumber);
                 if(btnActiveCheck) {
-                    dietView(this);
+                    dietView(dayNumber);
                 } else{
-                    nutrientView(this);
+                    console.log(this)   //클릭한 td태그
+                    nutrientView(dayNumber);
                 }
             });
+
+            /*nutrientCalBtn.addEventListener('click', function (){
+                days[daysLen].addEventListener('click', function(){
+
+                })
+                console.log(day[daysLen])
+                nutrientView();
+            });*/
 
             days[daysLen].addEventListener('dblclick', function () {
                 if(btnActiveCheck){
@@ -119,20 +156,17 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-            /*days[daysLen].addEventListener('mouseover', function () {
-                if(!btnActiveCheck){
-                    modalNutrientOn();
-                }
-            });
-            days[daysLen].addEventListener('mouseleave', function () {
-                if(!btnActiveCheck){
-                    modalNutrientOff();
-                }
-            });*/
-
-
         }
+
     }
+    dietView(day);
+    document.addEventListener('click', function(event) {
+       /* // 예: 특정 클래스가 있는 요소는 제외
+        if (event.target.classList.contains('exclude-class')) {
+            return; // 해당 요소는 무시
+        }*/
+        firstPageCheck = false;
+    });
 
     /**
      * 식단 조회 함수
@@ -140,10 +174,16 @@ document.addEventListener('DOMContentLoaded', function(){
      */
     function dietView(td){
         //alert('식단 입력')
-        selectedDay = new Date(year, month, td.innerHTML);
+        console.log('실행됨'+td);
+        console.log(day);
 
-        calendar.drawHeader(td.innerHTML);
-        calendar.setCookie('selected_day', 1);
+        selectedDay = new Date(year, month, td);
+        console.log(selectedDay);
+
+        if(!firstPageCheck){
+            calendar.drawHeader(td);
+            calendar.setCookie('selected_day', 1);
+        }
 
         $.ajax({
             url : '/cal/dietList',
@@ -158,14 +198,19 @@ document.addEventListener('DOMContentLoaded', function(){
                 if(!calDTO.bname && !calDTO.lname && !calDTO.dname){
                     dietList.style.display = 'none';
                     document.getElementById('diet-list-msg').style.display = 'block';
+
                 } else{
                     let listBName = dietList.getElementsByTagName('td')[1];
                     let listLName = dietList.getElementsByTagName('td')[3];
                     let listDName = dietList.getElementsByTagName('td')[5];
-                    listBName.innerText = calDTO.bname;
-                    listLName.innerText = calDTO.lname;
-                    listDName.innerText = calDTO.dname;
+                    listBName.innerHTML = calDTO.bname;
+                    listLName.innerHTML = calDTO.lname;
+                    listDName.innerHTML = calDTO.dname;
 
+                    //모달에도 해당 날짜의 식단을 보여줌
+                    document.getElementById('bName').value = calDTO.bname;
+                    document.getElementById('lName').value = calDTO.lname;
+                    document.getElementById('dName').value = calDTO.dname;
                     recomTable.getElementsByTagName('td')[0].innerHTML = "<p>입력된 식단을 바탕으로 권장 식단을 추천해드립니다.</p>" +
                                                                                     "<p>영양소 달력에서 날짜를 클릭해 주세요.</p>";
                 }
@@ -174,8 +219,13 @@ document.addEventListener('DOMContentLoaded', function(){
                 dietList.style.display = 'none';
                 document.getElementById('diet-list-msg').style.display = 'block';
             }
+
         })
+        document.getElementById('bName').value = "";
+        document.getElementById('lName').value = "";
+        document.getElementById('dName').value = "";
     }
+
 
     /**
      * 영양소 조회 함수
@@ -184,9 +234,9 @@ document.addEventListener('DOMContentLoaded', function(){
     function nutrientView(td){
         //alert('영양소 입력');
 
-        selectedDay = new Date(year, month, td.innerHTML);
+        selectedDay = new Date(year, month, td);
 
-        calendar.drawHeader(td.innerHTML);
+        calendar.drawHeader(td);
         calendar.setCookie('selected_day', 1);
 
         $.ajax({
@@ -243,21 +293,26 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     /**
-     * @param e 사용자가 클릭해서 선택한 날짜(일)
+     * @param e 사용자가 클릭해서 선택한 날짜(일), 타입 숫자
      */
     Calendar.prototype.drawHeader = function(e) {
         var headDay = document.getElementsByClassName('head-day'),
             headMonth = document.getElementsByClassName('head-month');
 
-        e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day;
+        e ? headDay[0].innerHTML = e + "일" : headDay[0].innerHTML = day + "일";
+        /*if(!e){
+            headDay[0].innerHTML = day
+        } else {
+            headDay[0].innerHTML = e + "일"
+        }*/
+        //headDay[0].innerHTML = `${e}일`;
         headMonth[0].innerHTML = `${monthTag[month]}월`;
         headDate.innerHTML = year + '년 ' + monthTag[month] + '월';
         if (selectedDay){
-
-        let formattedDay = selectedDay.toLocaleDateString('en-CA')
-        console.log(selectedDay);
-        console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
-        clickedDietDay.innerHTML = formattedDay;
+            let formattedDay = selectedDay.toLocaleDateString('en-CA')
+            //console.log(selectedDay);
+            //console.log(formattedDay); //2024-08-31 선택한 날짜로 잘 나옴
+            clickedDietDay.innerHTML = formattedDay;
         } else {
             console.warn('선택된 날짜가 정의되지 않음')
             selectedDay = new Date();
@@ -292,6 +347,9 @@ document.addEventListener('DOMContentLoaded', function(){
                 if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth()) && (year===today.getFullYear()))){
                     this.drawHeader(day);
                     days[j].id = "today";
+                   /* console.log(day);
+                    dietView(day);*/
+
                 }
             }
             if(selectedDay){
@@ -301,9 +359,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             }
 
-            }
+        }
 
     } //drawDays 함수 end
+
+
 
 
     Calendar.prototype.preMonth = function() {
@@ -338,13 +398,13 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     };
 
-    Calendar.prototype.reset = function() {
+    /*Calendar.prototype.reset = function() {
         month = today.getMonth();
         year = today.getFullYear();
         day = today.getDate();
         this.options = undefined;
         this.drawDays();
-    };
+    };*/
 
     Calendar.prototype.setCookie = function(name, expiredays){
         var date = new Date();
