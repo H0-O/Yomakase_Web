@@ -211,23 +211,27 @@
 		}
 
 		.boardNumCol{
-			width: 10%;
+			width: 5%;
 		}
 
 		.boardCatCol{
-			width: 15%;
+			width: 10%;
 		}
 
 		.writerNameCol{
-			width: 15%;
+			width: 5%;
 		}
 
 		.writerDateCol{
-			width: 15%;
+			width: 10%;
 		}
 
 		.boardTitCol{
 			font-weight: bold;
+			white-space: nowrap;          /* 한 줄로 표시 */
+			overflow: hidden;             /* 넘친 부분을 숨김 */
+			text-overflow: ellipsis;      /* 넘친 부분을 '...'으로 표시 */
+			max-width: 350px;              /* 제목의 최대 너비를 설정 (필요에 따라 조정) */
 		}
 
 		#paginationControls{
@@ -355,10 +359,18 @@
 
 						$.each(boardPage.content, function(index, board) {
 							var formattedDate = formatDate(board.createDate);
+
+							// 제목 길이 제한 및 ... 처리
+							var maxLength = 25; // 최대 표시할 글자 수
+							var truncatedTitle = board.title;
+							if (board.title.length > maxLength) {
+								truncatedTitle = board.title.substring(0, maxLength) + '<span class="ellipsis">...</span>';
+							}
+
 							boardList += `<tr>
 									<td class="boardNumCol">${board.boardNum}</td>
 									<td class="boardCatCol">${board.category}</td>
-									<td class="boardTitCol"><a href="/board/read?boardNum=${board.boardNum}">${board.title}</a></td>
+									<td class="boardTitCol"><a href="/board/read?boardNum=${board.boardNum}">${truncatedTitle}</a></td>
 									<td class="writerNameCol">${board.name}</td>
 									<td class="writerDateCol">${formattedDate}</td>
 								</tr>`;
