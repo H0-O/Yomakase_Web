@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function(){
         setDate,
         daysLen = days.length, //<td>요소의 총 개수. 한달의 일수
         headDate = document.getElementById('head-date');    //달력 중앙 '2024년 9월' 부분
+        //이전 버튼
+    var pre = document.getElementsByClassName('pre-button'),
+        //다음 버튼
+        next = document.getElementsByClassName('next-button');
 
     let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0];
 
@@ -81,6 +85,12 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     btnActive();
 
+  /*  function monthChange(){
+        pre.addEventListener('click', function (){
+
+        });
+        next
+    }*/
 
 
     /**
@@ -92,19 +102,27 @@ document.addEventListener('DOMContentLoaded', function(){
         //this.drawHeader();
         this.drawDays();
 
-        var that = this,
+        var that = this
             //리셋 버튼
             /*reset = document.getElementById('reset'),*/
-            //이전 버튼
-            pre = document.getElementsByClassName('pre-button'),
-            //다음 버튼
-            next = document.getElementsByClassName('next-button');
+
 
         pre[0].addEventListener('click', function () {
             that.preMonth();
+            if(btnActiveCheck) {
+                dietView(selectedDay.getDate());
+            } else{
+                nutrientView(selectedDay.getDate());
+            }
+
         });
         next[0].addEventListener('click', function () {
             that.nextMonth();
+            if(btnActiveCheck) {
+                dietView(selectedDay.getDate());
+            } else{
+                nutrientView(selectedDay.getDate());
+            }
         });
         /*reset.addEventListener('click', function () {
             that.reset();
@@ -114,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function(){
         //페이지의 모든 <td>요소에 이벤트를 등록하는 반복문
         while (daysLen--) {
             days[daysLen].addEventListener('click', function () {
-                 const dayNumber = parseInt(this.innerHTML, 10); // 숫자로 변환
+                const dayNumber = parseInt(this.innerHTML, 10); // 숫자로 변환
                 console.log(dayNumber);
                 if(btnActiveCheck) {
                     dietView(dayNumber);
