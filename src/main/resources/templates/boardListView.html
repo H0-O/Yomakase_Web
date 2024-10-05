@@ -130,6 +130,7 @@
 		}
 
 		.boardTable{
+			table-layout: fixed;
 			width: 95%;
 			margin: 0 auto;
 			border-collapse: collapse;
@@ -211,15 +212,19 @@
 		}
 
 		.boardNumCol{
-			width: 5%;
+			width: 7%;
 		}
 
 		.boardCatCol{
-			width: 10%;
+			width: 18%;
 		}
 
 		.writerNameCol{
-			width: 5%;
+			width: 20%;
+			white-space: nowrap;          /* 한 줄로 표시 */
+			overflow: hidden;             /* 넘친 부분을 숨김 */
+			text-overflow: ellipsis;      /* 넘친 부분을 '...'으로 표시 */
+			/*max-width: 150px;*/              /* 제목의 최대 너비를 설정 (필요에 따라 조정) */
 		}
 
 		.writerDateCol{
@@ -231,7 +236,7 @@
 			white-space: nowrap;          /* 한 줄로 표시 */
 			overflow: hidden;             /* 넘친 부분을 숨김 */
 			text-overflow: ellipsis;      /* 넘친 부분을 '...'으로 표시 */
-			max-width: 350px;              /* 제목의 최대 너비를 설정 (필요에 따라 조정) */
+			width: 45%;
 		}
 
 		#paginationControls{
@@ -366,12 +371,16 @@
 							if (board.title.length > maxLength) {
 								truncatedTitle = board.title.substring(0, maxLength) + '<span class="ellipsis">...</span>';
 							}
+							var truncatedName = board.name;
+							if(board.name.length > 8){
+								truncatedName = board.name.substring(0, 8) + '<span class="ellipsis">...</span>';
+							}
 
 							boardList += `<tr>
 									<td class="boardNumCol">${board.boardNum}</td>
 									<td class="boardCatCol">${board.category}</td>
 									<td class="boardTitCol"><a href="/board/read?boardNum=${board.boardNum}">${truncatedTitle}</a></td>
-									<td class="writerNameCol">${board.name}</td>
+									<td class="writerNameCol">${truncatedName}</td>
 									<td class="writerDateCol">${formattedDate}</td>
 								</tr>`;
 						});
@@ -381,11 +390,11 @@
 							<table class="boardTable">
 								<tbody id="boardTableTbody">
 									<tr>
-										<th>번호</th>
-										<th>카테고리</th>
-										<th>제목</th>
-										<th>작성자</th>
-										<th>작성일</th>
+										<th class="boardNumCol">번호</th>
+										<th class="boardCatCol">카테고리</th>
+										<th class="boardTitCol">제목</th>
+										<th class="writerNameCol">작성자</th>
+										<th class="writerDateCol">작성일</th>
 									</tr>
 									${boardList}
 								</tbody>
@@ -417,9 +426,9 @@
 				var year = date.getFullYear().toString().slice(-2); // '24'
 				var month = (date.getMonth() + 1).toString().padStart(2, '0'); // '09'
 				var day = date.getDate().toString().padStart(2, '0'); // '11'
-				var hour = date.getHours().toString().padStart(2, '0'); // '10'
-				var minute = date.getMinutes().toString().padStart(2, '0'); // '09'
-				return `${year}.${month}.${day} ${hour}:${minute}`;
+				// var hour = date.getHours().toString().padStart(2, '0'); // '10'
+				// var minute = date.getMinutes().toString().padStart(2, '0'); // '09'
+				return `${year}.${month}.${day}`;
 			}
 
 		});
