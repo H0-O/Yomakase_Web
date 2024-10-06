@@ -220,11 +220,20 @@
 		}
 
 		.writerNameCol{
-			width: 20%;
+			width: 17%;
 			white-space: nowrap;          /* 한 줄로 표시 */
 			overflow: hidden;             /* 넘친 부분을 숨김 */
 			text-overflow: ellipsis;      /* 넘친 부분을 '...'으로 표시 */
 			/*max-width: 150px;*/              /* 제목의 최대 너비를 설정 (필요에 따라 조정) */
+		}
+
+		td.writerNameCol{
+			text-align: left;
+		}
+
+		th.writerNameCol{
+			text-align: left;
+			padding-left: 30px;
 		}
 
 		.writerDateCol{
@@ -236,7 +245,7 @@
 			white-space: nowrap;          /* 한 줄로 표시 */
 			overflow: hidden;             /* 넘친 부분을 숨김 */
 			text-overflow: ellipsis;      /* 넘친 부분을 '...'으로 표시 */
-			width: 45%;
+			width: 48%;
 		}
 
 		#paginationControls{
