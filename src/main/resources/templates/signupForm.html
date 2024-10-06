@@ -359,11 +359,10 @@
 <script>
   $(document).ready(function() {
     $('.signup-button-container button[type="submit"]').on('click', function(event) {
-      event.preventDefault(); // 기본 제출 방지
+      event.preventDefault();  // 기본 제출 방지
 
       // 필수 필드 체크
       if (checkRequiredFields()) {
-        // 회원가입 양식 데이터 수집
         const formData = {
           email: $('#email').val(),
           nickname: $('#nickname').val(),
@@ -396,10 +395,23 @@
         // 콘솔에 출력
         console.log("회원가입 데이터:", formData);
 
-        // 서버로 전송하는 로직 추가
-        // ...
+        // AJAX를 통해 서버로 데이터 전송
+        $.ajax({
+          url: '/signupForm',  // 서버의 엔드포인트
+          type: 'POST',
+          contentType: 'application/x-www-form-urlencoded',  // 변경된 부분
+          data: $('#signup-form').serialize(),  // 폼 데이터를 직렬화하여 전송
+          success: function(response) {
+            alert('회원가입이 성공적으로 처리되었습니다.');
+            window.location.href = '/loginForm';
+          },
+          error: function(error) {
+            alert('회원가입 중 오류가 발생했습니다.');
+          }
+        });
       }
     });
+
     // 필수 필드 체크 함수
     function checkRequiredFields() {
       var email = $('#email').val();
