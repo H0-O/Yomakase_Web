@@ -17,6 +17,7 @@ public class BoardDTO {
 	int boardNum;
 	int memberNum;
 	String name;
+	String userRole;
 	String title;
 	String category;
 	String contents;

@@ -376,11 +376,21 @@
 								truncatedName = board.name.substring(0, 8) + '<span class="ellipsis">...</span>';
 							}
 
+							var writerIcon = '';
+
+							if(board.userRole === 'ROLE_USER'){
+								writerIcon += '<img style="width: 22px; height: 22px" src="/img/smiley_icon.png">&nbsp';
+							} else if (board.userRole === 'ROLE_SUBSCRIBER'){
+								writerIcon += '<img style="width: 22px; height: 22px" src="/img/subMem_icon.png">&nbsp';
+							} else if (board.userRole === 'ROLE_ADMIN'){
+								writerIcon += '<img style="width: 22px; height: 22px" src="/img/admin_icon.png">&nbsp';
+							}
+
 							boardList += `<tr>
 									<td class="boardNumCol">${board.boardNum}</td>
 									<td class="boardCatCol">${board.category}</td>
 									<td class="boardTitCol"><a href="/board/read?boardNum=${board.boardNum}">${truncatedTitle}</a></td>
-									<td class="writerNameCol">${truncatedName}</td>
+									<td class="writerNameCol">${writerIcon}${truncatedName}</td>
 									<td class="writerDateCol">${formattedDate}</td>
 								</tr>`;
 						});

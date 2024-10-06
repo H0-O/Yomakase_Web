@@ -53,6 +53,7 @@ public class BoardService {
 				.boardNum(entity.getBoardNum())
 				.memberNum(entity.getMember().getMemberNum())
 				.name(entity.getMember().getName())
+				.userRole(entity.getMember().getUserRole())
 				.title(entity.getTitle())
 				.category(entity.getCategory())
 				.contents(entity.getContents())
