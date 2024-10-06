@@ -34,7 +34,7 @@
     </script>
 </head>
 <body id="page-top">
-<div class="image-container" sec:authorize="permitAll()"></div>
+<div id="image-container"></div>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav"  sec:authorize="isAuthenticated()">
     <a class="navbar-brand js-scroll-trigger" href="#page-top">
@@ -235,11 +235,6 @@
 </script>
 
 <style>
-    /*#page-top {*/
-    /*    position: relative; !* position을 relative로 설정하여 자식 요소의 절대 위치를 기준으로 합니다. *!*/
-    /*    overflow: hidden;   !* 자식 요소가 영역을 넘어갈 경우 숨기기 위해 overflow를 hidden으로 설정합니다. *!*/
-    /*}*/
-
     /* 광고 영역 스타일 */
     #dummy-ads-container {
         border-radius: 10px;
@@ -277,6 +272,7 @@
     /* 스크롤을 막는 CSS */
     body {
         overflow: hidden; /* 스크롤 비활성화 */
+        position: relative;
     }
 </style>
 </html>

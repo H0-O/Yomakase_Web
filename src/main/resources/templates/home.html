@@ -36,20 +36,20 @@
             }
         }
 
-        .image-container {
+        #image-container {
             z-index: 999;
             position: absolute; /* 절대 위치로 설정 */
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             pointer-events: none; /* 클릭 이벤트 무시 (배경 역할) */
         }
 
         .falling-image {
             position: absolute;
             top: 0;
-            width: 120px; /* 이미지 크기 조정 */
+            width: 100px; /* 이미지 크기 조정 */
             height: auto; /* 비율 유지 */
             animation: fall 5s linear forwards, rotate-center 5s ease-in-out both !important;
             --rotation-direction: 1; /* 기본적으로 시계방향 회전 */
@@ -180,56 +180,59 @@
         </div>
     </div>
     <script>
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            // localStorage 비우기
-            localStorage.clear();
-        });
+        // document.getElementById('logoutBtn').addEventListener('click', function() {
+        //     // localStorage 비우기
+        //     localStorage.clear();
+        // });
 
-        // 이미지 경로 및 파일 배열
-        const imageContainer = document.querySelector('.image-container');
-        const imagePath = '/img/'; // 이미지 경로
-        const imageFiles = [ // 사용할 이미지 파일들
-            'ingre1.png',
-            'ingre2.png',
-            'ingre3.png',
-            'ingre4.png',
-            'ingre5.png',
-            'ingre6.png',
-            'ingre7.png',
-            'ingre8.png',
-            'ingre9.png',
-            'ingre10.png',
-            'ingre11.png',
-            'ingre12.png',
-            'ingre14.png',
-            'ingre15.png',
-            'ingre16.png'
-        ];
+        window.addEventListener('load', function() {
+            // 애니메이션 시작 코드
+            console.log('DOM이 완전히 로드되었습니다.');
 
-        // 무작위 이미지를 생성하는 함수
-        function createFallingImage() {
-            const img = document.createElement('img');
-            const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)]; // 무작위 이미지 선택
-            img.src = `${imagePath}${randomImage}`;
-            img.className = 'falling-image';
+            // 이미지 경로 및 파일 배열
+            const imageContainer = document.getElementById('image-container');
+            const imagePath = '/img/'; // 이미지 경로
+            const imageFiles = [ // 사용할 이미지 파일들
+                'ingre1.png',
+                'ingre2.png',
+                'ingre3.png',
+                'ingre4.png',
+                'ingre5.png',
+                'ingre6.png',
+                'ingre7.png',
+                'ingre8.png',
+                'ingre9.png',
+                'ingre10.png',
+                'ingre11.png',
+                'ingre12.png',
+                'ingre14.png',
+                'ingre15.png',
+                'ingre16.png'
+            ];
 
-            // 무작위 위치 계산
-            const randomX = Math.random() * (window.innerWidth - 50);
-            img.style.left = `${randomX}px`;
+            // 무작위 이미지를 생성하는 함수
+            function createFallingImage() {
+                const img = document.createElement('img');
+                const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)]; // 무작위 이미지 선택
+                img.src = `${imagePath}${randomImage}`;
+                img.className = 'falling-image';
 
-            // 무작위 회전 방향 결정 (-1: 왼쪽으로, 1: 오른쪽으로)
-            const randomDirection = Math.random() < 0.5 ? -1 : 1;
-            img.style.setProperty('--rotation-direction', randomDirection);
+                // 무작위 위치 계산
+                const randomX = Math.random() * (window.innerWidth - 50);
+                img.style.left = `${randomX}px`;
 
-            imageContainer.appendChild(img);
+                // 무작위 회전 방향 결정 (-1: 왼쪽으로, 1: 오른쪽으로)
+                const randomDirection = Math.random() < 0.5 ? -1 : 1;
+                img.style.setProperty('--rotation-direction', randomDirection);
 
-            // 애니메이션 후 이미지 제거
-            setTimeout(() => {
-                img.remove();
-            }, 5000); // 애니메이션 시간과 동일하게 설정
-        }
+                imageContainer.appendChild(img);
 
-        document.addEventListener('DOMContentLoaded', function () {
+                // 애니메이션 후 이미지 제거
+                setTimeout(() => {
+                    img.remove();
+                }, 5000); // 애니메이션 시간과 동일하게 설정
+            }
+
             // 주기적으로 이미지 생성
             setInterval(createFallingImage, 800); // 0.8초
         });
