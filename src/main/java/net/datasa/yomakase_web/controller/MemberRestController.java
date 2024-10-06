@@ -2,6 +2,7 @@ package net.datasa.yomakase_web.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.yomakase_web.domain.dto.MemberDTO;
 import net.datasa.yomakase_web.service.MemberService;
@@ -16,18 +17,13 @@ import java.util.Map;
 
 @RestController
 @Slf4j
+@AllArgsConstructor
 @RequestMapping("/member")
 public class MemberRestController {
 
     private final MemberService memberService;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
-
-    public MemberRestController(MemberService memberService, HttpServletRequest request, HttpServletResponse response) {
-        this.memberService = memberService;
-        this.request = request;
-        this.response = response;
-    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAccount(@AuthenticationPrincipal UserDetails userDetails) {
