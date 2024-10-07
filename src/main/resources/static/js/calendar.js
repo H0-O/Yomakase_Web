@@ -13,10 +13,7 @@ document.addEventListener('DOMContentLoaded', function(){
         setDate,
         daysLen = days.length, //<td>요소의 총 개수. 한달의 일수
         headDate = document.getElementById('head-date');    //달력 중앙 '2024년 9월' 부분
-        //이전 버튼
-    var pre = document.getElementsByClassName('pre-button'),
-        //다음 버튼
-        next = document.getElementsByClassName('next-button');
+
 
     let clickedDietDay = document.getElementsByClassName('clickedDietDay')[0];
 
@@ -102,10 +99,11 @@ document.addEventListener('DOMContentLoaded', function(){
         //this.drawHeader();
         this.drawDays();
 
-        var that = this
-            //리셋 버튼
-            /*reset = document.getElementById('reset'),*/
-
+        var that = this,
+            //이전 버튼
+            pre = document.getElementsByClassName('pre-button'),
+            //다음 버튼
+            next = document.getElementsByClassName('next-button');
 
         pre[0].addEventListener('click', function () {
             that.preMonth();
@@ -124,9 +122,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 nutrientView(selectedDay.getDate());
             }
         });
-        /*reset.addEventListener('click', function () {
-            that.reset();
-        });*/
 
 
         //페이지의 모든 <td>요소에 이벤트를 등록하는 반복문
@@ -142,13 +137,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-            /*nutrientCalBtn.addEventListener('click', function (){
-                days[daysLen].addEventListener('click', function(){
-
-                })
-                console.log(day[daysLen])
-                nutrientView();
-            });*/
 
             days[daysLen].addEventListener('dblclick', function () {
                 if(btnActiveCheck){
@@ -263,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     let listLack = nutrientList.getElementsByTagName('td')[2];
                     //let listRecom = nutrientList.getElementsByTagName('td')[7];
                     //let listScore = nutrientModalContent.getElementsByTagName('td')[1];
-                    listTotalKcal.innerHTML = calDTO.totalKcal;
+                    listTotalKcal.innerHTML = calDTO.totalKcal + 'Kcal';
                     listTooMuch.style.color = 'blue';
                     listTooMuch.innerHTML = calDTO.tooMuch;
                     listLack.style.color = 'red';
