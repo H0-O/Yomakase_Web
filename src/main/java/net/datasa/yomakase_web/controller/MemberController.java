@@ -43,11 +43,6 @@ public class MemberController {
         return "loginForm";
     }
 
-    // ID 중복 확인 폼을 보여주는 메소드
-    @GetMapping("/idCheck")
-    public String idCheck() {
-        return "idCheck";
-    }
 
     // ID 중복 확인 요청 처리
     @PostMapping("idCheck")

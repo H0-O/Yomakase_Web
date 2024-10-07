@@ -28,6 +28,7 @@ public class AppCalendarController {
     public ResponseEntity<String> mealInputMethod(
             @RequestBody Map<String, Object> mealData,
             @RequestHeader(value = "Authorization", required = false) String token) {
+
         try {
             // 로그로 토큰과 데이터 출력
             log.info("Received token: {}", token);
