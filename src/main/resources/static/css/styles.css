@@ -31,7 +31,7 @@
   --bs-danger: #dc3545;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
-  --bs-primary-rgb: 129, 196, 5;
+  --bs-primary-rgb: 119, 147, 60;
   --bs-secondary-rgb: 255, 181, 36;
   --bs-success-rgb: 25, 135, 84;
   --bs-info-rgb: 13, 202, 240;
@@ -1591,7 +1591,7 @@
        display: none;
      }.navbar-dark {
         --bs-navbar-color: rgba(255, 255, 255, 0.9);
-        --bs-navbar-hover-color: rgba(255, 255, 0, 1);
+        --bs-navbar-hover-color: rgba(234, 156, 0, 1);
         --bs-navbar-disabled-color: rgba(255, 255, 255, 0.25);
         --bs-navbar-active-color: #fff;
         --bs-navbar-brand-color: #fff;
@@ -5026,7 +5026,7 @@
   }
   #sideNav .navbar-collapse .navbar-nav .nav-item.active > a {
     background-color: white; /* 클릭된 항목의 배경색 */
-    color: #6aa003;
+    color: #EA9C00;
     border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
     width: 80%;

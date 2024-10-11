@@ -7,7 +7,7 @@
 }
 
 .mypages-navbar {
-    background-color: #81c405;
+    background-color: #77933C;
     overflow: hidden;
     padding: 0;
     border-radius: 10px;
@@ -24,7 +24,7 @@
 }
 
 .mypages-navbar a:hover {
-    background-color: #6aa003;
+    background-color: #EA9C00;
 }
 
 /* 콘텐츠 영역 기본 스타일 */

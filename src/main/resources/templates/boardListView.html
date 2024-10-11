@@ -41,15 +41,15 @@
 
 	<style>
 		#searchType option:checked {
-			background-color: #ffb524;
+			background-color: #EA9C00;
 		}
 
 		#searchType option:hover {
-			background-color: #ffb524; !important;
+			background-color: #EA9C00; !important;
 		}
 
 		#searchType option:focus {
-			background-color: #ffb524;
+			background-color: #EA9C00;
 		}
 
 		h3{
@@ -67,7 +67,7 @@
 		}
 
 		.boardNavbar ul {
-			background-color: #81c405;
+			background-color: #77933C;
 			list-style: none;
 			padding: 0;
 			margin: 0;
@@ -101,7 +101,7 @@
 		}
 
 		.boardNavbar ul li a:hover {
-			background-color: #6aa003; /* Hover 시 더 진한 초록색 */
+			background-color: #EA9C00; /* Hover 시 더 진한 초록색 */
 			cursor: pointer;
 			border-radius: 25px;
 		}
@@ -110,7 +110,7 @@
 			padding: 8px 10px; /* 패딩을 조절해서 버튼 크기를 줄임 */
 			font-size: 15px; /* 글자 크기 조절 */
 			border-radius: 4px; /* 테두리를 살짝 둥글게 */
-			background-color: #81c405; /* 버튼 배경색 */
+			background-color: #77933C; /* 버튼 배경색 */
 			color: white; /* 버튼 글자색 */
 			border: none; /* 테두리 제거 */
 			cursor: pointer; /* 커서 모양 */
@@ -118,7 +118,7 @@
 		}
 
 		#boardWriteBt:hover {
-			background-color: #ffb524;
+			background-color: #EA9C00;
 		}
 
 		#userInfo{
@@ -146,7 +146,7 @@
 		}
 
 		.boardTable th {
-			border-bottom: 1px solid #81c405;
+			border-bottom: 1px solid #77933C;
 			font-weight: bold;
 		}
 
@@ -160,7 +160,7 @@
 		}
 
 		.boardTable a {
-			color: #81c405;
+			color: #77933C;
 			text-decoration: none;
 		}
 
@@ -179,14 +179,14 @@
 			position: relative; /* 부모 컨테이너에 상대적인 위치를 지정합니다. */
 		}
 
-		#pagingForm{
-			margin: 30px 0px 30px 25px;
-		}
+		/*#pagingForm{*/
+		/*	margin: 30px 0px 30px 25px;*/
+		/*}*/
 
 		form {
 			display: flex;
 			justify-content: center;
-			margin-top: 20px;
+			//margin-top: 20px;
 		}
 
 		#pagingForm input[type="text"] {
@@ -200,15 +200,15 @@
 			padding: 8px 12px;
 			margin-left: 10px;
 			font-size: 1rem;
-			border: 1px solid #81c405;
-			background-color: #81c405;
+			border: 1px solid #77933C;
+			background-color: #77933C;
 			color: white;
 			border-radius: 4px;
 			cursor: pointer;
 		}
 
 		#pagingForm input[type="submit"]:hover {
-			background-color: #7bb12a;
+			background-color: #77933C;
 		}
 
 		.boardNumCol{
@@ -248,30 +248,40 @@
 			width: 48%;
 		}
 
-		#paginationControls{
+		/*#paginationControls{*/
+		/*	display: flex;*/
+		/*	justify-content: center;*/
+		/*	margin-top: 30px;*/
+
+		/*	position: absolute; !* 위치를 절대적으로 지정 *!*/
+		/*	top: 550px;*/
+		/*	left: 50%;*/
+		/*	transform: translateX(-50%); !* 중앙 정렬을 위해 왼쪽으로 50% 이동 *!*/
+		/*}*/
+		#paginationControls {
 			display: flex;
 			justify-content: center;
 			margin-top: 30px;
-
-			position: absolute; /* 위치를 절대적으로 지정 */
-			top: 550px;
-			left: 50%;
-			transform: translateX(-50%); /* 중앙 정렬을 위해 왼쪽으로 50% 이동 */
+			position: relative; /* absolute를 relative로 변경 */
 		}
-
 		.paginationButton{
 			background-color: white;
-			color: #81c405;
+			color: #77933C;
 		}
 
-		.searchBox{
+		/*.searchBox{*/
+		/*	display: flex;*/
+		/*	justify-content: center;*/
+
+		/*	position: absolute; !* 위치를 절대적으로 지정 *!*/
+		/*	top: 650px;*/
+		/*	left: 50%;*/
+		/*	transform: translateX(-50%); !* 중앙 정렬을 위해 왼쪽으로 50% 이동 *!*/
+		/*}*/
+		.searchBox {
 			display: flex;
 			justify-content: center;
-
-			position: absolute; /* 위치를 절대적으로 지정 */
-			top: 650px;
-			left: 50%;
-			transform: translateX(-50%); /* 중앙 정렬을 위해 왼쪽으로 50% 이동 */
+			margin-top: 20px; /* 페이지네이션 아래에 공간을 둡니다 */
 		}
 
 		#searchWord{
@@ -288,7 +298,7 @@
 		}
 
 		.active-category{
-			background-color: #FFB524 !important;
+			background-color: #EA9C00 !important;
 			color: white !important;
 			font-weight: bold !important;
 		}

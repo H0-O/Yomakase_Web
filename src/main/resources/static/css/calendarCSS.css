@@ -389,7 +389,7 @@ button::-moz-focus-inner,
     backdrop-filter: blur(13.5px);
     -webkit-backdrop-filter: blur(13.5px);
     border-radius: 10px;
-    border: 2px solid #FFB524;
+    border: 2px solid #EA9C00;
     z-index: 100;
 
     width: 400px;

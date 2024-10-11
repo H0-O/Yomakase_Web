@@ -61,11 +61,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     function btnActive(){
-        dietCalBtn.style.backgroundColor = '#FFB524';
+        dietCalBtn.style.backgroundColor = '#EA9C00';
         nutrientCalBtn.addEventListener('click', function (){
             btnActiveCheck = false;
             dietCalBtn.style.backgroundColor = '';
-            nutrientCalBtn.style.backgroundColor = '#FFB524';
+            nutrientCalBtn.style.backgroundColor = '#EA9C00';
             document.getElementById('nutrientCalTitle').style.display = 'block';
             document.getElementById('dietCalTitle').style.display = 'none';
             nutrientView(selectedDay.getDate());
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function(){
         dietCalBtn.addEventListener('click', function (){
             btnActiveCheck = true;
             nutrientCalBtn.style.backgroundColor = '';
-            dietCalBtn.style.backgroundColor = '#FFB524';
+            dietCalBtn.style.backgroundColor = '#EA9C00';
             document.getElementById('dietCalTitle').style.display = 'block';
             document.getElementById('nutrientCalTitle').style.display = 'none';
             dietView(selectedDay.getDate());
